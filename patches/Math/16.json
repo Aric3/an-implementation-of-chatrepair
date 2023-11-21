@@ -1,0 +1,75 @@
+{
+    "num_of_hunks": 11,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/math3/util/FastMath.java",
+        "replaced_with": "    private static final double LOG_MAX_VALUE = StrictMath.log(Double.MAX_VALUE);\n",
+        "patch_type": "insert",
+        "next_line_no": 82
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/math3/util/FastMath.java",
+        "replaced_with": "          if (x >= LOG_MAX_VALUE) {\n",
+        "patch_type": "insert",
+        "next_line_no": 394
+    },
+    "2": {
+        "file_name": "src/main/java/org/apache/commons/math3/util/FastMath.java",
+        "replaced_with": "              final double t = exp(0.5 * x);\n              return (0.5 * t) * t;\n          } else {\n",
+        "patch_type": "insert",
+        "next_line_no": 395
+    },
+    "3": {
+        "file_name": "src/main/java/org/apache/commons/math3/util/FastMath.java",
+        "from_line_no": 397,
+        "to_line_no": 397,
+        "replaced_with": "      } else if (x < -20) {\n          if (x <= -LOG_MAX_VALUE) {\n",
+        "replaced": "      if (x < -20) {\n",
+        "patch_type": "replace",
+        "next_line_no": 398
+    },
+    "4": {
+        "file_name": "src/main/java/org/apache/commons/math3/util/FastMath.java",
+        "replaced_with": "              final double t = exp(-0.5 * x);\n              return (0.5 * t) * t;\n          } else {\n",
+        "patch_type": "insert",
+        "next_line_no": 399
+    },
+    "5": {
+        "file_name": "src/main/java/org/apache/commons/math3/util/FastMath.java",
+        "replaced_with": "          }\n",
+        "patch_type": "insert",
+        "next_line_no": 400
+    },
+    "6": {
+        "file_name": "src/main/java/org/apache/commons/math3/util/FastMath.java",
+        "replaced_with": "          if (x >= LOG_MAX_VALUE) {\n",
+        "patch_type": "insert",
+        "next_line_no": 455
+    },
+    "7": {
+        "file_name": "src/main/java/org/apache/commons/math3/util/FastMath.java",
+        "replaced_with": "              final double t = exp(0.5 * x);\n              return (0.5 * t) * t;\n          } else {\n",
+        "patch_type": "insert",
+        "next_line_no": 456
+    },
+    "8": {
+        "file_name": "src/main/java/org/apache/commons/math3/util/FastMath.java",
+        "from_line_no": 458,
+        "to_line_no": 458,
+        "replaced_with": "      } else if (x < -20) {\n          if (x <= -LOG_MAX_VALUE) {\n",
+        "replaced": "      if (x < -20) {\n",
+        "patch_type": "replace",
+        "next_line_no": 459
+    },
+    "9": {
+        "file_name": "src/main/java/org/apache/commons/math3/util/FastMath.java",
+        "replaced_with": "              final double t = exp(-0.5 * x);\n              return (-0.5 * t) * t;\n          } else {\n",
+        "patch_type": "insert",
+        "next_line_no": 460
+    },
+    "10": {
+        "file_name": "src/main/java/org/apache/commons/math3/util/FastMath.java",
+        "replaced_with": "          }\n",
+        "patch_type": "insert",
+        "next_line_no": 461
+    }
+}

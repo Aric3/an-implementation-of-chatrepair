@@ -1,0 +1,45 @@
+{
+    "num_of_hunks": 6,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java",
+        "from_line_no": 157,
+        "to_line_no": 157,
+        "replaced_with": "    (new NodeTraversal(compiler, this)).traverseRoots(externs, root);\n",
+        "replaced": "    (new NodeTraversal(compiler, this)).traverse(root);\n",
+        "patch_type": "replace",
+        "next_line_no": 158
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/MustBeReachingVariableDef.java",
+        "replaced_with": "    private boolean unknownDependencies = false;\n",
+        "patch_type": "insert",
+        "next_line_no": 71
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/jscomp/MustBeReachingVariableDef.java",
+        "from_line_no": 396,
+        "to_line_no": 396,
+        "replaced_with": "        if (n.isName()) {\n",
+        "replaced": "        if (n.isName() && jsScope.isDeclared(n.getString(), true)) {\n",
+        "patch_type": "replace",
+        "next_line_no": 397
+    },
+    "3": {
+        "file_name": "src/com/google/javascript/jscomp/MustBeReachingVariableDef.java",
+        "replaced_with": "          if (dep == null) {\n            def.unknownDependencies = true;\n          } else {\n",
+        "patch_type": "insert",
+        "next_line_no": 398
+    },
+    "4": {
+        "file_name": "src/com/google/javascript/jscomp/MustBeReachingVariableDef.java",
+        "replaced_with": "          }\n",
+        "patch_type": "insert",
+        "next_line_no": 399
+    },
+    "5": {
+        "file_name": "src/com/google/javascript/jscomp/MustBeReachingVariableDef.java",
+        "replaced_with": "    if (def.unknownDependencies) {\n      return true;\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 430
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/PeepholeSubstituteAlternateSyntax.java",
+        "from_line_no": 782,
+        "to_line_no": 782,
+        "replaced_with": "              !mayEffectMutableState(lhs) &&\n              (!mayHaveSideEffects(cond) ||\n                  (thenOp.isAssign() && thenOp.getFirstChild().isName()))) {\n",
+        "replaced": "              !mayEffectMutableState(lhs)) {\n",
+        "patch_type": "replace",
+        "next_line_no": 783
+    }
+}

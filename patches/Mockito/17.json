@@ -1,0 +1,45 @@
+{
+    "num_of_hunks": 6,
+    "0": {
+        "file_name": "src/org/mockito/internal/creation/MockSettingsImpl.java",
+        "replaced_with": "    private boolean serializable;\n",
+        "patch_type": "insert",
+        "next_line_no": 20
+    },
+    "1": {
+        "file_name": "src/org/mockito/internal/creation/MockSettingsImpl.java",
+        "from_line_no": 22,
+        "to_line_no": 22,
+        "replaced_with": "        this.serializable = true;\n        return this;\n",
+        "replaced": "        return this.extraInterfaces(java.io.Serializable.class);\n",
+        "patch_type": "replace",
+        "next_line_no": 23
+    },
+    "2": {
+        "file_name": "src/org/mockito/internal/creation/MockSettingsImpl.java",
+        "from_line_no": 74,
+        "to_line_no": 74,
+        "replaced_with": "        return serializable;\n",
+        "replaced": "        return extraInterfaces != null && java.util.Arrays.asList(extraInterfaces).contains(java.io.Serializable.class);\n",
+        "patch_type": "replace",
+        "next_line_no": 75
+    },
+    "3": {
+        "file_name": "src/org/mockito/internal/util/MockUtil.java",
+        "replaced_with": "import java.io.Serializable;\n",
+        "patch_type": "insert",
+        "next_line_no": 19
+    },
+    "4": {
+        "file_name": "src/org/mockito/internal/util/MockUtil.java",
+        "replaced_with": "        if (settings.isSerializable()) {\n            ancillaryTypes = interfaces == null ? new Class<?>[] {Serializable.class} : new ArrayUtils().concat(interfaces, Serializable.class);\n        } else {\n",
+        "patch_type": "insert",
+        "next_line_no": 45
+    },
+    "5": {
+        "file_name": "src/org/mockito/internal/util/MockUtil.java",
+        "replaced_with": "        }\n",
+        "patch_type": "insert",
+        "next_line_no": 46
+    }
+}

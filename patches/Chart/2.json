@@ -1,0 +1,51 @@
+{
+    "num_of_hunks": 8,
+    "0": {
+        "file_name": "source/org/jfree/data/general/DatasetUtilities.java",
+        "replaced_with": "                    double value = intervalXYData.getXValue(series, item);\n",
+        "patch_type": "insert",
+        "next_line_no": 755
+    },
+    "1": {
+        "file_name": "source/org/jfree/data/general/DatasetUtilities.java",
+        "replaced_with": "                    if (!Double.isNaN(value)) {\n                        minimum = Math.min(minimum, value);\n                        maximum = Math.max(maximum, value);\n                    }\n",
+        "patch_type": "insert",
+        "next_line_no": 757
+    },
+    "2": {
+        "file_name": "source/org/jfree/data/general/DatasetUtilities.java",
+        "replaced_with": "                        maximum = Math.max(maximum, lvalue);\n",
+        "patch_type": "insert",
+        "next_line_no": 759
+    },
+    "3": {
+        "file_name": "source/org/jfree/data/general/DatasetUtilities.java",
+        "replaced_with": "                        minimum = Math.min(minimum, uvalue);\n",
+        "patch_type": "insert",
+        "next_line_no": 761
+    },
+    "4": {
+        "file_name": "source/org/jfree/data/general/DatasetUtilities.java",
+        "replaced_with": "                    double value = ixyd.getYValue(series, item);\n",
+        "patch_type": "insert",
+        "next_line_no": 1242
+    },
+    "5": {
+        "file_name": "source/org/jfree/data/general/DatasetUtilities.java",
+        "replaced_with": "                    if (!Double.isNaN(value)) {\n                        minimum = Math.min(minimum, value);\n                        maximum = Math.max(maximum, value);\n                    }\n",
+        "patch_type": "insert",
+        "next_line_no": 1244
+    },
+    "6": {
+        "file_name": "source/org/jfree/data/general/DatasetUtilities.java",
+        "replaced_with": "                        maximum = Math.max(maximum, lvalue);\n",
+        "patch_type": "insert",
+        "next_line_no": 1246
+    },
+    "7": {
+        "file_name": "source/org/jfree/data/general/DatasetUtilities.java",
+        "replaced_with": "                        minimum = Math.min(minimum, uvalue);\n",
+        "patch_type": "insert",
+        "next_line_no": 1248
+    }
+}

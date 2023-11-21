@@ -1,0 +1,93 @@
+{
+    "num_of_hunks": 11,
+    "0": {
+        "file_name": "src/org/mockito/internal/configuration/injection/PropertyAndSetterInjection.java",
+        "from_line_no": 114,
+        "to_line_no": 114,
+        "replaced_with": "            Object injected = mockCandidateFilter.filterCandidate(mocks, field, orderedInstanceFields, instance).thenInject();\n",
+        "replaced": "            Object injected = mockCandidateFilter.filterCandidate(mocks, field, instance).thenInject();\n",
+        "patch_type": "replace",
+        "next_line_no": 115
+    },
+    "1": {
+        "file_name": "src/org/mockito/internal/configuration/injection/filter/FinalMockCandidateFilter.java",
+        "replaced_with": "import java.util.List;\n",
+        "patch_type": "insert",
+        "next_line_no": 13
+    },
+    "2": {
+        "file_name": "src/org/mockito/internal/configuration/injection/filter/FinalMockCandidateFilter.java",
+        "from_line_no": 23,
+        "to_line_no": 23,
+        "replaced_with": "    public OngoingInjecter filterCandidate(final Collection<Object> mocks, final Field field, List<Field> fields, final Object fieldInstance) {\n",
+        "replaced": "    public OngoingInjecter filterCandidate(final Collection<Object> mocks, final Field field, final Object fieldInstance) {\n",
+        "patch_type": "replace",
+        "next_line_no": 24
+    },
+    "3": {
+        "file_name": "src/org/mockito/internal/configuration/injection/filter/MockCandidateFilter.java",
+        "replaced_with": "import java.util.List;\n",
+        "patch_type": "insert",
+        "next_line_no": 9
+    },
+    "4": {
+        "file_name": "src/org/mockito/internal/configuration/injection/filter/MockCandidateFilter.java",
+        "from_line_no": 15,
+        "to_line_no": 15,
+        "replaced_with": "            List<Field> fields, Object instance\n",
+        "replaced": "            Object fieldInstance\n",
+        "patch_type": "replace",
+        "next_line_no": 16
+    },
+    "5": {
+        "file_name": "src/org/mockito/internal/configuration/injection/filter/NameBasedCandidateFilter.java",
+        "from_line_no": 23,
+        "to_line_no": 23,
+        "replaced_with": "\t\t\tField field, List<Field> fields, Object fieldInstance) {\n",
+        "replaced": "\t\t\tField field, Object fieldInstance) {\n",
+        "patch_type": "replace",
+        "next_line_no": 24
+    },
+    "6": {
+        "file_name": "src/org/mockito/internal/configuration/injection/filter/NameBasedCandidateFilter.java",
+        "from_line_no": 31,
+        "to_line_no": 31,
+        "replaced_with": "\t\t\treturn next.filterCandidate(mockNameMatches, field, fields,\n",
+        "replaced": "\t\t\treturn next.filterCandidate(mockNameMatches, field,\n",
+        "patch_type": "replace",
+        "next_line_no": 32
+    },
+    "7": {
+        "file_name": "src/org/mockito/internal/configuration/injection/filter/NameBasedCandidateFilter.java",
+        "replaced_with": "\t\t} else if (mocks.size() == 1) {\n\t\t\tString mockName = mockUtil.getMockName(mocks.iterator().next())\n\t\t\t\t\t.toString();\n\n\t\t\tfor (Field otherField : fields) {\n\t\t\t\tif (!otherField.equals(field)\n\t\t\t\t\t\t&& otherField.getType().equals(field.getType())\n\t\t\t\t\t\t&& otherField.getName().equals(mockName)) {\n\n\t\t\t\t\treturn new OngoingInjecter() {\n\t\t\t\t\t\tpublic Object thenInject() {\n\t\t\t\t\t\t\treturn null;\n\t\t\t\t\t\t}\n\t\t\t\t\t};\n\t\t\t\t}\n\t\t\t}\n",
+        "patch_type": "insert",
+        "next_line_no": 42
+    },
+    "8": {
+        "file_name": "src/org/mockito/internal/configuration/injection/filter/NameBasedCandidateFilter.java",
+        "from_line_no": 43,
+        "to_line_no": 43,
+        "replaced_with": "\t\treturn next.filterCandidate(mocks, field, fields, fieldInstance);\n",
+        "replaced": "\t\treturn next.filterCandidate(mocks, field, fieldInstance);\n",
+        "patch_type": "replace",
+        "next_line_no": 44
+    },
+    "9": {
+        "file_name": "src/org/mockito/internal/configuration/injection/filter/TypeBasedCandidateFilter.java",
+        "from_line_no": 20,
+        "to_line_no": 20,
+        "replaced_with": "    public OngoingInjecter filterCandidate(Collection<Object> mocks, Field field, List<Field> fields, Object fieldInstance) {\n",
+        "replaced": "    public OngoingInjecter filterCandidate(Collection<Object> mocks, Field field, Object fieldInstance) {\n",
+        "patch_type": "replace",
+        "next_line_no": 21
+    },
+    "10": {
+        "file_name": "src/org/mockito/internal/configuration/injection/filter/TypeBasedCandidateFilter.java",
+        "from_line_no": 28,
+        "to_line_no": 28,
+        "replaced_with": "        return next.filterCandidate(mockTypeMatches, field, fields, fieldInstance);\n",
+        "replaced": "        return next.filterCandidate(mockTypeMatches, field, fieldInstance);\n",
+        "patch_type": "replace",
+        "next_line_no": 29
+    }
+}

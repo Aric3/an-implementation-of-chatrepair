@@ -1,0 +1,12 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/parsing/IRFactory.java",
+        "from_line_no": 252,
+        "to_line_no": 252,
+        "replaced_with": "    Pattern p = Pattern.compile(\"(/|(\\n[ \\t]*))\\\\*[ \\t]*@[a-zA-Z]\");\n    if (p.matcher(comment.getValue()).find()) {\n",
+        "replaced": "    if (comment.getValue().indexOf(\"/* @\") != -1 || comment.getValue().indexOf(\"\\n * @\") != -1) {\n",
+        "patch_type": "replace",
+        "next_line_no": 253
+    }
+}

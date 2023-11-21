@@ -1,0 +1,21 @@
+{
+    "num_of_hunks": 2,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/CheckSideEffects.java",
+        "from_line_no": 101,
+        "to_line_no": 101,
+        "replaced_with": "    if (n.isExprResult() || n.isBlock()) {\n",
+        "replaced": "    if (n.isExprResult()) {\n",
+        "patch_type": "replace",
+        "next_line_no": 102
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/CheckSideEffects.java",
+        "from_line_no": 113,
+        "to_line_no": 130,
+        "replaced_with": "    if (!isResultUsed &&\n",
+        "replaced": "    if (parent.getType() == Token.COMMA) {\n      if (isResultUsed) {\n        return;\n      }\n      if (n == parent.getLastChild()) {\n        for (Node an : parent.getAncestors()) {\n          int ancestorType = an.getType();\n          if (ancestorType == Token.COMMA) continue;\n          if (ancestorType != Token.EXPR_RESULT && ancestorType != Token.BLOCK) return;\n          else break;\n        }\n      }\n    } else if (parent.getType() != Token.EXPR_RESULT && parent.getType() != Token.BLOCK) {\n      if (! (parent.getType() == Token.FOR && parent.getChildCount() == 4 && (n == parent.getFirstChild() || n == parent.getFirstChild().getNext().getNext()))) {\n        return;\n      }\n    }\n    if (\n",
+        "patch_type": "replace",
+        "next_line_no": 131
+    }
+}

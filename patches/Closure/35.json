@@ -1,0 +1,12 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/TypeInference.java",
+        "from_line_no": 1121,
+        "to_line_no": 1135,
+        "replaced_with": "    if (constraintObj != null) {\n      type.matchConstraint(constraintObj);\n",
+        "replaced": "    if (constraintObj != null && constraintObj.isRecordType()) {\n      ObjectType objType = ObjectType.cast(type.restrictByNotNullOrUndefined());\n      if (objType != null) {\n        for (String prop : constraintObj.getOwnPropertyNames()) {\n          JSType propType = constraintObj.getPropertyType(prop);\n          if (!objType.isPropertyTypeDeclared(prop)) {\n            JSType typeToInfer = propType;\n            if (!objType.hasProperty(prop)) {\n              typeToInfer =\n                  getNativeType(VOID_TYPE).getLeastSupertype(propType);\n            }\n            objType.defineInferredProperty(prop, typeToInfer, null);\n          }\n        }\n      }\n",
+        "patch_type": "replace",
+        "next_line_no": 1136
+    }
+}

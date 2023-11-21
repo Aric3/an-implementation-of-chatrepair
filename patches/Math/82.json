@@ -1,0 +1,12 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/math/optimization/linear/SimplexSolver.java",
+        "from_line_no": 82,
+        "to_line_no": 82,
+        "replaced_with": "            if (MathUtils.compareTo(entry, 0, epsilon) > 0) {\n",
+        "replaced": "            if (MathUtils.compareTo(entry, 0, epsilon) >= 0) {\n",
+        "patch_type": "replace",
+        "next_line_no": 83
+    }
+}

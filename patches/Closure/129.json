@@ -1,0 +1,9 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/PrepareAst.java",
+        "replaced_with": "      while (first.isCast()) {\n        first = first.getFirstChild();\n      }\n",
+        "patch_type": "insert",
+        "next_line_no": 166
+    }
+}

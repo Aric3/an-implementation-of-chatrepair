@@ -1,0 +1,149 @@
+{
+    "num_of_hunks": 17,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/math3/optim/BaseOptimizer.java",
+        "from_line_no": 51,
+        "to_line_no": 51,
+        "replaced_with": "        iterations = new Incrementor(Integer.MAX_VALUE, new MaxIterCallback());\n",
+        "replaced": "        iterations = new Incrementor(0, new MaxIterCallback());\n",
+        "patch_type": "replace",
+        "next_line_no": 52
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/gradient/NonLinearConjugateGradientOptimizer.java",
+        "from_line_no": 214,
+        "to_line_no": 214,
+        "replaced": "        int iter = 0;\n",
+        "patch_type": "delete",
+        "next_line_no": 215
+    },
+    "2": {
+        "file_name": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/gradient/NonLinearConjugateGradientOptimizer.java",
+        "from_line_no": 217,
+        "to_line_no": 217,
+        "replaced_with": "            incrementIterationCount();\n",
+        "replaced": "            ++iter;\n",
+        "patch_type": "replace",
+        "next_line_no": 218
+    },
+    "3": {
+        "file_name": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/gradient/NonLinearConjugateGradientOptimizer.java",
+        "from_line_no": 223,
+        "to_line_no": 223,
+        "replaced_with": "                if (checker.converged(getIterations(), previous, current)) {\n",
+        "replaced": "                if (checker.converged(iter, previous, current)) {\n",
+        "patch_type": "replace",
+        "next_line_no": 224
+    },
+    "4": {
+        "file_name": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/gradient/NonLinearConjugateGradientOptimizer.java",
+        "from_line_no": 277,
+        "to_line_no": 277,
+        "replaced_with": "            if (getIterations() % n == 0 ||\n",
+        "replaced": "            if (iter % n == 0 ||\n",
+        "patch_type": "replace",
+        "next_line_no": 278
+    },
+    "5": {
+        "file_name": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/noderiv/CMAESOptimizer.java",
+        "replaced_with": "            incrementIterationCount();\n",
+        "patch_type": "insert",
+        "next_line_no": 388
+    },
+    "6": {
+        "file_name": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/noderiv/PowellOptimizer.java",
+        "from_line_no": 191,
+        "to_line_no": 191,
+        "replaced": "        int iter = 0;\n",
+        "patch_type": "delete",
+        "next_line_no": 192
+    },
+    "7": {
+        "file_name": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/noderiv/PowellOptimizer.java",
+        "from_line_no": 193,
+        "to_line_no": 193,
+        "replaced_with": "            incrementIterationCount();\n",
+        "replaced": "            ++iter;\n",
+        "patch_type": "replace",
+        "next_line_no": 194
+    },
+    "8": {
+        "file_name": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/noderiv/PowellOptimizer.java",
+        "from_line_no": 227,
+        "to_line_no": 227,
+        "replaced_with": "                    stop = checker.converged(getIterations(), previous, current);\n",
+        "replaced": "                    stop = checker.converged(iter, previous, current);\n",
+        "patch_type": "replace",
+        "next_line_no": 228
+    },
+    "9": {
+        "file_name": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/noderiv/SimplexOptimizer.java",
+        "from_line_no": 158,
+        "to_line_no": 158,
+        "replaced_with": "            if (getIterations() > 0) {\n",
+        "replaced": "            if (iteration > 0) {\n",
+        "patch_type": "replace",
+        "next_line_no": 159
+    },
+    "10": {
+        "file_name": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/noderiv/SimplexOptimizer.java",
+        "from_line_no": 175,
+        "to_line_no": 175,
+        "replaced_with": "            incrementIterationCount();\n",
+        "replaced": "\t\t\t++iteration;\n",
+        "patch_type": "replace",
+        "next_line_no": 176
+    },
+    "11": {
+        "file_name": "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/GaussNewtonOptimizer.java",
+        "from_line_no": 106,
+        "to_line_no": 106,
+        "replaced": "        int iter = 0;\n",
+        "patch_type": "delete",
+        "next_line_no": 107
+    },
+    "12": {
+        "file_name": "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/GaussNewtonOptimizer.java",
+        "from_line_no": 108,
+        "to_line_no": 108,
+        "replaced_with": "            incrementIterationCount();\n",
+        "replaced": "            ++iter;\n",
+        "patch_type": "replace",
+        "next_line_no": 109
+    },
+    "13": {
+        "file_name": "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/GaussNewtonOptimizer.java",
+        "from_line_no": 160,
+        "to_line_no": 160,
+        "replaced_with": "                converged = checker.converged(getIterations(), previous, current);\n",
+        "replaced": "                converged = checker.converged(iter, previous, current);\n",
+        "patch_type": "replace",
+        "next_line_no": 161
+    },
+    "14": {
+        "file_name": "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/LevenbergMarquardtOptimizer.java",
+        "from_line_no": 322,
+        "to_line_no": 322,
+        "replaced": "        int iter = 0;\n",
+        "patch_type": "delete",
+        "next_line_no": 323
+    },
+    "15": {
+        "file_name": "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/LevenbergMarquardtOptimizer.java",
+        "from_line_no": 325,
+        "to_line_no": 325,
+        "replaced_with": "            incrementIterationCount();\n\n",
+        "replaced": "            ++iter;\n",
+        "patch_type": "replace",
+        "next_line_no": 326
+    },
+    "16": {
+        "file_name": "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/LevenbergMarquardtOptimizer.java",
+        "from_line_no": 489,
+        "to_line_no": 489,
+        "replaced_with": "                        if (checker.converged(getIterations(), previous, current)) {\n",
+        "replaced": "                        if (checker.converged(iter, previous, current)) {\n",
+        "patch_type": "replace",
+        "next_line_no": 490
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/org/mockito/internal/matchers/Equality.java",
+        "from_line_no": 13,
+        "to_line_no": 13,
+        "replaced_with": "        if (o1 == o2 ) {\n            return true;\n\t} else if (o1 == null || o2 == null) {\n",
+        "replaced": "        if (o1 == null || o2 == null) {\n",
+        "patch_type": "replace",
+        "next_line_no": 14
+    }
+}

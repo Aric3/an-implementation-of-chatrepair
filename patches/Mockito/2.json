@@ -1,0 +1,21 @@
+{
+    "num_of_hunks": 3,
+    "0": {
+        "file_name": "src/org/mockito/internal/util/Timer.java",
+        "replaced_with": "import org.mockito.exceptions.Reporter;\n",
+        "patch_type": "insert",
+        "next_line_no": 3
+    },
+    "1": {
+        "file_name": "src/org/mockito/internal/util/Timer.java",
+        "replaced_with": "        validateInput(durationMillis);\n",
+        "patch_type": "insert",
+        "next_line_no": 10
+    },
+    "2": {
+        "file_name": "src/org/mockito/internal/util/Timer.java",
+        "replaced_with": "    private void validateInput(long durationMillis) {\n        if (durationMillis < 0) {\n            new Reporter().cannotCreateTimerWithNegativeDurationTime(durationMillis);\n        }\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 28
+    }
+}

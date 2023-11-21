@@ -1,0 +1,9 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/MaybeReachingVariableUse.java",
+        "replaced_with": "    List<DiGraphEdge<Node, Branch>> branchEdges = getCfg().getOutEdges(cfgNode);\n    for (DiGraphEdge<Node, Branch> edge : branchEdges) {\n      if (edge.getValue() == Branch.ON_EX) {\n        return true;\n      }\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 160
+    }
+}

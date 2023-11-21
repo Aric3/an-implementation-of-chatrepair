@@ -1,0 +1,50 @@
+{
+    "num_of_hunks": 6,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/lang3/text/translate/CharSequenceTranslator.java",
+        "from_line_no": 83,
+        "to_line_no": 83,
+        "replaced_with": "        int len = input.length();\n",
+        "replaced": "        int len = Character.codePointCount(input, 0, input.length());\n",
+        "patch_type": "replace",
+        "next_line_no": 84
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/lang3/text/translate/CharSequenceTranslator.java",
+        "replaced_with": "                pos+= c.length;\n                continue;\n",
+        "patch_type": "insert",
+        "next_line_no": 89
+    },
+    "2": {
+        "file_name": "src/main/java/org/apache/commons/lang3/text/translate/CharSequenceTranslator.java",
+        "from_line_no": 90,
+        "to_line_no": 90,
+        "replaced": "            else {\n",
+        "patch_type": "delete",
+        "next_line_no": 91
+    },
+    "3": {
+        "file_name": "src/main/java/org/apache/commons/lang3/text/translate/CharSequenceTranslator.java",
+        "from_line_no": 94,
+        "to_line_no": 94,
+        "replaced": "                    if (pos < len - 2) {\n",
+        "patch_type": "delete",
+        "next_line_no": 95
+    },
+    "4": {
+        "file_name": "src/main/java/org/apache/commons/lang3/text/translate/CharSequenceTranslator.java",
+        "from_line_no": 96,
+        "to_line_no": 100,
+        "replaced": "                    } else {\n                        pos++;\n                    }\n                }\n                pos--;\n",
+        "patch_type": "delete",
+        "next_line_no": 101
+    },
+    "5": {
+        "file_name": "src/main/java/org/apache/commons/lang3/text/translate/CharSequenceTranslator.java",
+        "from_line_no": 102,
+        "to_line_no": 102,
+        "replaced": "            pos++;\n",
+        "patch_type": "delete",
+        "next_line_no": 103
+    }
+}

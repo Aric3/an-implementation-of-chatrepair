@@ -1,0 +1,158 @@
+{
+    "num_of_hunks": 19,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/Normalize.java",
+        "replaced_with": "    private Set<Var> hasOkDuplicateDeclaration = Sets.newHashSet();\n",
+        "patch_type": "insert",
+        "next_line_no": 631
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/Normalize.java",
+        "from_line_no": 638,
+        "to_line_no": 639,
+        "replaced_with": "        Scope s, String name, Node n, CompilerInput input) {\n",
+        "replaced": "        Scope s, String name, Node n, Node parent, Node gramps,\n        Node nodeWithLineNumber) {\n",
+        "patch_type": "replace",
+        "next_line_no": 640
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/jscomp/Normalize.java",
+        "replaced_with": "      Node parent = n.getParent();\n",
+        "patch_type": "insert",
+        "next_line_no": 641
+    },
+    "3": {
+        "file_name": "src/com/google/javascript/jscomp/Normalize.java",
+        "replaced_with": "      if (v != null && s.isGlobal()) {\n",
+        "patch_type": "insert",
+        "next_line_no": 643
+    },
+    "4": {
+        "file_name": "src/com/google/javascript/jscomp/Normalize.java",
+        "replaced_with": "        if (v.isExtern() && !input.isExtern()) {\n          if (hasOkDuplicateDeclaration.add(v)) {\n            return;\n          }\n        }\n      }\n",
+        "patch_type": "insert",
+        "next_line_no": 647
+    },
+    "5": {
+        "file_name": "src/com/google/javascript/jscomp/Normalize.java",
+        "from_line_no": 669,
+        "to_line_no": 669,
+        "replaced_with": "                input.getName(), n,\n",
+        "replaced": "                NodeUtil.getSourceName(nodeWithLineNumber), nodeWithLineNumber,\n",
+        "patch_type": "replace",
+        "next_line_no": 670
+    },
+    "6": {
+        "file_name": "src/com/google/javascript/jscomp/Normalize.java",
+        "from_line_no": 681,
+        "to_line_no": 681,
+        "replaced_with": "        replaceVarWithAssignment(n, parent, parent.getParent());\n",
+        "replaced": "        replaceVarWithAssignment(n, parent, gramps);\n",
+        "patch_type": "replace",
+        "next_line_no": 682
+    },
+    "7": {
+        "file_name": "src/com/google/javascript/jscomp/SyntacticScopeCreator.java",
+        "from_line_no": 23,
+        "to_line_no": 23,
+        "replaced": "import com.google.javascript.rhino.jstype.JSType;\n",
+        "patch_type": "delete",
+        "next_line_no": 24
+    },
+    "8": {
+        "file_name": "src/com/google/javascript/jscomp/SyntacticScopeCreator.java",
+        "from_line_no": 95,
+        "to_line_no": 95,
+        "replaced_with": "        declareVar(fnNameNode);\n",
+        "replaced": "        declareVar(fnName, fnNameNode, n, null, null, n);\n",
+        "patch_type": "replace",
+        "next_line_no": 96
+    },
+    "9": {
+        "file_name": "src/com/google/javascript/jscomp/SyntacticScopeCreator.java",
+        "from_line_no": 103,
+        "to_line_no": 103,
+        "replaced_with": "        declareVar(a);\n",
+        "replaced": "        declareVar(a.getString(), a, args, n, null, n);\n",
+        "patch_type": "replace",
+        "next_line_no": 104
+    },
+    "10": {
+        "file_name": "src/com/google/javascript/jscomp/SyntacticScopeCreator.java",
+        "from_line_no": 125,
+        "to_line_no": 127,
+        "replaced_with": "          declareVar(child);\n",
+        "replaced": "          Preconditions.checkState(child.getType() == Token.NAME);\n          String name = child.getString();\n          declareVar(name, child, n, parent, null, n);\n",
+        "patch_type": "replace",
+        "next_line_no": 128
+    },
+    "11": {
+        "file_name": "src/com/google/javascript/jscomp/SyntacticScopeCreator.java",
+        "from_line_no": 142,
+        "to_line_no": 142,
+        "replaced_with": "        declareVar(n.getFirstChild());\n",
+        "replaced": "        declareVar(fnName, n.getFirstChild(), n, parent, null, n);\n",
+        "patch_type": "replace",
+        "next_line_no": 143
+    },
+    "12": {
+        "file_name": "src/com/google/javascript/jscomp/SyntacticScopeCreator.java",
+        "from_line_no": 154,
+        "to_line_no": 154,
+        "replaced_with": "        declareVar(var);\n",
+        "replaced": "        declareVar(var.getString(), var, n, parent, null, n);\n",
+        "patch_type": "replace",
+        "next_line_no": 155
+    },
+    "13": {
+        "file_name": "src/com/google/javascript/jscomp/SyntacticScopeCreator.java",
+        "from_line_no": 180,
+        "to_line_no": 181,
+        "replaced_with": "        Scope s, String name, Node n, CompilerInput input);\n",
+        "replaced": "        Scope s, String name,\n        Node n, Node parent, Node gramps, Node nodeWithLineNumber);\n",
+        "patch_type": "replace",
+        "next_line_no": 182
+    },
+    "14": {
+        "file_name": "src/com/google/javascript/jscomp/SyntacticScopeCreator.java",
+        "from_line_no": 189,
+        "to_line_no": 190,
+        "replaced_with": "        Scope s, String name, Node n, CompilerInput input) {\n      Node parent = n.getParent();\n",
+        "replaced": "        Scope s, String name,\n        Node n, Node parent, Node gramps, Node nodeWithLineNumber) {\n",
+        "patch_type": "replace",
+        "next_line_no": 191
+    },
+    "15": {
+        "file_name": "src/com/google/javascript/jscomp/SyntacticScopeCreator.java",
+        "from_line_no": 235,
+        "to_line_no": 237,
+        "replaced_with": "  private void declareVar(Node n) {\n    Preconditions.checkState(n.getType() == Token.NAME);\n",
+        "replaced": "  private void declareVar(String name, Node n, Node parent,\n                          Node gramps, JSType declaredType,\n                          Node nodeWithLineNumber) {\n",
+        "patch_type": "replace",
+        "next_line_no": 238
+    },
+    "16": {
+        "file_name": "src/com/google/javascript/jscomp/SyntacticScopeCreator.java",
+        "replaced_with": "    CompilerInput input = compiler.getInput(sourceName);\n    String name = n.getString();\n",
+        "patch_type": "insert",
+        "next_line_no": 239
+    },
+    "17": {
+        "file_name": "src/com/google/javascript/jscomp/SyntacticScopeCreator.java",
+        "from_line_no": 242,
+        "to_line_no": 242,
+        "replaced_with": "          scope, name, n, input);\n",
+        "replaced": "          scope, name, n, parent, gramps, nodeWithLineNumber);\n",
+        "patch_type": "replace",
+        "next_line_no": 243
+    },
+    "18": {
+        "file_name": "src/com/google/javascript/jscomp/SyntacticScopeCreator.java",
+        "from_line_no": 244,
+        "to_line_no": 244,
+        "replaced_with": "      scope.declare(name, n, null, input);\n",
+        "replaced": "      scope.declare(name, n, declaredType, compiler.getInput(sourceName));\n",
+        "patch_type": "replace",
+        "next_line_no": 245
+    }
+}

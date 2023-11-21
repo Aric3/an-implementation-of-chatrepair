@@ -1,0 +1,23 @@
+{
+    "num_of_hunks": 3,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/TypeValidator.java",
+        "replaced_with": "    JSType type = getJSType(n);\n    if (dereference) {\n      ObjectType dereferenced = type.dereference();\n      if (dereferenced != null) {\n        type = dereferenced;\n      }\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 725
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/TypeValidator.java",
+        "replaced_with": "    if (type.isFunctionPrototypeType() ||\n        (type.toObjectType() != null &&\n         type.toObjectType().getConstructor() != null)) {\n      return type.toString();\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 727
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/jscomp/TypeValidator.java",
+        "from_line_no": 756,
+        "to_line_no": 767,
+        "replaced": "    JSType type = getJSType(n);\n    if (dereference) {\n      ObjectType dereferenced = type.dereference();\n      if (dereferenced != null) {\n        type = dereferenced;\n      }\n    }\n    if (type.isFunctionPrototypeType() ||\n        (type.toObjectType() != null &&\n         type.toObjectType().getConstructor() != null)) {\n      return type.toString();\n    }\n",
+        "patch_type": "delete",
+        "next_line_no": 768
+    }
+}

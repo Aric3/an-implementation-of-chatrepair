@@ -1,0 +1,15 @@
+{
+    "num_of_hunks": 2,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/TypedScopeCreator.java",
+        "replaced_with": "        String className = qName.substring(0, qName.lastIndexOf(\".prototype\"));\n        Var slot = scope.getSlot(className);\n        JSType classType = slot == null ? null : slot.getType();\n        if (classType != null\n            && (classType.isConstructor() || classType.isInterface())) {\n",
+        "patch_type": "insert",
+        "next_line_no": 1670
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/TypedScopeCreator.java",
+        "replaced_with": "        }\n",
+        "patch_type": "insert",
+        "next_line_no": 1671
+    }
+}

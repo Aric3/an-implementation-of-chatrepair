@@ -1,0 +1,12 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/InlineFunctions.java",
+        "from_line_no": 777,
+        "to_line_no": 780,
+        "replaced_with": "    if (node.getType() == Token.NAME) {\n      if (isCandidateUsage(node)) {\n        changed.add(node.getString());\n",
+        "replaced": "    if (node.getType() == Token.CALL) {\n      Node child = node.getFirstChild();\n      if (child.getType() == Token.NAME) {\n        changed.add(child.getString());\n",
+        "patch_type": "replace",
+        "next_line_no": 781
+    }
+}

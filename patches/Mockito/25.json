@@ -1,0 +1,75 @@
+{
+    "num_of_hunks": 10,
+    "0": {
+        "file_name": "src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+        "replaced_with": "import org.mockito.MockSettings;\n",
+        "patch_type": "insert",
+        "next_line_no": 7
+    },
+    "1": {
+        "file_name": "src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+        "replaced_with": "import static org.mockito.Mockito.mock;\nimport static org.mockito.Mockito.withSettings;\n",
+        "patch_type": "insert",
+        "next_line_no": 19
+    },
+    "2": {
+        "file_name": "src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+        "from_line_no": 53,
+        "to_line_no": 53,
+        "replaced_with": "        return getMock(invocation, returnTypeGenericMetadata);\n",
+        "replaced": "        return getMock(invocation);\n",
+        "patch_type": "replace",
+        "next_line_no": 54
+    },
+    "3": {
+        "file_name": "src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+        "from_line_no": 56,
+        "to_line_no": 56,
+        "replaced_with": "    private Object getMock(InvocationOnMock invocation, GenericMetadataSupport returnTypeGenericMetadata) throws Throwable {\n",
+        "replaced": "    private Object getMock(InvocationOnMock invocation) throws Throwable {\n",
+        "patch_type": "replace",
+        "next_line_no": 57
+    },
+    "4": {
+        "file_name": "src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+        "from_line_no": 68,
+        "to_line_no": 68,
+        "replaced_with": "        return recordDeepStubMock(createNewDeepStubMock(returnTypeGenericMetadata), container);\n",
+        "replaced": "        return recordDeepStubMock(invocation, container);\n",
+        "patch_type": "replace",
+        "next_line_no": 69
+    },
+    "5": {
+        "file_name": "src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+        "replaced_with": "    private Object createNewDeepStubMock(GenericMetadataSupport returnTypeGenericMetadata) {\n        return mock(\n                returnTypeGenericMetadata.rawType(),\n                withSettingsUsing(returnTypeGenericMetadata)\n        );\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 77
+    },
+    "6": {
+        "file_name": "src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+        "replaced_with": "    private MockSettings withSettingsUsing(GenericMetadataSupport returnTypeGenericMetadata) {\n        MockSettings mockSettings =\n                returnTypeGenericMetadata.rawExtraInterfaces().length > 0 ?\n                withSettings().extraInterfaces(returnTypeGenericMetadata.rawExtraInterfaces())\n                : withSettings();\n",
+        "patch_type": "insert",
+        "next_line_no": 78
+    },
+    "7": {
+        "file_name": "src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+        "replaced_with": "        return mockSettings\n                .defaultAnswer(returnsDeepStubsAnswerUsing(returnTypeGenericMetadata));\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 79
+    },
+    "8": {
+        "file_name": "src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+        "replaced_with": "    private ReturnsDeepStubs returnsDeepStubsAnswerUsing(final GenericMetadataSupport returnTypeGenericMetadata) {\n        return new ReturnsDeepStubs() {\n            @Override\n            protected GenericMetadataSupport actualParameterizedType(Object mock) {\n                return returnTypeGenericMetadata;\n            }\n        };\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 80
+    },
+    "9": {
+        "file_name": "src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+        "from_line_no": 81,
+        "to_line_no": 83,
+        "replaced_with": "    private Object recordDeepStubMock(final Object mock, InvocationContainerImpl container) throws Throwable {\n",
+        "replaced": "    private Object recordDeepStubMock(InvocationOnMock invocation, InvocationContainerImpl container) {\n        Class<?> clz = invocation.getMethod().getReturnType();\n        final Object mock = org.mockito.Mockito.mock(clz, this);\n",
+        "patch_type": "replace",
+        "next_line_no": 84
+    }
+}

@@ -1,0 +1,39 @@
+{
+    "num_of_hunks": 5,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java",
+        "from_line_no": 482,
+        "to_line_no": 482,
+        "replaced_with": "          if (n.isName() && n.getString().equals(varName)) {\n",
+        "replaced": "          if (n.isName() && n.getString().equals(varName) &&\n",
+        "patch_type": "replace",
+        "next_line_no": 483
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java",
+        "from_line_no": 488,
+        "to_line_no": 489,
+        "replaced_with": "            if (parent.isAssign() && (parent.getFirstChild() == n)\n                && isAssignChain(parent, cfgNode)) {\n",
+        "replaced": "              !(parent.isAssign() &&\n               (parent.getFirstChild() == n))) {\n",
+        "patch_type": "replace",
+        "next_line_no": 490
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java",
+        "replaced_with": "              return;\n            } else {\n",
+        "patch_type": "insert",
+        "next_line_no": 491
+    },
+    "3": {
+        "file_name": "src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java",
+        "replaced_with": "            }\n",
+        "patch_type": "insert",
+        "next_line_no": 492
+    },
+    "4": {
+        "file_name": "src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java",
+        "replaced_with": "        private boolean isAssignChain(Node child, Node ancestor) {\n          for (Node n = child; n != ancestor; n = n.getParent()) {\n            if (!n.isAssign()) {\n              return false;\n            }\n          }\n          return true;\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 495
+    }
+}

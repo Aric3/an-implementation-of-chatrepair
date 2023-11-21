@@ -1,0 +1,27 @@
+{
+    "num_of_hunks": 4,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "replaced_with": "\t\tint csLastIndex = csLength - 1;\n\t\tint searchLastIndex = searchLength - 1;\n",
+        "patch_type": "insert",
+        "next_line_no": 1446
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "replaced_with": "\t\t\t\t\tif (i < csLastIndex && j < searchLastIndex && ch >= Character.MIN_HIGH_SURROGATE && ch <= Character.MAX_HIGH_SURROGATE) {\n",
+        "patch_type": "insert",
+        "next_line_no": 1450
+    },
+    "2": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "replaced_with": "\t\t\t\t\t\tif (searchChars[j + 1] == cs.charAt(i + 1)) {\n\t\t\t\t\t\t\treturn true;\n\t\t\t\t\t\t}\n\t\t\t\t\t} else {\n",
+        "patch_type": "insert",
+        "next_line_no": 1451
+    },
+    "3": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "replaced_with": "\t\t\t\t\t}\n",
+        "patch_type": "insert",
+        "next_line_no": 1453
+    }
+}

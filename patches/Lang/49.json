@@ -1,0 +1,9 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/java/org/apache/commons/lang/math/Fraction.java",
+        "replaced_with": "        if (numerator == 0) {\n            return equals(ZERO) ? this : ZERO;\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 466
+    }
+}

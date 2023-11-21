@@ -1,0 +1,12 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "source/org/jfree/chart/util/ShapeList.java",
+        "from_line_no": 111,
+        "to_line_no": 111,
+        "replaced_with": "        ShapeList that = (ShapeList) obj;\n        int listSize = size();\n        for (int i = 0; i < listSize; i++) {\n           if (!ShapeUtilities.equal((Shape) get(i), (Shape) that.get(i))) {\n               return false;\n           }\n        }\n        return true;\n",
+        "replaced": "        return super.equals(obj);\n",
+        "patch_type": "replace",
+        "next_line_no": 112
+    }
+}

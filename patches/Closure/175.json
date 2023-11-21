@@ -1,0 +1,61 @@
+{
+    "num_of_hunks": 7,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/FunctionInjector.java",
+        "replaced_with": "  private final Supplier<String> throwawayNameSupplier =\n      new Supplier<String>() {\n    private int nextId = 0;\n    @Override\n    public String get() {\n      return String.valueOf(nextId++);\n    }\n  };\n",
+        "patch_type": "insert",
+        "next_line_no": 46
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/FunctionInjector.java",
+        "from_line_no": 208,
+        "to_line_no": 208,
+        "replaced_with": "      return canInlineReferenceDirectly(callNode, fnNode, needAliases);\n",
+        "replaced": "      return canInlineReferenceDirectly(callNode, fnNode);\n",
+        "patch_type": "replace",
+        "next_line_no": 209
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/jscomp/FunctionInjector.java",
+        "from_line_no": 690,
+        "to_line_no": 690,
+        "replaced_with": "      Node callNode, Node fnNode, Set<String> namesToAlias) {\n",
+        "replaced": "      Node callNode, Node fnNode) {\n",
+        "patch_type": "replace",
+        "next_line_no": 691
+    },
+    "3": {
+        "file_name": "src/com/google/javascript/jscomp/FunctionInjector.java",
+        "from_line_no": 695,
+        "to_line_no": 695,
+        "replaced": "    Node block = fnNode.getLastChild();\n",
+        "patch_type": "delete",
+        "next_line_no": 696
+    },
+    "4": {
+        "file_name": "src/com/google/javascript/jscomp/FunctionInjector.java",
+        "from_line_no": 715,
+        "to_line_no": 726,
+        "replaced_with": "    Map<String, Node> args =\n        FunctionArgumentInjector.getFunctionCallParameterMap(\n            fnNode, callNode, this.throwawayNameSupplier);\n    boolean hasArgs = !args.isEmpty();\n    if (hasArgs) {\n",
+        "replaced": "    Node fnParam = NodeUtil.getFunctionParameters(fnNode).getFirstChild();\n    while (cArg != null || fnParam != null) {\n      if (fnParam != null) {\n        if (cArg != null) {\n          if (NodeUtil.mayEffectMutableState(cArg, compiler)\n              && NodeUtil.getNameReferenceCount(\n                  block, fnParam.getString()) > 1) {\n            return CanInlineResult.NO;\n          }\n        }\n        fnParam = fnParam.getNext();\n      }\n",
+        "patch_type": "replace",
+        "next_line_no": 727
+    },
+    "5": {
+        "file_name": "src/com/google/javascript/jscomp/FunctionInjector.java",
+        "from_line_no": 728,
+        "to_line_no": 729,
+        "replaced_with": "      Set<String> allNamesToAlias = Sets.newHashSet(namesToAlias);\n      FunctionArgumentInjector.maybeAddTempsForCallArguments(\n          fnNode, args, allNamesToAlias, compiler.getCodingConvention());\n      if (!allNamesToAlias.isEmpty()) {\n",
+        "replaced": "      if (cArg != null) {\n        if (NodeUtil.mayHaveSideEffects(cArg, compiler)) {\n",
+        "patch_type": "replace",
+        "next_line_no": 730
+    },
+    "6": {
+        "file_name": "src/com/google/javascript/jscomp/FunctionInjector.java",
+        "from_line_no": 731,
+        "to_line_no": 732,
+        "replaced": "        }\n        cArg = cArg.getNext();\n",
+        "patch_type": "delete",
+        "next_line_no": 733
+    }
+}

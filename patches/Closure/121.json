@@ -1,0 +1,18 @@
+{
+    "num_of_hunks": 2,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/InlineVariables.java",
+        "from_line_no": 304,
+        "to_line_no": 304,
+        "replaced_with": "          referenceInfo.isAssignedOnceInLifetime() &&\n",
+        "replaced": "          referenceInfo.isAssignedOnceInLifetime()) {\n",
+        "patch_type": "replace",
+        "next_line_no": 305
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/InlineVariables.java",
+        "replaced_with": "          (isInlineableDeclaredConstant(v, referenceInfo) ||\n           referenceInfo.isOnlyAssignmentSameScopeAsDeclaration())) {\n",
+        "patch_type": "insert",
+        "next_line_no": 308
+    }
+}

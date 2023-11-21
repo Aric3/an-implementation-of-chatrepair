@@ -1,0 +1,9 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/math3/analysis/differentiation/DSCompiler.java",
+        "replaced_with": "        result[resultOffset] = FastMath.atan2(y[yOffset], x[xOffset]);\n",
+        "patch_type": "insert",
+        "next_line_no": 1419
+    }
+}

@@ -1,0 +1,30 @@
+{
+    "num_of_hunks": 3,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/math/optimization/linear/SimplexTableau.java",
+        "from_line_no": 292,
+        "to_line_no": 292,
+        "replaced_with": "        int start = ignoreObjectiveRows ? getNumObjectiveFunctions() : 0;\n",
+        "replaced": "        int start = getNumObjectiveFunctions();\n",
+        "patch_type": "replace",
+        "next_line_no": 293
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/math/optimization/linear/SimplexTableau.java",
+        "from_line_no": 341,
+        "to_line_no": 341,
+        "replaced_with": "      Integer negativeVarBasicRow = getBasicRowForSolution(getNegativeDecisionVariableOffset());\n",
+        "replaced": "      Integer negativeVarBasicRow = getBasicRow(getNegativeDecisionVariableOffset());\n",
+        "patch_type": "replace",
+        "next_line_no": 342
+    },
+    "2": {
+        "file_name": "src/main/java/org/apache/commons/math/optimization/linear/SimplexTableau.java",
+        "from_line_no": 345,
+        "to_line_no": 345,
+        "replaced_with": "          Integer basicRow = getBasicRowForSolution(getNumObjectiveFunctions() + i);\n",
+        "replaced": "          Integer basicRow = getBasicRow(getNumObjectiveFunctions() + i);\n",
+        "patch_type": "replace",
+        "next_line_no": 346
+    }
+}

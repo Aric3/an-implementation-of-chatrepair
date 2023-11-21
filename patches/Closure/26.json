@@ -1,0 +1,21 @@
+{
+    "num_of_hunks": 3,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/ProcessCommonJSModules.java",
+        "replaced_with": "    private Set<String> modulesWithExports = Sets.newHashSet();\n",
+        "patch_type": "insert",
+        "next_line_no": 128
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/ProcessCommonJSModules.java",
+        "replaced_with": "      if (!modulesWithExports.contains(moduleName)) {\n        return;\n      }\n",
+        "patch_type": "insert",
+        "next_line_no": 207
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/jscomp/ProcessCommonJSModules.java",
+        "replaced_with": "      modulesWithExports.add(moduleName);\n",
+        "patch_type": "insert",
+        "next_line_no": 228
+    }
+}

@@ -1,0 +1,138 @@
+{
+    "num_of_hunks": 20,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "replaced_with": "        int csLast = csLen - 1;\n",
+        "patch_type": "insert",
+        "next_line_no": 1376
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "replaced_with": "        int searchLast = searchLen - 1;\n",
+        "patch_type": "insert",
+        "next_line_no": 1377
+    },
+    "2": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "replaced_with": "                    if (i < csLast && j < searchLast && Character.isHighSurrogate(ch)) {\n",
+        "patch_type": "insert",
+        "next_line_no": 1381
+    },
+    "3": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "replaced_with": "                        if (searchChars[j + 1] == cs.charAt(i + 1)) {\n                            return i;\n                        }\n                    } else {\n",
+        "patch_type": "insert",
+        "next_line_no": 1382
+    },
+    "4": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "replaced_with": "                    }\n",
+        "patch_type": "insert",
+        "next_line_no": 1383
+    },
+    "5": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "from_line_no": 1443,
+        "to_line_no": 1443,
+        "replaced_with": "    public static boolean containsAny(String cs, char[] searchChars) {\n",
+        "replaced": "    public static boolean containsAny(CharSequence cs, char[] searchChars) {\n",
+        "patch_type": "replace",
+        "next_line_no": 1444
+    },
+    "6": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "from_line_no": 1455,
+        "to_line_no": 1455,
+        "replaced_with": "                    if (Character.isHighSurrogate(ch)) {\n                        if (j == searchLast) {\n",
+        "replaced": "                    if (i < csLast && j < searchLast && ch >= Character.MIN_HIGH_SURROGATE && ch <= Character.MAX_HIGH_SURROGATE) {\n",
+        "patch_type": "replace",
+        "next_line_no": 1456
+    },
+    "7": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "from_line_no": 1457,
+        "to_line_no": 1457,
+        "replaced_with": "                            return true;\n                        }\n                        if (i < csLast && searchChars[j + 1] == cs.charAt(i + 1)) {\n",
+        "replaced": "                        if (searchChars[j + 1] == cs.charAt(i + 1)) {\n",
+        "patch_type": "replace",
+        "next_line_no": 1458
+    },
+    "8": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "from_line_no": 1497,
+        "to_line_no": 1497,
+        "replaced_with": "    public static boolean containsAny(String cs, String searchChars) {\n",
+        "replaced": "    public static boolean containsAny(CharSequence cs, String searchChars) {\n",
+        "patch_type": "replace",
+        "next_line_no": 1498
+    },
+    "9": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "replaced_with": "        int csLast = csLen - 1;\n",
+        "patch_type": "insert",
+        "next_line_no": 1533
+    },
+    "10": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "replaced_with": "        int searchLast = searchLen - 1;\n",
+        "patch_type": "insert",
+        "next_line_no": 1534
+    },
+    "11": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "replaced_with": "                    if (i < csLast && j < searchLast && Character.isHighSurrogate(ch)) {\n                        if (searchChars[j + 1] == cs.charAt(i + 1)) {\n                            continue outer;\n                        }\n                    } else {\n",
+        "patch_type": "insert",
+        "next_line_no": 1539
+    },
+    "12": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "replaced_with": "                    }\n",
+        "patch_type": "insert",
+        "next_line_no": 1540
+    },
+    "13": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "from_line_no": 1576,
+        "to_line_no": 1576,
+        "replaced_with": "            boolean chFound = searchChars.indexOf(ch) >= 0;\n            if (i + 1 < strLen && Character.isHighSurrogate(ch)) {\n                char ch2 = str.charAt(i + 1);\n                if (chFound && searchChars.indexOf(ch2) < 0) {\n",
+        "replaced": "            if (searchChars.indexOf(ch) < 0) {\n",
+        "patch_type": "replace",
+        "next_line_no": 1577
+    },
+    "14": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "replaced_with": "                }\n            } else {\n                if (!chFound) {\n                    return i;\n                }\n",
+        "patch_type": "insert",
+        "next_line_no": 1578
+    },
+    "15": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "replaced_with": "        int csLast = csLen - 1;\n",
+        "patch_type": "insert",
+        "next_line_no": 1678
+    },
+    "16": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "replaced_with": "        int searchLast = searchLen - 1;\n",
+        "patch_type": "insert",
+        "next_line_no": 1679
+    },
+    "17": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "replaced_with": "                    if (Character.isHighSurrogate(ch)) {\n                        if (j == searchLast) {\n",
+        "patch_type": "insert",
+        "next_line_no": 1683
+    },
+    "18": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "replaced_with": "                            return false;\n                        }\n                        if (i < csLast && searchChars[j + 1] == cs.charAt(i + 1)) {\n                            return false;\n                        }\n                    } else {\n",
+        "patch_type": "insert",
+        "next_line_no": 1684
+    },
+    "19": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "replaced_with": "                    }\n",
+        "patch_type": "insert",
+        "next_line_no": 1686
+    }
+}

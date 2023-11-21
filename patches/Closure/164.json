@@ -1,0 +1,27 @@
+{
+    "num_of_hunks": 4,
+    "0": {
+        "file_name": "src/com/google/javascript/rhino/jstype/ArrowType.java",
+        "replaced_with": "      boolean thisIsOptional = thisIsVarArgs || thisParam.isOptionalArg();\n      boolean thatIsOptional = thatIsVarArgs || thatParam.isOptionalArg();\n",
+        "patch_type": "insert",
+        "next_line_no": 128
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/rhino/jstype/ArrowType.java",
+        "replaced_with": "      if (!thisIsOptional && thatIsOptional) {\n",
+        "patch_type": "insert",
+        "next_line_no": 130
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/rhino/jstype/ArrowType.java",
+        "replaced_with": "        boolean isTopFunction =\n            thatIsVarArgs &&\n            (thatParamType == null ||\n             thatParamType.isUnknownType() ||\n             thatParamType.isNoType());\n        if (!isTopFunction) {\n          return false;\n        }\n      }\n",
+        "patch_type": "insert",
+        "next_line_no": 135
+    },
+    "3": {
+        "file_name": "src/com/google/javascript/rhino/jstype/ArrowType.java",
+        "replaced_with": "    if (thisParam != null\n        && !thisParam.isOptionalArg() && !thisParam.isVarArgs()\n        && thatParam == null) {\n      return false;\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 152
+    }
+}

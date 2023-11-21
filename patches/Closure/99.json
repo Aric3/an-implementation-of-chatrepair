@@ -1,0 +1,30 @@
+{
+    "num_of_hunks": 4,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/CheckGlobalThis.java",
+        "replaced_with": "           jsDoc.isInterface() ||\n",
+        "patch_type": "insert",
+        "next_line_no": 92
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/CheckGlobalThis.java",
+        "replaced_with": "        if (NodeUtil.isGet(lhs)) {\n",
+        "patch_type": "insert",
+        "next_line_no": 125
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/jscomp/CheckGlobalThis.java",
+        "from_line_no": 129,
+        "to_line_no": 129,
+        "replaced_with": "          Node llhs = lhs.getFirstChild();\n          if (llhs.getType() == Token.GETPROP &&\n              llhs.getLastChild().getString().equals(\"prototype\")) {\n",
+        "replaced": "          if (lhs.getQualifiedName() != null && lhs.getQualifiedName().contains(\".prototype.\")) {\n",
+        "patch_type": "replace",
+        "next_line_no": 130
+    },
+    "3": {
+        "file_name": "src/com/google/javascript/jscomp/CheckGlobalThis.java",
+        "replaced_with": "        }\n",
+        "patch_type": "insert",
+        "next_line_no": 132
+    }
+}

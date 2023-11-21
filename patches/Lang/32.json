@@ -1,0 +1,36 @@
+{
+    "num_of_hunks": 4,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/lang3/builder/HashCodeBuilder.java",
+        "from_line_no": 104,
+        "to_line_no": 109,
+        "replaced_with": "    private static final ThreadLocal<Set<IDKey>> REGISTRY = new ThreadLocal<Set<IDKey>>();\n",
+        "replaced": "    private static final ThreadLocal<Set<IDKey>> REGISTRY = new ThreadLocal<Set<IDKey>>() {\n        @Override\n        protected Set<IDKey> initialValue() {\n            return new HashSet<IDKey>();\n        }\n    };\n",
+        "patch_type": "replace",
+        "next_line_no": 110
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/lang3/builder/HashCodeBuilder.java",
+        "from_line_no": 152,
+        "to_line_no": 152,
+        "replaced_with": "        Set<IDKey> registry = getRegistry();\n        return registry != null && registry.contains(new IDKey(value));\n",
+        "replaced": "        return getRegistry().contains(new IDKey(value));\n",
+        "patch_type": "replace",
+        "next_line_no": 153
+    },
+    "2": {
+        "file_name": "src/main/java/org/apache/commons/lang3/builder/HashCodeBuilder.java",
+        "replaced_with": "        synchronized (HashCodeBuilder.class) {\n            if (getRegistry() == null) {\n                REGISTRY.set(new HashSet<IDKey>());\n            }\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 522
+    },
+    "3": {
+        "file_name": "src/main/java/org/apache/commons/lang3/builder/HashCodeBuilder.java",
+        "from_line_no": 538,
+        "to_line_no": 538,
+        "replaced_with": "        Set<IDKey> s = getRegistry();\n        if (s != null) {\n            s.remove(new IDKey(value));\n            synchronized (HashCodeBuilder.class) {\n                if (s.isEmpty()) {\n                    REGISTRY.remove();\n                }\n            }\n        }\n",
+        "replaced": "        getRegistry().remove(new IDKey(value));\n",
+        "patch_type": "replace",
+        "next_line_no": 539
+    }
+}

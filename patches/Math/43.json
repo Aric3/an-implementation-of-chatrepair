@@ -1,0 +1,30 @@
+{
+    "num_of_hunks": 3,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/math/stat/descriptive/SummaryStatistics.java",
+        "from_line_no": 158,
+        "to_line_no": 158,
+        "replaced_with": "        if (meanImpl != mean) {\n",
+        "replaced": "        if (!(meanImpl instanceof Mean)) {\n",
+        "patch_type": "replace",
+        "next_line_no": 159
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/math/stat/descriptive/SummaryStatistics.java",
+        "from_line_no": 161,
+        "to_line_no": 161,
+        "replaced_with": "        if (varianceImpl != variance) {\n",
+        "replaced": "        if (!(varianceImpl instanceof Variance)) {\n",
+        "patch_type": "replace",
+        "next_line_no": 162
+    },
+    "2": {
+        "file_name": "src/main/java/org/apache/commons/math/stat/descriptive/SummaryStatistics.java",
+        "from_line_no": 164,
+        "to_line_no": 164,
+        "replaced_with": "        if (geoMeanImpl != geoMean) {\n",
+        "replaced": "        if (!(geoMeanImpl instanceof GeometricMean)) {\n",
+        "patch_type": "replace",
+        "next_line_no": 165
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "num_of_hunks": 2,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/FunctionTypeBuilder.java",
+        "from_line_no": 184,
+        "to_line_no": 184,
+        "replaced_with": "      if (!type.restrictByNotNullOrUndefined().isSubtype(\n",
+        "replaced": "      if (!type.isSubtype(\n",
+        "patch_type": "replace",
+        "next_line_no": 185
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/rhino/jstype/FunctionType.java",
+        "replaced_with": "    if (maybeTypeOfThis != null) {\n      maybeTypeOfThis = maybeTypeOfThis.restrictByNotNullOrUndefined();\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 880
+    }
+}

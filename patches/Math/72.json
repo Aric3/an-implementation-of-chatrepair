@@ -1,0 +1,21 @@
+{
+    "num_of_hunks": 2,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/math/analysis/solvers/BrentSolver.java",
+        "from_line_no": 115,
+        "to_line_no": 115,
+        "replaced_with": "            setResult(min, 0);\n",
+        "replaced": "            setResult(yMin, 0);\n",
+        "patch_type": "replace",
+        "next_line_no": 116
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/math/analysis/solvers/BrentSolver.java",
+        "from_line_no": 127,
+        "to_line_no": 127,
+        "replaced_with": "            setResult(max, 0);\n",
+        "replaced": "            setResult(yMax, 0);\n",
+        "patch_type": "replace",
+        "next_line_no": 128
+    }
+}

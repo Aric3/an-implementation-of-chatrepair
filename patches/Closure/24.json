@@ -1,0 +1,32 @@
+{
+    "num_of_hunks": 4,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/ScopedAliases.java",
+        "from_line_no": 278,
+        "to_line_no": 279,
+        "replaced_with": "        if (parent.isVar() &&\n            n.hasChildren() && n.getFirstChild().isQualifiedName()) {\n",
+        "replaced": "        if (parent.isVar()) {\n          if (n.hasChildren() && n.getFirstChild().isQualifiedName()) {\n",
+        "patch_type": "replace",
+        "next_line_no": 280
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/ScopedAliases.java",
+        "replaced_with": "        } else if (v.isBleedingFunction()) {\n",
+        "patch_type": "insert",
+        "next_line_no": 287
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/jscomp/ScopedAliases.java",
+        "replaced_with": "        } else if (parent.getType() == Token.LP) {\n",
+        "patch_type": "insert",
+        "next_line_no": 289
+    },
+    "3": {
+        "file_name": "src/com/google/javascript/jscomp/ScopedAliases.java",
+        "from_line_no": 295,
+        "to_line_no": 295,
+        "replaced": "        }\n",
+        "patch_type": "delete",
+        "next_line_no": 296
+    }
+}

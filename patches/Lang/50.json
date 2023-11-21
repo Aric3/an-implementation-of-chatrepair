@@ -1,0 +1,49 @@
+{
+    "num_of_hunks": 6,
+    "0": {
+        "file_name": "src/java/org/apache/commons/lang/time/FastDateFormat.java",
+        "from_line_no": 285,
+        "to_line_no": 286,
+        "replaced_with": "        if (locale == null) {\n            locale = Locale.getDefault();\n",
+        "replaced": "        if (locale != null) {\n            key = new Pair(key, locale);\n",
+        "patch_type": "replace",
+        "next_line_no": 287
+    },
+    "1": {
+        "file_name": "src/java/org/apache/commons/lang/time/FastDateFormat.java",
+        "replaced_with": "        key = new Pair(key, locale);\n",
+        "patch_type": "insert",
+        "next_line_no": 289
+    },
+    "2": {
+        "file_name": "src/java/org/apache/commons/lang/time/FastDateFormat.java",
+        "from_line_no": 292,
+        "to_line_no": 294,
+        "replaced": "            if (locale == null) {\n                locale = Locale.getDefault();\n            }\n",
+        "patch_type": "delete",
+        "next_line_no": 295
+    },
+    "3": {
+        "file_name": "src/java/org/apache/commons/lang/time/FastDateFormat.java",
+        "from_line_no": 465,
+        "to_line_no": 466,
+        "replaced_with": "        if (locale == null) {\n            locale = Locale.getDefault();\n",
+        "replaced": "        if (locale != null) {\n            key = new Pair(key, locale);\n",
+        "patch_type": "replace",
+        "next_line_no": 467
+    },
+    "4": {
+        "file_name": "src/java/org/apache/commons/lang/time/FastDateFormat.java",
+        "replaced_with": "        key = new Pair(key, locale);\n",
+        "patch_type": "insert",
+        "next_line_no": 468
+    },
+    "5": {
+        "file_name": "src/java/org/apache/commons/lang/time/FastDateFormat.java",
+        "from_line_no": 471,
+        "to_line_no": 473,
+        "replaced": "            if (locale == null) {\n                locale = Locale.getDefault();\n            }\n",
+        "patch_type": "delete",
+        "next_line_no": 474
+    }
+}

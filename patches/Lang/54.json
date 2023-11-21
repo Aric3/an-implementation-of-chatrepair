@@ -1,0 +1,9 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/java/org/apache/commons/lang/LocaleUtils.java",
+        "replaced_with": "            if (ch3 == '_') {\n                return new Locale(str.substring(0, 2), \"\", str.substring(4));\n            }\n",
+        "patch_type": "insert",
+        "next_line_no": 114
+    }
+}

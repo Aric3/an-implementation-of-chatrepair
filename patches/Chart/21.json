@@ -1,0 +1,27 @@
+{
+    "num_of_hunks": 4,
+    "0": {
+        "file_name": "source/org/jfree/data/statistics/DefaultBoxAndWhiskerCategoryDataset.java",
+        "replaced_with": "        else {\n",
+        "patch_type": "insert",
+        "next_line_no": 157
+    },
+    "1": {
+        "file_name": "source/org/jfree/data/statistics/DefaultBoxAndWhiskerCategoryDataset.java",
+        "replaced_with": "        }\n",
+        "patch_type": "insert",
+        "next_line_no": 188
+    },
+    "2": {
+        "file_name": "source/org/jfree/data/statistics/DefaultBoxAndWhiskerCategoryDataset.java",
+        "replaced_with": "        this.minimumRangeValueRow = -1;\n        this.minimumRangeValueColumn = -1;\n",
+        "patch_type": "insert",
+        "next_line_no": 741
+    },
+    "3": {
+        "file_name": "source/org/jfree/data/statistics/DefaultBoxAndWhiskerCategoryDataset.java",
+        "replaced_with": "        this.maximumRangeValueRow = -1;\n        this.maximumRangeValueColumn = -1;\n        int rowCount = getRowCount();\n        int columnCount = getColumnCount();\n        for (int r = 0; r < rowCount; r++) {\n            for (int c = 0; c < columnCount; c++) {\n                BoxAndWhiskerItem item = getItem(r, c);\n                if (item != null) {\n                    Number min = item.getMinOutlier();\n                    if (min != null) {\n                        double minv = min.doubleValue();\n                        if (!Double.isNaN(minv)) {\n                            if (minv < this.minimumRangeValue || Double.isNaN(\n                                    this.minimumRangeValue)) {\n                                this.minimumRangeValue = minv;\n                                this.minimumRangeValueRow = r;\n                                this.minimumRangeValueColumn = c;\n                            }\n                        }\n                    }\n                    Number max = item.getMaxOutlier();\n                    if (max != null) {\n                        double maxv = max.doubleValue();\n                        if (!Double.isNaN(maxv)) {\n                            if (maxv > this.maximumRangeValue || Double.isNaN(\n                                    this.maximumRangeValue)) {\n                                this.maximumRangeValue = maxv;\n                                this.maximumRangeValueRow = r;\n                                this.maximumRangeValueColumn = c;\n                            }\n                        }\n                    }\n                }\n            }\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 742
+    }
+}

@@ -1,0 +1,27 @@
+{
+    "num_of_hunks": 3,
+    "0": {
+        "file_name": "src/org/mockito/exceptions/Reporter.java",
+        "from_line_no": 438,
+        "to_line_no": 438,
+        "replaced_with": "    public void smartNullPointerException(Object obj, Location location) {\n",
+        "replaced": "    public void smartNullPointerException(Location location) {\n",
+        "patch_type": "replace",
+        "next_line_no": 439
+    },
+    "1": {
+        "file_name": "src/org/mockito/exceptions/Reporter.java",
+        "replaced_with": "                obj,\n",
+        "patch_type": "insert",
+        "next_line_no": 442
+    },
+    "2": {
+        "file_name": "src/org/mockito/internal/stubbing/defaultanswers/ReturnsSmartNulls.java",
+        "from_line_no": 56,
+        "to_line_no": 56,
+        "replaced_with": "            new Reporter().smartNullPointerException(obj, location);\n",
+        "replaced": "            new Reporter().smartNullPointerException(location);\n",
+        "patch_type": "replace",
+        "next_line_no": 57
+    }
+}

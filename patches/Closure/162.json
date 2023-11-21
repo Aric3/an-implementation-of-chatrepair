@@ -1,0 +1,96 @@
+{
+    "num_of_hunks": 13,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/Scope.java",
+        "replaced_with": "  Iterable<Var> getVarIterable() {\n    return vars.values();\n  }\n",
+        "patch_type": "insert",
+        "next_line_no": 568
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/ScopedAliases.java",
+        "replaced_with": "        findAliases(t);\n",
+        "patch_type": "insert",
+        "next_line_no": 226
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/jscomp/ScopedAliases.java",
+        "replaced_with": "    private void findAliases(NodeTraversal t) {\n      Scope scope = t.getScope();\n      for (Var v : scope.getVarIterable()) {\n        Node n = v.getNode();\n        int type = n.getType();\n        Node parent = n.getParent();\n        if (parent.getType() == Token.VAR) {\n          if (n.hasChildren() && n.getFirstChild().isQualifiedName()) {\n            String name = n.getString();\n            Var aliasVar = scope.getVar(name);\n            aliases.put(name, aliasVar);\n",
+        "patch_type": "insert",
+        "next_line_no": 271
+    },
+    "3": {
+        "file_name": "src/com/google/javascript/jscomp/ScopedAliases.java",
+        "replaced_with": "            String qualifiedName =\n                aliasVar.getInitialValue().getQualifiedName();\n            transformation.addAlias(name, qualifiedName);\n          } else {\n",
+        "patch_type": "insert",
+        "next_line_no": 272
+    },
+    "4": {
+        "file_name": "src/com/google/javascript/jscomp/ScopedAliases.java",
+        "replaced_with": "            report(t, n, GOOG_SCOPE_NON_ALIAS_LOCAL, n.getString());\n          }\n        }\n      }\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 273
+    },
+    "5": {
+        "file_name": "src/com/google/javascript/jscomp/ScopedAliases.java",
+        "replaced_with": "      if (t.getScopeDepth() < 2) {\n        return;\n      }\n",
+        "patch_type": "insert",
+        "next_line_no": 303
+    },
+    "6": {
+        "file_name": "src/com/google/javascript/jscomp/ScopedAliases.java",
+        "replaced_with": "      int type = n.getType();\n      Var aliasVar = null;\n      if (type == Token.NAME) {\n        String name = n.getString();\n        Var lexicalVar = t.getScope().getVar(n.getString());\n        if (lexicalVar != null && lexicalVar == aliases.get(name)) {\n          aliasVar = lexicalVar;\n        }\n      }\n",
+        "patch_type": "insert",
+        "next_line_no": 304
+    },
+    "7": {
+        "file_name": "src/com/google/javascript/jscomp/ScopedAliases.java",
+        "from_line_no": 307,
+        "to_line_no": 312,
+        "replaced_with": "        if (aliasVar != null && NodeUtil.isLValue(n)) {\n          if (aliasVar.getNode() == n) {\n            aliasDefinitionsInOrder.add(n);\n",
+        "replaced": "        int type = n.getType();\n        if (type == Token.NAME && parent.getType() == Token.VAR) {\n          if (n.hasChildren() && n.getFirstChild().isQualifiedName()) {\n            String name = n.getString();\n            Var aliasVar = t.getScope().getVar(name);\n            aliases.put(name, aliasVar);\n",
+        "patch_type": "replace",
+        "next_line_no": 313
+    },
+    "8": {
+        "file_name": "src/com/google/javascript/jscomp/ScopedAliases.java",
+        "from_line_no": 314,
+        "to_line_no": 317,
+        "replaced": "            aliasDefinitionsInOrder.add(n);\n            String qualifiedName =\n                aliasVar.getInitialValue().getQualifiedName();\n            transformation.addAlias(name, qualifiedName);\n",
+        "patch_type": "delete",
+        "next_line_no": 318
+    },
+    "9": {
+        "file_name": "src/com/google/javascript/jscomp/ScopedAliases.java",
+        "from_line_no": 322,
+        "to_line_no": 322,
+        "replaced_with": "            report(t, n, GOOG_SCOPE_ALIAS_REDEFINED, n.getString());\n",
+        "replaced": "            report(t, n, GOOG_SCOPE_NON_ALIAS_LOCAL, n.getString());\n",
+        "patch_type": "replace",
+        "next_line_no": 323
+    },
+    "10": {
+        "file_name": "src/com/google/javascript/jscomp/ScopedAliases.java",
+        "from_line_no": 325,
+        "to_line_no": 328,
+        "replaced": "        if (type == Token.NAME && NodeUtil.isAssignmentOp(parent) &&\n            n == parent.getFirstChild()) {\n            report(t, n, GOOG_SCOPE_ALIAS_REDEFINED, n.getString());\n        }\n",
+        "patch_type": "delete",
+        "next_line_no": 329
+    },
+    "11": {
+        "file_name": "src/com/google/javascript/jscomp/ScopedAliases.java",
+        "from_line_no": 342,
+        "to_line_no": 346,
+        "replaced_with": "        if (aliasVar != null) {\n",
+        "replaced": "        if (n.getType() == Token.NAME) {\n          String name = n.getString();\n          Var aliasVar = aliases.get(name);\n          if (aliasVar != null &&\n              t.getScope().getVar(name) == aliasVar) {\n",
+        "patch_type": "replace",
+        "next_line_no": 347
+    },
+    "12": {
+        "file_name": "src/com/google/javascript/jscomp/ScopedAliases.java",
+        "from_line_no": 355,
+        "to_line_no": 355,
+        "replaced": "          }\n",
+        "patch_type": "delete",
+        "next_line_no": 356
+    }
+}

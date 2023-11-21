@@ -1,0 +1,27 @@
+{
+    "num_of_hunks": 4,
+    "0": {
+        "file_name": "source/org/jfree/chart/plot/CategoryPlot.java",
+        "replaced_with": "        if (markers == null) {\n            return false;\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 2166
+    },
+    "1": {
+        "file_name": "source/org/jfree/chart/plot/CategoryPlot.java",
+        "replaced_with": "        if (markers == null) {\n            return false;\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 2448
+    },
+    "2": {
+        "file_name": "source/org/jfree/chart/plot/XYPlot.java",
+        "replaced_with": "        if (markers == null) {\n            return false;\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 2293
+    },
+    "3": {
+        "file_name": "source/org/jfree/chart/plot/XYPlot.java",
+        "replaced_with": "        if (markers == null) {\n            return false;\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 2529
+    }
+}

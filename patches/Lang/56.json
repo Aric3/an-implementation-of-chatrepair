@@ -1,0 +1,27 @@
+{
+    "num_of_hunks": 3,
+    "0": {
+        "file_name": "src/java/org/apache/commons/lang/time/FastDateFormat.java",
+        "from_line_no": 140,
+        "to_line_no": 140,
+        "replaced_with": "    private transient Rule[] mRules;\n",
+        "replaced": "    private Rule[] mRules;\n",
+        "patch_type": "replace",
+        "next_line_no": 141
+    },
+    "1": {
+        "file_name": "src/java/org/apache/commons/lang/time/FastDateFormat.java",
+        "from_line_no": 144,
+        "to_line_no": 144,
+        "replaced_with": "    private transient int mMaxLengthEstimate;\n",
+        "replaced": "    private int mMaxLengthEstimate;\n",
+        "patch_type": "replace",
+        "next_line_no": 145
+    },
+    "2": {
+        "file_name": "src/java/org/apache/commons/lang/time/FastDateFormat.java",
+        "replaced_with": "    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {\n        in.defaultReadObject();\n        init();\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 1022
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "num_of_hunks": 3,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/CommandLineRunner.java",
+        "replaced_with": "    @Option(name = \"--version\",\n        usage = \"Prints the compiler version to stderr.\")\n    private boolean version = false;\n",
+        "patch_type": "insert",
+        "next_line_no": 301
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/CommandLineRunner.java",
+        "replaced_with": "  private static final String configResource =\n      \"com.google.javascript.jscomp.parsing.ParserConfig\";\n",
+        "patch_type": "insert",
+        "next_line_no": 367
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/jscomp/CommandLineRunner.java",
+        "replaced_with": "    if (flags.version) {\n      ResourceBundle config = ResourceBundle.getBundle(configResource);\n      err.println(\n          \"Closure Compiler (http://code.google.com/p/closure/compiler)\\n\" +\n          \"Version: \" + config.getString(\"compiler.version\") + \"\\n\" +\n          \"Built on: \" + config.getString(\"compiler.date\"));\n      err.flush();\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 418
+    }
+}

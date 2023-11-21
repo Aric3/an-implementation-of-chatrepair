@@ -1,0 +1,9 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/CheckGlobalThis.java",
+        "replaced_with": "      Node gramps = parent.getParent();\n      if (NodeUtil.isObjectLitKey(parent, gramps)) {\n        JSDocInfo maybeLends = gramps.getJSDocInfo();\n        if (maybeLends != null &&\n            maybeLends.getLendsName() != null &&\n            maybeLends.getLendsName().endsWith(\".prototype\")) {\n          return false;\n        }\n      }\n",
+        "patch_type": "insert",
+        "next_line_no": 115
+    }
+}

@@ -1,0 +1,53 @@
+{
+    "num_of_hunks": 6,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/math3/linear/RectangularCholeskyDecomposition.java",
+        "from_line_no": 69,
+        "to_line_no": 69,
+        "replaced": "        int[] swap  = new int[order];\n",
+        "patch_type": "delete",
+        "next_line_no": 70
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/math3/linear/RectangularCholeskyDecomposition.java",
+        "from_line_no": 79,
+        "to_line_no": 79,
+        "replaced_with": "            int swapR = r;\n",
+        "replaced": "            swap[r] = r;\n",
+        "patch_type": "replace",
+        "next_line_no": 80
+    },
+    "2": {
+        "file_name": "src/main/java/org/apache/commons/math3/linear/RectangularCholeskyDecomposition.java",
+        "from_line_no": 82,
+        "to_line_no": 84,
+        "replaced_with": "                int isr = index[swapR];\n                if (c[ii][ii] > c[isr][isr]) {\n                    swapR = i;\n",
+        "replaced": "                int isi = index[swap[i]];\n                if (c[ii][ii] > c[isi][isi]) {\n                    swap[r] = i;\n",
+        "patch_type": "replace",
+        "next_line_no": 85
+    },
+    "3": {
+        "file_name": "src/main/java/org/apache/commons/math3/linear/RectangularCholeskyDecomposition.java",
+        "from_line_no": 90,
+        "to_line_no": 93,
+        "replaced_with": "            if (swapR != r) {\n                final int tmpIndex    = index[r];\n                index[r]              = index[swapR];\n                index[swapR]          = tmpIndex;\n                final double[] tmpRow = b[r];\n                b[r]                  = b[swapR];\n                b[swapR]              = tmpRow;\n",
+        "replaced": "            if (swap[r] != r) {\n                int tmp = index[r];\n                index[r] = index[swap[r]];\n                index[swap[r]] = tmp;\n",
+        "patch_type": "replace",
+        "next_line_no": 94
+    },
+    "4": {
+        "file_name": "src/main/java/org/apache/commons/math3/linear/RectangularCholeskyDecomposition.java",
+        "replaced_with": "                final double inverse2 = 1 / c[ir][ir];\n",
+        "patch_type": "insert",
+        "next_line_no": 124
+    },
+    "5": {
+        "file_name": "src/main/java/org/apache/commons/math3/linear/RectangularCholeskyDecomposition.java",
+        "from_line_no": 128,
+        "to_line_no": 128,
+        "replaced_with": "                    c[ii][ii] -= c[ii][ir] * c[ii][ir] * inverse2;\n",
+        "replaced": "                    c[ii][ii] -= e * e;\n",
+        "patch_type": "replace",
+        "next_line_no": 129
+    }
+}

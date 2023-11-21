@@ -1,0 +1,12 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/CodeConsumer.java",
+        "from_line_no": 245,
+        "to_line_no": 245,
+        "replaced_with": "    if ((x < 0 || negativeZero) && prev == '-') {\n",
+        "replaced": "    if (x < 0 && prev == '-') {\n",
+        "patch_type": "replace",
+        "next_line_no": 246
+    }
+}

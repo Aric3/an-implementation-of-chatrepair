@@ -1,0 +1,21 @@
+{
+    "num_of_hunks": 2,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/math/util/MathUtils.java",
+        "from_line_no": 1624,
+        "to_line_no": 1624,
+        "replaced_with": "      double sum = 0;\n",
+        "replaced": "      int sum = 0;\n",
+        "patch_type": "replace",
+        "next_line_no": 1625
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/math/util/MathUtils.java",
+        "from_line_no": 1626,
+        "to_line_no": 1626,
+        "replaced_with": "          final double dp = p1[i] - p2[i];\n",
+        "replaced": "          final int dp = p1[i] - p2[i];\n",
+        "patch_type": "replace",
+        "next_line_no": 1627
+    }
+}

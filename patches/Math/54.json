@@ -1,0 +1,18 @@
+{
+    "num_of_hunks": 2,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/math/dfp/Dfp.java",
+        "replaced_with": "                if ((bits & 0x8000000000000000L) != 0) {\n                    sign = -1;\n                }\n",
+        "patch_type": "insert",
+        "next_line_no": 273
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/math/dfp/Dfp.java",
+        "from_line_no": 2319,
+        "to_line_no": 2319,
+        "replaced_with": "        int cmp0 = compare(this, getZero());\n        if (cmp0 == 0) {\n            return sign < 0 ? -0.0 : +0.0;\n        } else if (cmp0 < 0) {\n",
+        "replaced": "        if (lessThan(getZero())) {\n",
+        "patch_type": "replace",
+        "next_line_no": 2320
+    }
+}

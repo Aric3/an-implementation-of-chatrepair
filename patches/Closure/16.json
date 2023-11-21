@@ -1,0 +1,42 @@
+{
+    "num_of_hunks": 5,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/ScopedAliases.java",
+        "replaced_with": "    private final Node aliasDefinition;\n",
+        "patch_type": "insert",
+        "next_line_no": 170
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/ScopedAliases.java",
+        "from_line_no": 172,
+        "to_line_no": 172,
+        "replaced_with": "    AliasedTypeNode(Node typeReference, Node aliasDefinition,\n",
+        "replaced": "    AliasedTypeNode(Node typeReference,\n",
+        "patch_type": "replace",
+        "next_line_no": 173
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/jscomp/ScopedAliases.java",
+        "replaced_with": "      this.aliasDefinition = aliasDefinition;\n",
+        "patch_type": "insert",
+        "next_line_no": 175
+    },
+    "3": {
+        "file_name": "src/com/google/javascript/jscomp/ScopedAliases.java",
+        "from_line_no": 180,
+        "to_line_no": 180,
+        "replaced_with": "      String typeName = typeReference.getString();\n      String aliasExpanded =\n          Preconditions.checkNotNull(aliasDefinition.getQualifiedName());\n      Preconditions.checkState(typeName.startsWith(aliasName));\n      typeReference.setString(typeName.replaceFirst(aliasName, aliasExpanded));\n",
+        "replaced": "      typeReference.setString(aliasName);\n",
+        "patch_type": "replace",
+        "next_line_no": 181
+    },
+    "4": {
+        "file_name": "src/com/google/javascript/jscomp/ScopedAliases.java",
+        "from_line_no": 468,
+        "to_line_no": 468,
+        "replaced_with": "          aliasUsages.add(new AliasedTypeNode(typeNode, aliasedNode, baseName));\n",
+        "replaced": "          aliasUsages.add(new AliasedTypeNode(typeNode, aliasedNode.getQualifiedName() + name.substring(endIndex)));\n",
+        "patch_type": "replace",
+        "next_line_no": 469
+    }
+}

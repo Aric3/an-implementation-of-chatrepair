@@ -1,0 +1,54 @@
+{
+    "num_of_hunks": 7,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/TypeCheck.java",
+        "from_line_no": 185,
+        "to_line_no": 191,
+        "replaced": "  static final DiagnosticType HIDDEN_INTERFACE_PROPERTY_MISMATCH =\n      DiagnosticType.warning(\n          \"JSC_HIDDEN_INTERFACE_PROPERTY_MISMATCH\",\n          \"mismatch of the {0} property type and the type \" +\n          \"of the property it overrides from interface {1}\\n\" +\n          \"original: {2}\\n\" +\n          \"override: {3}\");\n",
+        "patch_type": "delete",
+        "next_line_no": 192
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/TypeCheck.java",
+        "from_line_no": 242,
+        "to_line_no": 242,
+        "replaced": "      HIDDEN_INTERFACE_PROPERTY_MISMATCH,\n",
+        "patch_type": "delete",
+        "next_line_no": 243
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/jscomp/TypeCheck.java",
+        "from_line_no": 1049,
+        "to_line_no": 1058,
+        "replaced": "        if (interfaceHasProperty) {\n          JSType interfacePropType =\n              interfaceType.getPrototype().getPropertyType(propertyName);\n          if (!propertyType.canAssignTo(interfacePropType)) {\n            compiler.report(t.makeError(n,\n                HIDDEN_INTERFACE_PROPERTY_MISMATCH, propertyName,\n                interfaceType.getTopMostDefiningType(propertyName).toString(),\n                interfacePropType.toString(), propertyType.toString()));\n          }\n        }\n",
+        "patch_type": "delete",
+        "next_line_no": 1059
+    },
+    "3": {
+        "file_name": "src/com/google/javascript/jscomp/TypeValidator.java",
+        "replaced_with": "  static final DiagnosticType HIDDEN_INTERFACE_PROPERTY_MISMATCH =\n      DiagnosticType.warning(\n        \"JSC_HIDDEN_INTERFACE_PROPERTY_MISMATCH\",\n        \"mismatch of the {0} property type and the type \" +\n        \"of the property it overrides from interface {1}\\n\" +\n        \"original: {2}\\n\" +\n        \"override: {3}\");\n",
+        "patch_type": "insert",
+        "next_line_no": 110
+    },
+    "4": {
+        "file_name": "src/com/google/javascript/jscomp/TypeValidator.java",
+        "from_line_no": 117,
+        "to_line_no": 117,
+        "replaced_with": "      INTERFACE_METHOD_NOT_IMPLEMENTED,\n      HIDDEN_INTERFACE_PROPERTY_MISMATCH);\n",
+        "replaced": "      INTERFACE_METHOD_NOT_IMPLEMENTED);\n",
+        "patch_type": "replace",
+        "next_line_no": 118
+    },
+    "5": {
+        "file_name": "src/com/google/javascript/jscomp/TypeValidator.java",
+        "replaced_with": "    } else {\n      JSType found = instance.getPropertyType(prop);\n      JSType required\n        = implementedInterface.getImplicitPrototype().getPropertyType(prop);\n      found = found.restrictByNotNullOrUndefined();\n      required = required.restrictByNotNullOrUndefined();\n      if (!found.canAssignTo(required)) {\n",
+        "patch_type": "insert",
+        "next_line_no": 588
+    },
+    "6": {
+        "file_name": "src/com/google/javascript/jscomp/TypeValidator.java",
+        "replaced_with": "        if (shouldReport) {\n          FunctionType constructor\n            = implementedInterface.toObjectType().getConstructor();\n          compiler.report(t.makeError(n,\n              HIDDEN_INTERFACE_PROPERTY_MISMATCH, prop,\n              constructor.getTopMostDefiningType(prop).toString(),\n              required.toString(), found.toString()));\n        }\n        registerMismatch(found, required);\n      }\n",
+        "patch_type": "insert",
+        "next_line_no": 589
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "num_of_hunks": 3,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/parsing/IRFactory.java",
+        "replaced_with": "      Node target = assign.getFirstChild();\n      if (!validAssignmentTarget(target)) {\n        errorReporter.error(\n          \"invalid assignment target\",\n          sourceName,\n          target.getLineno(), \"\", 0);\n      }\n",
+        "patch_type": "insert",
+        "next_line_no": 341
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/parsing/IRFactory.java",
+        "replaced_with": "        if (type == Token.INC || type == Token.DEC) {\n          if (!validAssignmentTarget(operand)) {\n            String msg = (type == Token.INC)\n                ? \"invalid increment target\"\n                : \"invalid decrement target\";\n            errorReporter.error(\n              msg,\n              sourceName,\n              operand.getLineno(), \"\", 0);\n          }\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 797
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/jscomp/parsing/IRFactory.java",
+        "replaced_with": "    private boolean validAssignmentTarget(Node target) {\n      switch (target.getType()) {\n        case Token.NAME:\n        case Token.GETPROP:\n        case Token.GETELEM:\n          return true;\n      }\n      return false;\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 806
+    }
+}

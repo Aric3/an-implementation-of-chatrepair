@@ -1,0 +1,479 @@
+{
+    "num_of_hunks": 65,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/PeepholeFoldConstants.java",
+        "replaced_with": "      case Token.VOID:\n        typeNameString = \"undefined\";\n        break;\n",
+        "patch_type": "insert",
+        "next_line_no": 182
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "  private final static int UNMAPPED = -1;\n",
+        "patch_type": "insert",
+        "next_line_no": 41
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 50,
+        "to_line_no": 50,
+        "replaced_with": "    int id = UNMAPPED;\n",
+        "replaced": "    int id;\n",
+        "patch_type": "replace",
+        "next_line_no": 51
+    },
+    "3": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "    boolean used = false;\n  }\n",
+        "patch_type": "insert",
+        "next_line_no": 85
+    },
+    "4": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "  private class MappingWriter {\n",
+        "patch_type": "insert",
+        "next_line_no": 86
+    },
+    "5": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "    private String lastSourceFile = null;\n    private String lastSourceFileEscaped = null;\n    private int lastLine = 0;\n    private String lastLineString = String.valueOf(0);\n",
+        "patch_type": "insert",
+        "next_line_no": 89
+    },
+    "6": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 93,
+        "to_line_no": 93,
+        "replaced_with": "    private void appendMappingTo(\n        Mapping m, Appendable out) throws IOException {\n",
+        "replaced": "    void appendTo(Appendable out) throws IOException {\n",
+        "patch_type": "replace",
+        "next_line_no": 94
+    },
+    "7": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 96,
+        "to_line_no": 96,
+        "replaced_with": "      String sourceFile = m.sourceFile;\n",
+        "replaced": "      out.append(sourceFile);\n",
+        "patch_type": "replace",
+        "next_line_no": 97
+    },
+    "8": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "      String escapedSourceFile;\n      if (lastSourceFile != sourceFile) { // yes, s1 != s2, not !s1.equals(s2)\n        lastSourceFile = sourceFile;\n        lastSourceFileEscaped = escapeString(sourceFile);\n      }\n      escapedSourceFile = lastSourceFileEscaped;\n",
+        "patch_type": "insert",
+        "next_line_no": 98
+    },
+    "9": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "      out.append(escapedSourceFile);\n",
+        "patch_type": "insert",
+        "next_line_no": 99
+    },
+    "10": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "      int line = m.originalPosition.getLineNumber();\n      if (line != lastLine) {\n        lastLineString = String.valueOf(line);\n      }\n      String lineValue = lastLineString;\n",
+        "patch_type": "insert",
+        "next_line_no": 101
+    },
+    "11": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 102,
+        "to_line_no": 102,
+        "replaced_with": "      out.append(lineValue);\n",
+        "replaced": "      out.append(String.valueOf(originalPosition.getLineNumber()));\n",
+        "patch_type": "replace",
+        "next_line_no": 103
+    },
+    "12": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 105,
+        "to_line_no": 105,
+        "replaced_with": "      out.append(String.valueOf(\n          m.originalPosition.getCharacterIndex()));\n",
+        "replaced": "      out.append(String.valueOf(originalPosition.getCharacterIndex()));\n",
+        "patch_type": "replace",
+        "next_line_no": 106
+    },
+    "13": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 107,
+        "to_line_no": 107,
+        "replaced_with": "      if (m.originalName != null) {\n",
+        "replaced": "      if (originalName != null) {\n",
+        "patch_type": "replace",
+        "next_line_no": 108
+    },
+    "14": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 109,
+        "to_line_no": 109,
+        "replaced_with": "        out.append(escapeString(m.originalName));\n",
+        "replaced": "        out.append(originalName);\n",
+        "patch_type": "replace",
+        "next_line_no": 110
+    },
+    "15": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 112,
+        "to_line_no": 112,
+        "replaced_with": "      out.append(\"]\\n\");\n",
+        "replaced": "      out.append(\"]\");\n",
+        "patch_type": "replace",
+        "next_line_no": 113
+    },
+    "16": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "\n",
+        "patch_type": "insert",
+        "next_line_no": 114
+    },
+    "17": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "    void appendMappings(Appendable out) throws IOException {\n      for (Mapping m : mappings) {\n        if (m.used) {\n          appendMappingTo(m, out);\n        }\n      }\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 117
+    },
+    "18": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 143,
+        "to_line_no": 144,
+        "replaced": "  private String lastSourceFile = null;\n  private String lastSourceFileEscaped = null;\n",
+        "patch_type": "delete",
+        "next_line_no": 145
+    },
+    "19": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 163,
+        "to_line_no": 168,
+        "replaced": "    String escapedSourceFile;\n    if (lastSourceFile != sourceFile) {  // yes, \"s1 != s2\" not \"!s1.equals(s2)\"\n      lastSourceFile = sourceFile;\n      lastSourceFileEscaped = escapeString(sourceFile);\n    }\n    escapedSourceFile = lastSourceFileEscaped;\n",
+        "patch_type": "delete",
+        "next_line_no": 169
+    },
+    "20": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 171,
+        "to_line_no": 172,
+        "replaced_with": "    mapping.sourceFile = sourceFile;\n",
+        "replaced": "    mapping.id = mappings.size();\n    mapping.sourceFile = escapedSourceFile;\n",
+        "patch_type": "replace",
+        "next_line_no": 173
+    },
+    "21": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 177,
+        "to_line_no": 177,
+        "replaced_with": "      mapping.originalName = originalName;\n",
+        "replaced": "      mapping.originalName = escapeString(originalName);\n",
+        "patch_type": "replace",
+        "next_line_no": 178
+    },
+    "22": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "    if (offsetPosition.getLineNumber() == 0\n        && offsetPosition.getCharacterIndex() == 0) {\n      mapping.startPosition = startPosition;\n      mapping.endPosition = endPosition;\n    } else {\n",
+        "patch_type": "insert",
+        "next_line_no": 180
+    },
+    "23": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "    }\n",
+        "patch_type": "insert",
+        "next_line_no": 203
+    },
+    "24": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 257,
+        "to_line_no": 264,
+        "replaced": "  private int findLastLine() {\n    int maxLine = 0;\n    for (Mapping mapping : mappings) {\n      int endPositionLine = mapping.endPosition.getLineNumber();\n      maxLine = Math.max(maxLine, endPositionLine);\n    }\n    return maxLine + prefixPosition.getLineNumber();\n  }\n",
+        "patch_type": "delete",
+        "next_line_no": 265
+    },
+    "25": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 304,
+        "to_line_no": 304,
+        "replaced_with": "    int maxLine = prepMappings();\n",
+        "replaced": "    int maxLine = findLastLine();\n",
+        "patch_type": "replace",
+        "next_line_no": 305
+    },
+    "26": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 326,
+        "to_line_no": 329,
+        "replaced_with": "    (new MappingWriter()).appendMappings(out);\n",
+        "replaced": "    for (Mapping mapping : mappings) {\n      mapping.appendTo(out);\n      out.append(\"\\n\");\n    }\n",
+        "patch_type": "replace",
+        "next_line_no": 330
+    },
+    "27": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "  private int prepMappings() throws IOException {\n",
+        "patch_type": "insert",
+        "next_line_no": 335
+    },
+    "28": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "    (new MappingTraversal()).traverse(new UsedMappingCheck());\n",
+        "patch_type": "insert",
+        "next_line_no": 336
+    },
+    "29": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "    int id = 0;\n    int maxLine = 0;\n    for (Mapping m : mappings) {\n      if (m.used) {\n        m.id = id++;\n        int endPositionLine = m.endPosition.getLineNumber();\n        maxLine = Math.max(maxLine, endPositionLine);\n      }\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 338
+    },
+    "30": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "    return maxLine + prefixPosition.getLineNumber();\n  }\n",
+        "patch_type": "insert",
+        "next_line_no": 340
+    },
+    "31": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 341,
+        "to_line_no": 341,
+        "replaced_with": "  private class LineMapper implements MappingVisitor {\n",
+        "replaced": "  private class LineMapper {\n",
+        "patch_type": "replace",
+        "next_line_no": 342
+    },
+    "32": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 344,
+        "to_line_no": 345,
+        "replaced_with": "\n",
+        "replaced": "    private int line;\n    private int col;\n",
+        "patch_type": "replace",
+        "next_line_no": 346
+    },
+    "33": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 351,
+        "to_line_no": 351,
+        "replaced_with": "    private int lastId = UNMAPPED;\n    private String lastIdString = UNMAPPED_STRING;\n",
+        "replaced": "    private final static int UNMAPPED = -1;\n",
+        "patch_type": "replace",
+        "next_line_no": 352
+    },
+    "34": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "    public void visit(Mapping m, int line, int col, int nextLine, int nextCol)\n      throws IOException {\n",
+        "patch_type": "insert",
+        "next_line_no": 360
+    },
+    "35": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "      int id = (m != null) ? m.id : UNMAPPED;\n      if (lastId != id) {\n",
+        "patch_type": "insert",
+        "next_line_no": 361
+    },
+    "36": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "        lastIdString = (id == UNMAPPED) ? UNMAPPED_STRING : String.valueOf(id);\n        lastId = id;\n      }\n      String idString = lastIdString;\n",
+        "patch_type": "insert",
+        "next_line_no": 363
+    },
+    "37": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "      for (int i = line; i <= nextLine; i++) {\n        if (i == nextLine) {\n          for (int j = col; j < nextCol; j++) {\n            addCharEntry(idString);\n          }\n          break;\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 364
+    },
+    "38": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "        closeLine();\n        openLine();\n      }\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 365
+    },
+    "39": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "      (new MappingTraversal()).traverse(this);\n",
+        "patch_type": "insert",
+        "next_line_no": 373
+    },
+    "40": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "      closeLine();\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 375
+    },
+    "41": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "    private void openLine() throws IOException {\n      if (out != null) {\n        out.append(\"[\");\n        this.firstChar = true;\n      }\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 379
+    },
+    "42": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "    private void closeLine() throws IOException {\n      if (out != null) {\n        out.append(\"]\\n\");\n      }\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 383
+    },
+    "43": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "    private void addCharEntry(String id) throws IOException {\n      if (out != null) {\n        if (firstChar) {\n          firstChar = false;\n        } else {\n          out.append(\",\");\n        }\n        out.append(id);\n      }\n    }\n  }\n",
+        "patch_type": "insert",
+        "next_line_no": 388
+    },
+    "44": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "  private class UsedMappingCheck implements MappingVisitor {\n",
+        "patch_type": "insert",
+        "next_line_no": 392
+    },
+    "45": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "    @Override\n    public void visit(Mapping m, int line, int col, int nextLine, int nextCol)\n        throws IOException {\n      if (m != null) {\n        m.used = true;\n      }\n    }\n  }\n",
+        "patch_type": "insert",
+        "next_line_no": 395
+    },
+    "46": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "  private interface MappingVisitor {\n",
+        "patch_type": "insert",
+        "next_line_no": 396
+    },
+    "47": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "    void visit(Mapping m, int line, int col, int endLine, int endCol)\n        throws IOException;\n  }\n",
+        "patch_type": "insert",
+        "next_line_no": 405
+    },
+    "48": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "  private class MappingTraversal {\n",
+        "patch_type": "insert",
+        "next_line_no": 410
+    },
+    "49": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "    private int line;\n    private int col;\n",
+        "patch_type": "insert",
+        "next_line_no": 411
+    },
+    "50": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "    MappingTraversal() {\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 412
+    },
+    "51": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "    void traverse(MappingVisitor v) throws IOException {\n      Preconditions.checkState(!mappings.isEmpty());\n",
+        "patch_type": "insert",
+        "next_line_no": 414
+    },
+    "52": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 426,
+        "to_line_no": 426,
+        "replaced_with": "          maybeVisit(v, previous);\n",
+        "replaced": "          writeClosedMapping(previous);\n",
+        "patch_type": "replace",
+        "next_line_no": 427
+    },
+    "53": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 432,
+        "to_line_no": 432,
+        "replaced_with": "        maybeVisitParent(v, parent, m);\n",
+        "replaced": "        writeCharsBetween(parent, m);\n",
+        "patch_type": "replace",
+        "next_line_no": 433
+    },
+    "54": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 441,
+        "to_line_no": 456,
+        "replaced_with": "        maybeVisit(v, m);\n",
+        "replaced": "        writeClosedMapping(m);\n      }\n      closeLine();\n    }\n    private void openLine() throws IOException {\n      out.append(\"[\");\n      this.firstChar = true;\n    }\n    private void closeLine() throws IOException {\n      out.append(\"]\\n\");\n    }\n    private void addCharEntry(String id) throws IOException {\n      if (firstChar) {\n        firstChar = false;\n      } else {\n        out.append(\",\");\n",
+        "patch_type": "replace",
+        "next_line_no": 457
+    },
+    "55": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 458,
+        "to_line_no": 458,
+        "replaced": "      out.append(id);\n",
+        "patch_type": "delete",
+        "next_line_no": 459
+    },
+    "56": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 496,
+        "to_line_no": 496,
+        "replaced_with": "    private void maybeVisit(MappingVisitor v, Mapping m) throws IOException {\n",
+        "replaced": "    private void writeClosedMapping(Mapping m) throws IOException {\n",
+        "patch_type": "replace",
+        "next_line_no": 497
+    },
+    "57": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 502,
+        "to_line_no": 502,
+        "replaced_with": "        visit(v, m, nextLine, nextCol);\n",
+        "replaced": "        writeCharsUpTo(nextLine, nextCol, m.id);\n",
+        "patch_type": "replace",
+        "next_line_no": 503
+    },
+    "58": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 509,
+        "to_line_no": 509,
+        "replaced_with": "    private void maybeVisitParent(MappingVisitor v, Mapping parent, Mapping m)\n",
+        "replaced": "    private void writeCharsBetween(Mapping prev, Mapping next)\n",
+        "patch_type": "replace",
+        "next_line_no": 510
+    },
+    "59": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 511,
+        "to_line_no": 512,
+        "replaced_with": "      int nextLine = getAdjustedLine(m.startPosition);\n      int nextCol = getAdjustedCol(m.startPosition);\n",
+        "replaced": "      int nextLine = getAdjustedLine(next.startPosition);\n      int nextCol = getAdjustedCol(next.startPosition);\n",
+        "patch_type": "replace",
+        "next_line_no": 513
+    },
+    "60": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 514,
+        "to_line_no": 515,
+        "replaced_with": "      Preconditions.checkState(line < nextLine || col <= nextCol);\n      if (line < nextLine || (line == nextLine && col < nextCol)) {\n        visit(v, parent, nextLine, nextCol);\n      }\n",
+        "replaced": "      int id = (prev != null) ? prev.id : UNMAPPED;\n      writeCharsUpTo(nextLine, nextCol, id);\n",
+        "patch_type": "replace",
+        "next_line_no": 516
+    },
+    "61": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 522,
+        "to_line_no": 523,
+        "replaced_with": "    private void visit(MappingVisitor v, Mapping m,\n        int nextLine, int nextCol)\n",
+        "replaced": "    private void writeCharsUpTo(\n        int nextLine, int nextCol, int id)\n",
+        "patch_type": "replace",
+        "next_line_no": 524
+    },
+    "62": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 525,
+        "to_line_no": 526,
+        "replaced_with": "      Preconditions.checkState(line <= nextLine);\n      Preconditions.checkState(line < nextLine || col < nextCol);\n",
+        "replaced": "      Preconditions.checkState(line <= nextLine, \"\");\n      Preconditions.checkState(line < nextLine || col <= nextCol);\n",
+        "patch_type": "replace",
+        "next_line_no": 527
+    },
+    "63": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "replaced_with": "        Preconditions.checkState(false);\n",
+        "patch_type": "insert",
+        "next_line_no": 530
+    },
+    "64": {
+        "file_name": "src/com/google/javascript/jscomp/SourceMap.java",
+        "from_line_no": 533,
+        "to_line_no": 543,
+        "replaced_with": "      v.visit(m, line, col, nextLine, nextCol);\n",
+        "replaced": "      String idString = (id == UNMAPPED) ? UNMAPPED_STRING : String.valueOf(id);\n      for (int i = line; i <= nextLine; i++) {\n        if (i == nextLine) {\n          for (int j = col; j < nextCol; j++) {\n            addCharEntry(idString);\n          }\n          break;\n        }\n        closeLine();\n        openLine();\n      }\n",
+        "patch_type": "replace",
+        "next_line_no": 544
+    }
+}

@@ -1,0 +1,30 @@
+{
+    "num_of_hunks": 3,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/math/geometry/euclidean/threed/Rotation.java",
+        "from_line_no": 344,
+        "to_line_no": 344,
+        "replaced_with": "  final double inPlaneThreshold = 0.001;\n  if (c <= inPlaneThreshold * k.getNorm() * u3.getNorm()) {\n",
+        "replaced": "  if (c == 0) {\n",
+        "patch_type": "replace",
+        "next_line_no": 345
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/math/geometry/euclidean/threed/Rotation.java",
+        "from_line_no": 353,
+        "to_line_no": 353,
+        "replaced_with": "    if (c <= inPlaneThreshold * k.getNorm() * u2Prime.getNorm()) {\n",
+        "replaced": "    if (c == 0) {\n",
+        "patch_type": "replace",
+        "next_line_no": 354
+    },
+    "2": {
+        "file_name": "src/main/java/org/apache/commons/math/geometry/euclidean/threed/Rotation.java",
+        "from_line_no": 359,
+        "to_line_no": 359,
+        "replaced_with": "      if (c <= 0) {\n",
+        "replaced": "      if (c == 0) {\n",
+        "patch_type": "replace",
+        "next_line_no": 360
+    }
+}

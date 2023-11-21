@@ -1,0 +1,21 @@
+{
+    "num_of_hunks": 3,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/ControlFlowAnalysis.java",
+        "replaced_with": "      case Token.INSTANCEOF:\n",
+        "patch_type": "insert",
+        "next_line_no": 894
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/DisambiguateProperties.java",
+        "replaced_with": "      if (foundType == null) {\n        ObjectType maybeType = ObjectType.cast(\n            registry.getGreatestSubtypeWithProperty(type, field));\n",
+        "patch_type": "insert",
+        "next_line_no": 763
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/jscomp/DisambiguateProperties.java",
+        "replaced_with": "        if (maybeType != null && maybeType.hasOwnProperty(field)) {\n          foundType = maybeType;\n        }\n      }\n",
+        "patch_type": "insert",
+        "next_line_no": 766
+    }
+}

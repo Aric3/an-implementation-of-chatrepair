@@ -1,0 +1,53 @@
+{
+    "num_of_hunks": 7,
+    "0": {
+        "file_name": "source/org/jfree/data/KeyedObjects2D.java",
+        "from_line_no": 231,
+        "to_line_no": 231,
+        "replaced": "        if (row >= 0) {\n",
+        "patch_type": "delete",
+        "next_line_no": 232
+    },
+    "1": {
+        "file_name": "source/org/jfree/data/KeyedObjects2D.java",
+        "from_line_no": 233,
+        "to_line_no": 233,
+        "replaced_with": "        int index = rowData.getIndex(columnKey);\n        if (index >= 0) {\n            return rowData.getObject(index);\n",
+        "replaced": "            return rowData.getObject(columnKey);\n",
+        "patch_type": "replace",
+        "next_line_no": 234
+    },
+    "2": {
+        "file_name": "source/org/jfree/data/KeyedObjects2D.java",
+        "replaced_with": "        allNull = true;\n",
+        "patch_type": "insert",
+        "next_line_no": 318
+    },
+    "3": {
+        "file_name": "source/org/jfree/data/KeyedObjects2D.java",
+        "replaced_with": "        for (int item = 0, itemCount = this.rows.size(); item < itemCount; \n             item++) {\n            row = (KeyedObjects) this.rows.get(item);\n            int columnIndex = row.getIndex(columnKey);\n            if (columnIndex >= 0 && row.getObject(columnIndex) != null) {\n                allNull = false;\n                break;\n            }\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 319
+    },
+    "4": {
+        "file_name": "source/org/jfree/data/KeyedObjects2D.java",
+        "replaced_with": "        if (allNull) {\n            for (int item = 0, itemCount = this.rows.size(); item < itemCount; \n                 item++) {\n                row = (KeyedObjects) this.rows.get(item);\n                int columnIndex = row.getIndex(columnKey);\n                if (columnIndex >= 0) {\n                    row.removeValue(columnIndex);\n                }\n            }\n            this.columnKeys.remove(columnKey);\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 320
+    },
+    "5": {
+        "file_name": "source/org/jfree/data/KeyedObjects2D.java",
+        "replaced_with": "        if (index < 0) {\n            throw new UnknownKeyException(\"Row key (\" + rowKey \n                    + \") not recognised.\");\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 345
+    },
+    "6": {
+        "file_name": "source/org/jfree/data/KeyedObjects2D.java",
+        "from_line_no": 378,
+        "to_line_no": 378,
+        "replaced_with": "            int i = rowData.getIndex(columnKey);\n            if (i >= 0) {\n                rowData.removeValue(i);\n            }\n",
+        "replaced": "                rowData.removeValue(columnKey);\n",
+        "patch_type": "replace",
+        "next_line_no": 379
+    }
+}

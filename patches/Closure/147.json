@@ -1,0 +1,18 @@
+{
+    "num_of_hunks": 2,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/CheckGlobalThis.java",
+        "from_line_no": 108,
+        "to_line_no": 108,
+        "replaced_with": "            pType == Token.ASSIGN ||\n            pType == Token.OBJECTLIT)) {\n",
+        "replaced": "            pType == Token.ASSIGN)) {\n",
+        "patch_type": "replace",
+        "next_line_no": 109
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/RuntimeTypeCheck.java",
+        "replaced_with": "      for (Node next = block.getFirstChild();\n           next != null && NodeUtil.isFunctionDeclaration(next);\n           next = next.getNext()) {\n        insertionPoint = next;\n      }\n",
+        "patch_type": "insert",
+        "next_line_no": 247
+    }
+}

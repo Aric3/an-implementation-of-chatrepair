@@ -1,0 +1,21 @@
+{
+    "num_of_hunks": 3,
+    "0": {
+        "file_name": "src/main/java/org/joda/time/chrono/GJChronology.java",
+        "replaced_with": "            LocalDate cutoverDate = new LocalDate(cutoverInstant.getMillis(), GregorianChronology.getInstance(zone));\n            if (cutoverDate.getYear() <= 0) {\n                throw new IllegalArgumentException(\"Cutover too early. Must be on or after 0001-01-01.\");\n            }\n",
+        "patch_type": "insert",
+        "next_line_no": 196
+    },
+    "1": {
+        "file_name": "src/main/java/org/joda/time/chrono/GJChronology.java",
+        "replaced_with": "                        if (iConvertByWeekyear) {\n                            int wyear = iGregorianChronology.weekyear().get(instant);\n                            if (wyear <= 0) {\n                                instant = iGregorianChronology.weekyear().add(instant, -1);\n                            }\n                        } else {\n                            int year = iGregorianChronology.year().get(instant);\n                            if (year <= 0) {\n                                instant = iGregorianChronology.year().add(instant, -1);\n                            }\n                        }\n",
+        "patch_type": "insert",
+        "next_line_no": 979
+    },
+    "2": {
+        "file_name": "src/main/java/org/joda/time/chrono/GJChronology.java",
+        "replaced_with": "                        if (iConvertByWeekyear) {\n                            int wyear = iGregorianChronology.weekyear().get(instant);\n                            if (wyear <= 0) {\n                                instant = iGregorianChronology.weekyear().add(instant, -1);\n                            }\n                        } else {\n                            int year = iGregorianChronology.year().get(instant);\n                            if (year <= 0) {\n                                instant = iGregorianChronology.year().add(instant, -1);\n                            }\n                        }\n",
+        "patch_type": "insert",
+        "next_line_no": 1001
+    }
+}

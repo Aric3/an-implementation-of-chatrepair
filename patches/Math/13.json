@@ -1,0 +1,15 @@
+{
+    "num_of_hunks": 2,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/math3/optimization/general/AbstractLeastSquaresOptimizer.java",
+        "replaced_with": "        if (m instanceof DiagonalMatrix) {\n            final int dim = m.getRowDimension();\n            final RealMatrix sqrtM = new DiagonalMatrix(dim);\n            for (int i = 0; i < dim; i++) {\n               sqrtM.setEntry(i, i, FastMath.sqrt(m.getEntry(i, i)));\n            }\n            return sqrtM;\n        } else {\n",
+        "patch_type": "insert",
+        "next_line_no": 562
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/math3/optimization/general/AbstractLeastSquaresOptimizer.java",
+        "replaced_with": "        }\n",
+        "patch_type": "insert",
+        "next_line_no": 564
+    }
+}

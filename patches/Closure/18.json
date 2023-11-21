@@ -1,0 +1,12 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/Compiler.java",
+        "from_line_no": 1288,
+        "to_line_no": 1288,
+        "replaced_with": "      if (options.dependencyOptions.needsManagement()) {\n",
+        "replaced": "      if (options.dependencyOptions.needsManagement() && options.closurePass) {\n",
+        "patch_type": "replace",
+        "next_line_no": 1289
+    }
+}

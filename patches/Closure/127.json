@@ -1,0 +1,18 @@
+{
+    "num_of_hunks": 2,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/UnreachableCodeElimination.java",
+        "from_line_no": 170,
+        "to_line_no": 170,
+        "replaced_with": "            if (nextCfgNode == fallThrough && !inFinally(n.getParent(), n)) {\n",
+        "replaced": "            if (nextCfgNode == fallThrough) {\n",
+        "patch_type": "replace",
+        "next_line_no": 171
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/UnreachableCodeElimination.java",
+        "replaced_with": "    private boolean inFinally(Node parent, Node child) {\n      if (parent == null || parent.isFunction()) {\n        return false;\n      } else if (NodeUtil.isTryFinallyNode(parent, child)) {\n        return true;\n      } else {\n        return inFinally(parent.getParent(), parent);\n      }\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 177
+    }
+}

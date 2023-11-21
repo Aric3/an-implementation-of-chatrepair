@@ -1,0 +1,105 @@
+{
+    "num_of_hunks": 15,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/InlineVariables.java",
+        "replaced_with": "      boolean maybeModifiedArguments =\n          maybeEscapedOrModifiedArguments(t.getScope(), referenceMap);\n",
+        "patch_type": "insert",
+        "next_line_no": 199
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/InlineVariables.java",
+        "from_line_no": 220,
+        "to_line_no": 220,
+        "replaced_with": "          inlineNonConstants(v, referenceInfo, maybeModifiedArguments);\n",
+        "replaced": "          inlineNonConstants(v, referenceInfo);\n",
+        "patch_type": "replace",
+        "next_line_no": 221
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/jscomp/InlineVariables.java",
+        "replaced_with": "    private boolean maybeEscapedOrModifiedArguments(\n        Scope scope, Map<Var, ReferenceCollection> referenceMap) {\n      if (scope.isLocal()) {\n        Var arguments = scope.getArgumentsVar();\n        ReferenceCollection refs = referenceMap.get(arguments);\n        if (refs != null && !refs.references.isEmpty()) {\n          for (Reference ref : refs.references) {\n            Node refNode = ref.getNameNode();\n            Node refParent = ref.getParent();\n",
+        "patch_type": "insert",
+        "next_line_no": 225
+    },
+    "3": {
+        "file_name": "src/com/google/javascript/jscomp/InlineVariables.java",
+        "replaced_with": "            if (!(NodeUtil.isGet(refParent)\n                && refNode == ref.getParent().getFirstChild()\n                && !isLValue(refParent))) {\n              return true;\n            }\n          }\n        }\n      }\n      return false;\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 227
+    },
+    "4": {
+        "file_name": "src/com/google/javascript/jscomp/InlineVariables.java",
+        "replaced_with": "    private boolean isLValue(Node n) {\n      Node parent = n.getParent();\n      return (parent.getType() == Token.INC\n          || parent.getType() == Token.DEC\n          || (NodeUtil.isAssignmentOp(parent)\n          && parent.getFirstChild() == n));\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 228
+    },
+    "5": {
+        "file_name": "src/com/google/javascript/jscomp/InlineVariables.java",
+        "from_line_no": 230,
+        "to_line_no": 230,
+        "replaced_with": "        Var v, ReferenceCollection referenceInfo,\n        boolean maybeModifiedArguments) {\n",
+        "replaced": "        Var v, ReferenceCollection referenceInfo) {\n",
+        "patch_type": "replace",
+        "next_line_no": 231
+    },
+    "6": {
+        "file_name": "src/com/google/javascript/jscomp/InlineVariables.java",
+        "from_line_no": 275,
+        "to_line_no": 275,
+        "replaced_with": "      if (!maybeModifiedArguments &&\n",
+        "replaced": "      if (\n",
+        "patch_type": "replace",
+        "next_line_no": 276
+    },
+    "7": {
+        "file_name": "src/com/google/javascript/jscomp/ReferenceCollectingCallback.java",
+        "from_line_no": 123,
+        "to_line_no": 123,
+        "replaced_with": "      Var v;\n      if (n.getString().equals(\"arguments\")) {\n        v = t.getScope().getArgumentsVar();\n      } else {\n        v = t.getScope().getVar(n.getString());\n      }\n",
+        "replaced": "      Var v = t.getScope().getVar(n.getString());\n",
+        "patch_type": "replace",
+        "next_line_no": 124
+    },
+    "8": {
+        "file_name": "src/com/google/javascript/jscomp/Scope.java",
+        "replaced_with": "  private Var arguments;\n",
+        "patch_type": "insert",
+        "next_line_no": 63
+    },
+    "9": {
+        "file_name": "src/com/google/javascript/jscomp/Scope.java",
+        "replaced_with": "  public static class Arguments extends Var {\n    Arguments(Scope scope) {\n      super(\n        false, // no inferred\n        \"arguments\", // always arguments\n        null,  // no declaration node\n",
+        "patch_type": "insert",
+        "next_line_no": 290
+    },
+    "10": {
+        "file_name": "src/com/google/javascript/jscomp/Scope.java",
+        "replaced_with": "        null,  // no type info\n        scope,\n        -1,    // no variable index\n        null,  // input,\n        false, // not a define\n        null   // no jsdoc\n        );\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 291
+    },
+    "11": {
+        "file_name": "src/com/google/javascript/jscomp/Scope.java",
+        "replaced_with": "    @Override public boolean equals(Object other) {\n      if (!(other instanceof Arguments)) {\n        return false;\n      }\n",
+        "patch_type": "insert",
+        "next_line_no": 292
+    },
+    "12": {
+        "file_name": "src/com/google/javascript/jscomp/Scope.java",
+        "replaced_with": "      Arguments otherVar = (Arguments) other;\n      return otherVar.scope.getRootNode() == scope.getRootNode();\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 293
+    },
+    "13": {
+        "file_name": "src/com/google/javascript/jscomp/Scope.java",
+        "replaced_with": "    @Override public int hashCode() {\n      return System.identityHashCode(this);\n    }\n  }\n",
+        "patch_type": "insert",
+        "next_line_no": 294
+    },
+    "14": {
+        "file_name": "src/com/google/javascript/jscomp/Scope.java",
+        "replaced_with": "  public Var getArgumentsVar() {\n    if (arguments == null) {\n      arguments = new Arguments(this);\n    }\n    return arguments;\n  }\n",
+        "patch_type": "insert",
+        "next_line_no": 459
+    }
+}

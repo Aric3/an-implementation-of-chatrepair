@@ -1,0 +1,48 @@
+{
+    "num_of_hunks": 5,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/FoldConstants.java",
+        "from_line_no": 1477,
+        "to_line_no": 1477,
+        "replaced_with": "    StringBuilder sb = null;\n",
+        "replaced": "    StringBuilder sb = new StringBuilder();\n",
+        "patch_type": "replace",
+        "next_line_no": 1478
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/FoldConstants.java",
+        "from_line_no": 1483,
+        "to_line_no": 1483,
+        "replaced_with": "        if (sb == null) {\n          sb = new StringBuilder();\n        } else {\n",
+        "replaced": "        if (sb.length() > 0) {\n",
+        "patch_type": "replace",
+        "next_line_no": 1484
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/jscomp/FoldConstants.java",
+        "from_line_no": 1488,
+        "to_line_no": 1488,
+        "replaced_with": "        if (sb != null) {\n",
+        "replaced": "        if (sb.length() > 0) {\n",
+        "patch_type": "replace",
+        "next_line_no": 1489
+    },
+    "3": {
+        "file_name": "src/com/google/javascript/jscomp/FoldConstants.java",
+        "from_line_no": 1492,
+        "to_line_no": 1492,
+        "replaced_with": "          sb = null;\n",
+        "replaced": "          sb = new StringBuilder();\n",
+        "patch_type": "replace",
+        "next_line_no": 1493
+    },
+    "4": {
+        "file_name": "src/com/google/javascript/jscomp/FoldConstants.java",
+        "from_line_no": 1500,
+        "to_line_no": 1500,
+        "replaced_with": "    if (sb != null) {\n",
+        "replaced": "    if (sb.length() > 0) {\n",
+        "patch_type": "replace",
+        "next_line_no": 1501
+    }
+}

@@ -1,0 +1,37 @@
+{
+    "num_of_hunks": 4,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/math3/ode/AbstractIntegrator.java",
+        "from_line_no": 346,
+        "to_line_no": 347,
+        "replaced_with": "                for (final EventState state : eventsStates) {\n                    state.stepAccepted(eventT, eventY);\n                    isLastStep = isLastStep || state.stop();\n                }\n",
+        "replaced": "                currentEvent.stepAccepted(eventT, eventY);\n                isLastStep = currentEvent.stop();\n",
+        "patch_type": "replace",
+        "next_line_no": 348
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/math3/ode/AbstractIntegrator.java",
+        "from_line_no": 357,
+        "to_line_no": 359,
+        "replaced": "                    for (final EventState remaining : occuringEvents) {\n                        remaining.stepAccepted(eventT, eventY);\n                    }\n",
+        "patch_type": "delete",
+        "next_line_no": 360
+    },
+    "2": {
+        "file_name": "src/main/java/org/apache/commons/math3/ode/AbstractIntegrator.java",
+        "from_line_no": 363,
+        "to_line_no": 363,
+        "replaced_with": "                boolean needReset = false;\n                for (final EventState state : eventsStates) {\n                    needReset =  needReset || state.reset(eventT, eventY);\n                }\n",
+        "replaced": "                boolean needReset = currentEvent.reset(eventT, eventY);\n",
+        "patch_type": "replace",
+        "next_line_no": 364
+    },
+    "3": {
+        "file_name": "src/main/java/org/apache/commons/math3/ode/AbstractIntegrator.java",
+        "from_line_no": 370,
+        "to_line_no": 372,
+        "replaced": "                    for (final EventState remaining : occuringEvents) {\n                        remaining.stepAccepted(eventT, eventY);\n                    }\n",
+        "patch_type": "delete",
+        "next_line_no": 373
+    }
+}

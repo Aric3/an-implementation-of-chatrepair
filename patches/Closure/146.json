@@ -1,0 +1,12 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/com/google/javascript/rhino/jstype/JSType.java",
+        "from_line_no": 706,
+        "to_line_no": 706,
+        "replaced_with": "        JSType noType = getNativeType(JSTypeNative.NO_TYPE);\n        return new TypePair(noType, noType);\n",
+        "replaced": "        return new TypePair(null, null);\n",
+        "patch_type": "replace",
+        "next_line_no": 707
+    }
+}

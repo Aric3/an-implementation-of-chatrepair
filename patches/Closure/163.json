@@ -1,0 +1,377 @@
+{
+    "num_of_hunks": 51,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "from_line_no": 201,
+        "to_line_no": 203,
+        "replaced": "    private ProcessProperties() {\n      symbolStack.push(new NameContext(globalNode));\n    }\n",
+        "patch_type": "delete",
+        "next_line_no": 204
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "from_line_no": 206,
+        "to_line_no": 206,
+        "replaced_with": "      Node n = t.getCurrentNode();\n      if (n.isFunction()) {\n        String propName = getPrototypePropertyNameFromRValue(n);\n        if (propName != null) {\n          symbolStack.push(\n              new NameContext(\n                  getNameInfoForName(propName, PROPERTY),\n                  t.getScope()));\n        } else if (isGlobalFunctionDeclaration(t, n)) {\n          Node parent = n.getParent();\n          String name = parent.isName() ?\n              parent.getString() /* VAR */ :\n              n.getFirstChild().getString() /* named function */;\n          symbolStack.push(\n              new NameContext(getNameInfoForName(name, VAR), t.getScope()));\n        } else {\n",
+        "replaced": "      symbolStack.peek().scope = t.getScope();\n",
+        "patch_type": "replace",
+        "next_line_no": 207
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "          symbolStack.push(new NameContext(anonymousNode, t.getScope()));\n        }\n      } else {\n        Preconditions.checkState(t.inGlobalScope());\n        symbolStack.push(new NameContext(globalNode, t.getScope()));\n      }\n",
+        "patch_type": "insert",
+        "next_line_no": 212
+    },
+    "3": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "from_line_no": 216,
+        "to_line_no": 216,
+        "replaced_with": "      symbolStack.pop();\n",
+        "replaced": "\n",
+        "patch_type": "replace",
+        "next_line_no": 217
+    },
+    "4": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "from_line_no": 222,
+        "to_line_no": 231,
+        "replaced_with": "      String propName = processNonFunctionPrototypeAssign(n, parent);\n      if (propName != null) {\n        symbolStack.push(\n            new NameContext(\n                getNameInfoForName(propName, PROPERTY), null));\n",
+        "replaced": "      if (isPrototypePropertyAssign(n)) {\n        symbolStack.push(new NameContext(getNameInfoForName(\n                n.getFirstChild().getLastChild().getString(), PROPERTY)));\n      } else if (isGlobalFunctionDeclaration(t, n)) {\n        String name = parent.isName() ?\n            parent.getString() /* VAR */ :\n            n.getFirstChild().getString() /* named function */;\n        symbolStack.push(new NameContext(getNameInfoForName(name, VAR)));\n      } else if (n.isFunction()) {\n        symbolStack.push(new NameContext(anonymousNode));\n",
+        "patch_type": "replace",
+        "next_line_no": 232
+    },
+    "5": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "        if (n.isQualifiedName()) {\n",
+        "patch_type": "insert",
+        "next_line_no": 241
+    },
+    "6": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "from_line_no": 242,
+        "to_line_no": 242,
+        "replaced_with": "            if (processPrototypeRef(t, n)) {\n              return;\n            }\n",
+        "replaced": "          processPrototypeParent(t, parent);\n",
+        "patch_type": "replace",
+        "next_line_no": 243
+    },
+    "7": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "            return;\n",
+        "patch_type": "insert",
+        "next_line_no": 245
+    },
+    "8": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "from_line_no": 247,
+        "to_line_no": 247,
+        "replaced_with": "            if (n.getParent().isAssign() && n.getNext() != null) {\n              String rValueName = getPrototypePropertyNameFromRValue(n);\n              if (rValueName != null) {\n                return;\n              }\n            }\n          }\n",
+        "replaced": "          addSymbolUse(propName, t.getModule(), PROPERTY);\n",
+        "patch_type": "replace",
+        "next_line_no": 248
+    },
+    "9": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "from_line_no": 250,
+        "to_line_no": 250,
+        "replaced_with": "        addSymbolUse(propName, t.getModule(), PROPERTY);\n      } else if (n.isObjectLit()) {\n",
+        "replaced": "      } else if (n.isObjectLit() &&\n",
+        "patch_type": "replace",
+        "next_line_no": 251
+    },
+    "10": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "from_line_no": 254,
+        "to_line_no": 257,
+        "replaced_with": "        String lValueName = NodeUtil.getBestLValueName(\n            NodeUtil.getBestLValue(n));\n        if (lValueName != null && lValueName.endsWith(\".prototype\")) {\n          return;\n        }\n",
+        "replaced": "          !(parent.isAssign() &&\n            parent.getFirstChild().isGetProp() &&\n            parent.getFirstChild().getLastChild().getString().equals(\n                \"prototype\"))) {\n",
+        "patch_type": "replace",
+        "next_line_no": 258
+    },
+    "11": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "from_line_no": 278,
+        "to_line_no": 279,
+        "replaced_with": "                if (!processGlobalFunctionDeclaration(t, n, var)) {\n",
+        "replaced": "                if (!processGlobalFunctionDeclaration(t, n, parent,\n                        parent.getParent())) {\n",
+        "patch_type": "replace",
+        "next_line_no": 280
+    },
+    "12": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "from_line_no": 304,
+        "to_line_no": 306,
+        "replaced_with": "      if (processNonFunctionPrototypeAssign(n, parent) != null) {\n",
+        "replaced": "      if (isPrototypePropertyAssign(n) ||\n          isGlobalFunctionDeclaration(t, n) ||\n          n.isFunction()) {\n",
+        "patch_type": "replace",
+        "next_line_no": 307
+    },
+    "13": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "    private String processNonFunctionPrototypeAssign(Node n, Node parent) {\n      if (isAssignRValue(n, parent) && !n.isFunction()) {\n        return getPrototypePropertyNameFromRValue(n);\n      }\n      return null;\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 330
+    },
+    "14": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "      Scope s = t.getScope();\n      if (!(s.isGlobal() ||\n            s.getDepth() == 1 && s.getRootNode() == n)) {\n        return false;\n      }\n",
+        "patch_type": "insert",
+        "next_line_no": 338
+    },
+    "15": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "from_line_no": 339,
+        "to_line_no": 342,
+        "replaced_with": "      return NodeUtil.isFunctionDeclaration(n) ||\n          n.isFunction() && n.getParent().isName();\n",
+        "replaced": "      return t.inGlobalScope() &&\n          (NodeUtil.isFunctionDeclaration(n) ||\n           n.isFunction() &&\n           n.getParent().isName());\n",
+        "patch_type": "replace",
+        "next_line_no": 343
+    },
+    "16": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "from_line_no": 348,
+        "to_line_no": 354,
+        "replaced_with": "    private boolean isAssignRValue(Node n, Node parent) {\n      return parent != null && parent.isAssign() && parent.getFirstChild() != n;\n    }\n",
+        "replaced": "    private boolean isPrototypePropertyAssign(Node assign) {\n      Node n = assign.getFirstChild();\n      if (n != null && NodeUtil.isVarOrSimpleAssignLhs(n, assign)\n          && n.isGetProp()\n          && assign.getParent().isExprResult()) {\n        boolean isChainedProperty =\n            n.getFirstChild().isGetProp();\n",
+        "patch_type": "replace",
+        "next_line_no": 355
+    },
+    "17": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "from_line_no": 363,
+        "to_line_no": 364,
+        "replaced_with": "    private String getPrototypePropertyNameFromRValue(Node rValue) {\n      Node lValue = NodeUtil.getBestLValue(rValue);\n      if (lValue == null ||\n          lValue.getParent() == null ||\n          lValue.getParent().getParent() == null ||\n          !(NodeUtil.isObjectLitKey(lValue, lValue.getParent()) ||\n            NodeUtil.isExprAssign(lValue.getParent().getParent()))) {\n        return null;\n      }\n",
+        "replaced": "        if (isChainedProperty) {\n          Node child = n.getFirstChild().getFirstChild().getNext();\n",
+        "patch_type": "replace",
+        "next_line_no": 365
+    },
+    "18": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "from_line_no": 366,
+        "to_line_no": 370,
+        "replaced_with": "      String lValueName =\n          NodeUtil.getBestLValueName(NodeUtil.getBestLValue(rValue));\n      if (lValueName == null) {\n        return null;\n      }\n      int lastDot = lValueName.lastIndexOf('.');\n      if (lastDot == -1) {\n        return null;\n",
+        "replaced": "          if (child.isString() &&\n              child.getString().equals(\"prototype\")) {\n            return true;\n          }\n        }\n",
+        "patch_type": "replace",
+        "next_line_no": 371
+    },
+    "19": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "      String firstPart = lValueName.substring(0, lastDot);\n      if (!firstPart.endsWith(\".prototype\")) {\n        return null;\n      }\n",
+        "patch_type": "insert",
+        "next_line_no": 373
+    },
+    "20": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "from_line_no": 374,
+        "to_line_no": 374,
+        "replaced_with": "      return lValueName.substring(lastDot + 1);\n",
+        "replaced": "      return false;\n",
+        "patch_type": "replace",
+        "next_line_no": 375
+    },
+    "21": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "from_line_no": 382,
+        "to_line_no": 382,
+        "replaced_with": "        Node nameNode, Var v) {\n",
+        "replaced": "        Node nameNode, Node parent, Node gramps) {\n",
+        "patch_type": "replace",
+        "next_line_no": 383
+    },
+    "22": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "      Node parent = nameNode.getParent();\n",
+        "patch_type": "insert",
+        "next_line_no": 384
+    },
+    "23": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "from_line_no": 392,
+        "to_line_no": 392,
+        "replaced_with": "            new GlobalFunction(nameNode, v, t.getModule()));\n",
+        "replaced": "            new GlobalFunction(nameNode, parent, gramps, t.getModule()));\n",
+        "patch_type": "replace",
+        "next_line_no": 393
+    },
+    "24": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "from_line_no": 412,
+        "to_line_no": 412,
+        "replaced_with": "    private boolean processPrototypeRef(NodeTraversal t, Node ref) {\n      Node root = NodeUtil.getRootOfQualifiedName(ref);\n",
+        "replaced": "    private void processPrototypeParent(NodeTraversal t, Node n) {\n",
+        "patch_type": "replace",
+        "next_line_no": 413
+    },
+    "25": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "      Node n = ref.getParent();\n",
+        "patch_type": "insert",
+        "next_line_no": 414
+    },
+    "26": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "                t.getScope().getVar(root.getString()),\n",
+        "patch_type": "insert",
+        "next_line_no": 427
+    },
+    "27": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "            return true;\n",
+        "patch_type": "insert",
+        "next_line_no": 429
+    },
+    "28": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "                  t.getScope().getVar(root.getString()),\n",
+        "patch_type": "insert",
+        "next_line_no": 442
+    },
+    "29": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "            return true;\n",
+        "patch_type": "insert",
+        "next_line_no": 445
+    },
+    "30": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "      return false;\n",
+        "patch_type": "insert",
+        "next_line_no": 448
+    },
+    "31": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "    Var getRootVar();\n",
+        "patch_type": "insert",
+        "next_line_no": 499
+    },
+    "32": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "    private final Var var;\n",
+        "patch_type": "insert",
+        "next_line_no": 516
+    },
+    "33": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "from_line_no": 518,
+        "to_line_no": 518,
+        "replaced_with": "    GlobalFunction(Node nameNode, Var var, JSModule module) {\n      Node parent = nameNode.getParent();\n",
+        "replaced": "    GlobalFunction(Node nameNode, Node parent, Node gramps, JSModule module) {\n",
+        "patch_type": "replace",
+        "next_line_no": 519
+    },
+    "34": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "      this.var = var;\n",
+        "patch_type": "insert",
+        "next_line_no": 523
+    },
+    "35": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "    public Var getRootVar() {\n      return var;\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 527
+    },
+    "36": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "    @Override\n",
+        "patch_type": "insert",
+        "next_line_no": 528
+    },
+    "37": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "    private final Var rootVar;\n",
+        "patch_type": "insert",
+        "next_line_no": 576
+    },
+    "38": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "from_line_no": 581,
+        "to_line_no": 581,
+        "replaced_with": "    AssignmentProperty(Node node, Var rootVar, JSModule module) {\n",
+        "replaced": "    AssignmentProperty(Node node, JSModule module) {\n",
+        "patch_type": "replace",
+        "next_line_no": 582
+    },
+    "39": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "      this.rootVar = rootVar;\n",
+        "patch_type": "insert",
+        "next_line_no": 583
+    },
+    "40": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "    public Var getRootVar() {\n      return rootVar;\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 587
+    },
+    "41": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "    @Override\n",
+        "patch_type": "insert",
+        "next_line_no": 588
+    },
+    "42": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "    private final Var rootVar;\n",
+        "patch_type": "insert",
+        "next_line_no": 623
+    },
+    "43": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "from_line_no": 626,
+        "to_line_no": 626,
+        "replaced_with": "        Var rootVar, JSModule module) {\n",
+        "replaced": "        JSModule module) {\n",
+        "patch_type": "replace",
+        "next_line_no": 627
+    },
+    "44": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "      this.rootVar = rootVar;\n",
+        "patch_type": "insert",
+        "next_line_no": 631
+    },
+    "45": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "    public Var getRootVar() {\n      return rootVar;\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 635
+    },
+    "46": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "    @Override\n",
+        "patch_type": "insert",
+        "next_line_no": 636
+    },
+    "47": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "from_line_no": 665,
+        "to_line_no": 665,
+        "replaced_with": "    final Scope scope;\n",
+        "replaced": "    Scope scope;\n",
+        "patch_type": "replace",
+        "next_line_no": 666
+    },
+    "48": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "from_line_no": 667,
+        "to_line_no": 667,
+        "replaced_with": "    NameContext(NameInfo name, Scope scope) {\n",
+        "replaced": "    NameContext(NameInfo name) {\n",
+        "patch_type": "replace",
+        "next_line_no": 668
+    },
+    "49": {
+        "file_name": "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java",
+        "replaced_with": "      this.scope = scope;\n",
+        "patch_type": "insert",
+        "next_line_no": 669
+    },
+    "50": {
+        "file_name": "src/com/google/javascript/jscomp/CrossModuleMethodMotion.java",
+        "replaced_with": "        if (!(prop.getRootVar() != null && prop.getRootVar().isGlobal())) {\n          continue;\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 141
+    }
+}

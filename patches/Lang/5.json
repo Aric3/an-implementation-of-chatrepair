@@ -1,0 +1,15 @@
+{
+    "num_of_hunks": 2,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/lang3/LocaleUtils.java",
+        "replaced_with": "        if (ch0 == '_') {\n            if (len < 3) {\n                throw new IllegalArgumentException(\"Invalid locale format: \" + str);\n            }\n            final char ch1 = str.charAt(1);\n            final char ch2 = str.charAt(2);\n            if (!Character.isUpperCase(ch1) || !Character.isUpperCase(ch2)) {\n                throw new IllegalArgumentException(\"Invalid locale format: \" + str);\n            }\n            if (len == 3) {\n                return new Locale(\"\", str.substring(1, 3));\n            }\n            if (len < 5) {\n                throw new IllegalArgumentException(\"Invalid locale format: \" + str);\n            }\n            if (str.charAt(3) != '_') {\n                throw new IllegalArgumentException(\"Invalid locale format: \" + str);\n            }\n            return new Locale(\"\", str.substring(1, 3), str.substring(4));\n        } else {\n",
+        "patch_type": "insert",
+        "next_line_no": 97
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/lang3/LocaleUtils.java",
+        "replaced_with": "        }\n",
+        "patch_type": "insert",
+        "next_line_no": 128
+    }
+}

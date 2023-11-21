@@ -1,0 +1,77 @@
+{
+    "num_of_hunks": 11,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/DeadAssignmentsElimination.java",
+        "replaced_with": "          if (n.getNext() != null) {\n            state = isVariableReadBeforeKill(\n                n.getNext(), variable);\n            if (state == VariableLiveness.KILL) {\n              state = VariableLiveness.MAYBE_LIVE;\n            }\n          }\n          break;\n",
+        "patch_type": "insert",
+        "next_line_no": 300
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/DeadAssignmentsElimination.java",
+        "replaced_with": "          if (n.getNext() != null && n.getNext().getNext() != null) {\n            state = checkHookBranchReadBeforeKill(\n                n.getNext(), n.getNext().getNext(), variable);\n          }\n          break;\n",
+        "patch_type": "insert",
+        "next_line_no": 305
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/jscomp/DeadAssignmentsElimination.java",
+        "from_line_no": 309,
+        "to_line_no": 309,
+        "replaced": "            if (!ControlFlowGraph.isEnteringNewCfgNode(sibling)) {\n",
+        "patch_type": "delete",
+        "next_line_no": 310
+    },
+    "3": {
+        "file_name": "src/com/google/javascript/jscomp/DeadAssignmentsElimination.java",
+        "replaced_with": "            if (state != VariableLiveness.MAYBE_LIVE) {\n              break;\n            }\n          }\n      }\n",
+        "patch_type": "insert",
+        "next_line_no": 311
+    },
+    "4": {
+        "file_name": "src/com/google/javascript/jscomp/DeadAssignmentsElimination.java",
+        "from_line_no": 317,
+        "to_line_no": 319,
+        "replaced": "            }\n          }\n      }\n",
+        "patch_type": "delete",
+        "next_line_no": 320
+    },
+    "5": {
+        "file_name": "src/com/google/javascript/jscomp/DeadAssignmentsElimination.java",
+        "replaced_with": "    if (ControlFlowGraph.isEnteringNewCfgNode(n)) { // Not a FUNCTION\n      return VariableLiveness.MAYBE_LIVE;\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 340
+    },
+    "6": {
+        "file_name": "src/com/google/javascript/jscomp/DeadAssignmentsElimination.java",
+        "replaced_with": "        VariableLiveness v1 = isVariableReadBeforeKill(\n          n.getFirstChild(), variable);\n        VariableLiveness v2 = isVariableReadBeforeKill(\n          n.getLastChild(), variable);\n",
+        "patch_type": "insert",
+        "next_line_no": 362
+    },
+    "7": {
+        "file_name": "src/com/google/javascript/jscomp/DeadAssignmentsElimination.java",
+        "replaced_with": "        if (v1 != VariableLiveness.MAYBE_LIVE) {\n          return v1;\n        } else if (v2 == VariableLiveness.READ) {\n          return VariableLiveness.READ;\n        } else {\n          return VariableLiveness.MAYBE_LIVE;\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 364
+    },
+    "8": {
+        "file_name": "src/com/google/javascript/jscomp/DeadAssignmentsElimination.java",
+        "replaced_with": "        VariableLiveness first = isVariableReadBeforeKill(\n            n.getFirstChild(), variable);\n        if (first != VariableLiveness.MAYBE_LIVE) {\n          return first;\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 365
+    },
+    "9": {
+        "file_name": "src/com/google/javascript/jscomp/DeadAssignmentsElimination.java",
+        "from_line_no": 372,
+        "to_line_no": 372,
+        "replaced": "          if (!ControlFlowGraph.isEnteringNewCfgNode(child)) { // Not a FUNCTION\n",
+        "patch_type": "delete",
+        "next_line_no": 373
+    },
+    "10": {
+        "file_name": "src/com/google/javascript/jscomp/DeadAssignmentsElimination.java",
+        "from_line_no": 378,
+        "to_line_no": 378,
+        "replaced": "      }\n",
+        "patch_type": "delete",
+        "next_line_no": 379
+    }
+}

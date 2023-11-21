@@ -1,0 +1,20 @@
+{
+    "num_of_hunks": 2,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/NameAnalyzer.java",
+        "from_line_no": 635,
+        "to_line_no": 636,
+        "replaced_with": "          JsName name = getName(ns.name, true);\n",
+        "replaced": "          JsName name = getName(ns.name, false);\n          if (name != null) {\n",
+        "patch_type": "replace",
+        "next_line_no": 637
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/NameAnalyzer.java",
+        "from_line_no": 639,
+        "to_line_no": 639,
+        "replaced": "          }\n",
+        "patch_type": "delete",
+        "next_line_no": 640
+    }
+}

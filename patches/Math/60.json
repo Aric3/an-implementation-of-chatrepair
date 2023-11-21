@@ -1,0 +1,20 @@
+{
+    "num_of_hunks": 2,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/math/distribution/NormalDistributionImpl.java",
+        "from_line_no": 126,
+        "to_line_no": 126,
+        "replaced_with": "        if (FastMath.abs(dev) > 40 * standardDeviation) { \n            return dev < 0 ? 0.0d : 1.0d;\n        }\n",
+        "replaced": "        try {\n",
+        "patch_type": "replace",
+        "next_line_no": 127
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/math/distribution/NormalDistributionImpl.java",
+        "from_line_no": 129,
+        "to_line_no": 137,
+        "replaced": "        } catch (MaxIterationsExceededException ex) {\n            if (x < (mean - 20 * standardDeviation)) { // JDK 1.5 blows at 38\n                return 0;\n            } else if (x > (mean + 20 * standardDeviation)) {\n                return 1;\n            } else {\n                throw ex;\n            }\n        }\n",
+        "patch_type": "delete",
+        "next_line_no": 138
+    }
+}

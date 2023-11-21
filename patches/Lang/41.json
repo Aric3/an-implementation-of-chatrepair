@@ -1,0 +1,57 @@
+{
+    "num_of_hunks": 8,
+    "0": {
+        "file_name": "src/java/org/apache/commons/lang/ClassUtils.java",
+        "replaced_with": "        StringBuffer arrayPrefix = new StringBuffer();\n",
+        "patch_type": "insert",
+        "next_line_no": 191
+    },
+    "1": {
+        "file_name": "src/java/org/apache/commons/lang/ClassUtils.java",
+        "replaced_with": "        if (className.startsWith(\"[\")) {\n            while (className.charAt(0) == '[') {\n                className = className.substring(1);\n                arrayPrefix.append(\"[]\");\n            }\n",
+        "patch_type": "insert",
+        "next_line_no": 193
+    },
+    "2": {
+        "file_name": "src/java/org/apache/commons/lang/ClassUtils.java",
+        "replaced_with": "            if (className.charAt(0) == 'L' && className.charAt(className.length() - 1) == ';') {\n                className = className.substring(1, className.length() - 1);\n            }\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 194
+    },
+    "3": {
+        "file_name": "src/java/org/apache/commons/lang/ClassUtils.java",
+        "replaced_with": "        if (reverseAbbreviationMap.containsKey(className)) {\n            className = reverseAbbreviationMap.get(className);\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 195
+    },
+    "4": {
+        "file_name": "src/java/org/apache/commons/lang/ClassUtils.java",
+        "from_line_no": 203,
+        "to_line_no": 203,
+        "replaced_with": "        return out + arrayPrefix;\n",
+        "replaced": "        return out;\n",
+        "patch_type": "replace",
+        "next_line_no": 204
+    },
+    "5": {
+        "file_name": "src/java/org/apache/commons/lang/ClassUtils.java",
+        "from_line_no": 245,
+        "to_line_no": 245,
+        "replaced_with": "        if (className == null || className.length() == 0) {\n",
+        "replaced": "        if (className == null) {\n",
+        "patch_type": "replace",
+        "next_line_no": 246
+    },
+    "6": {
+        "file_name": "src/java/org/apache/commons/lang/ClassUtils.java",
+        "replaced_with": "        while (className.charAt(0) == '[') {\n            className = className.substring(1);\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 250
+    },
+    "7": {
+        "file_name": "src/java/org/apache/commons/lang/ClassUtils.java",
+        "replaced_with": "        if (className.charAt(0) == 'L' && className.charAt(className.length() - 1) == ';') {\n            className = className.substring(1);\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 251
+    }
+}

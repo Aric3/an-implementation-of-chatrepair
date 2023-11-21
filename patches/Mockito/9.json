@@ -1,0 +1,21 @@
+{
+    "num_of_hunks": 3,
+    "0": {
+        "file_name": "src/org/mockito/internal/stubbing/answers/CallsRealMethods.java",
+        "replaced_with": "import java.lang.reflect.Modifier;\n",
+        "patch_type": "insert",
+        "next_line_no": 8
+    },
+    "1": {
+        "file_name": "src/org/mockito/internal/stubbing/answers/CallsRealMethods.java",
+        "replaced_with": "import org.mockito.internal.stubbing.defaultanswers.GloballyConfiguredAnswer;\n",
+        "patch_type": "insert",
+        "next_line_no": 9
+    },
+    "2": {
+        "file_name": "src/org/mockito/internal/stubbing/answers/CallsRealMethods.java",
+        "replaced_with": "    \tif (Modifier.isAbstract(invocation.getMethod().getModifiers())) {\n    \t\treturn new GloballyConfiguredAnswer().answer(invocation);\n    \t}\n",
+        "patch_type": "insert",
+        "next_line_no": 36
+    }
+}

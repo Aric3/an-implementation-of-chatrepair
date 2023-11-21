@@ -1,0 +1,21 @@
+{
+    "num_of_hunks": 3,
+    "0": {
+        "file_name": "src/org/mockito/internal/configuration/injection/FinalMockCandidateFilter.java",
+        "replaced_with": "import org.mockito.internal.util.reflection.BeanPropertySetter;\n",
+        "patch_type": "insert",
+        "next_line_no": 4
+    },
+    "1": {
+        "file_name": "src/org/mockito/internal/configuration/injection/FinalMockCandidateFilter.java",
+        "replaced_with": "                        if (!new BeanPropertySetter(fieldInstance, field).set(matchingMock)) {\n",
+        "patch_type": "insert",
+        "next_line_no": 25
+    },
+    "2": {
+        "file_name": "src/org/mockito/internal/configuration/injection/FinalMockCandidateFilter.java",
+        "replaced_with": "                        }\n",
+        "patch_type": "insert",
+        "next_line_no": 26
+    }
+}

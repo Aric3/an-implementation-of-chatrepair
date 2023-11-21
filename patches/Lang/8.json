@@ -1,0 +1,25 @@
+{
+    "num_of_hunks": 3,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/lang3/time/FastDatePrinter.java",
+        "from_line_no": 1098,
+        "to_line_no": 1098,
+        "replaced": "        private final TimeZone zone;\n",
+        "patch_type": "delete",
+        "next_line_no": 1099
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/lang3/time/FastDatePrinter.java",
+        "from_line_no": 1112,
+        "to_line_no": 1112,
+        "replaced": "            zone = timeZone;\n",
+        "patch_type": "delete",
+        "next_line_no": 1113
+    },
+    "2": {
+        "file_name": "src/main/java/org/apache/commons/lang3/time/FastDatePrinter.java",
+        "replaced_with": "            TimeZone zone = calendar.getTimeZone();\n",
+        "patch_type": "insert",
+        "next_line_no": 1134
+    }
+}

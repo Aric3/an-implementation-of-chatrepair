@@ -1,0 +1,12 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/math/util/MultidimensionalCounter.java",
+        "from_line_no": 237,
+        "to_line_no": 243,
+        "replaced_with": "        indices[last] = index - count;\n",
+        "replaced": "        int idx = 1;\n        while (count < index) {\n            count += idx;\n            ++idx;\n        }\n        --idx;\n        indices[last] = idx;\n",
+        "patch_type": "replace",
+        "next_line_no": 244
+    }
+}

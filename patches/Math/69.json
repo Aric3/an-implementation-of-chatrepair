@@ -1,0 +1,12 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/math/stat/correlation/PearsonsCorrelation.java",
+        "from_line_no": 171,
+        "to_line_no": 171,
+        "replaced_with": "                    out[i][j] = 2 * tDistribution.cumulativeProbability(-t);\n",
+        "replaced": "                    out[i][j] = 2 * (1 - tDistribution.cumulativeProbability(t));\n",
+        "patch_type": "replace",
+        "next_line_no": 172
+    }
+}

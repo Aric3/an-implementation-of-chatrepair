@@ -1,0 +1,9 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/math/linear/OpenMapRealMatrix.java",
+        "replaced_with": "        long lRow = (long) rowDimension;\n        long lCol = (long) columnDimension;\n        if (lRow * lCol >= (long) Integer.MAX_VALUE) {\n            throw new NumberIsTooLargeException(lRow * lCol, Integer.MAX_VALUE, false);\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 50
+    }
+}

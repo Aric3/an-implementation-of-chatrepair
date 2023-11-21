@@ -1,0 +1,12 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/java/org/apache/commons/math/analysis/solvers/UnivariateRealSolverUtils.java",
+        "from_line_no": 198,
+        "to_line_no": 198,
+        "replaced_with": "        if (fa * fb > 0.0 ) {\n",
+        "replaced": "        if (fa * fb >= 0.0 ) {\n",
+        "patch_type": "replace",
+        "next_line_no": 199
+    }
+}

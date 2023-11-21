@@ -1,0 +1,21 @@
+{
+    "num_of_hunks": 2,
+    "0": {
+        "file_name": "src/main/java/org/joda/time/Period.java",
+        "from_line_no": 1628,
+        "to_line_no": 1631,
+        "replaced_with": "            long totalMonths = years * 12L + months;\n            if (type.isSupported(DurationFieldType.YEARS_TYPE)) {\n                int normalizedYears = FieldUtils.safeToInt(totalMonths / 12);\n                result = result.withYears(normalizedYears);\n                totalMonths = totalMonths - (normalizedYears * 12);\n",
+        "replaced": "            years = FieldUtils.safeAdd(years, months / 12);\n            months = months % 12;\n            if (years != 0) {\n                result = result.withYears(years);\n",
+        "patch_type": "replace",
+        "next_line_no": 1632
+    },
+    "1": {
+        "file_name": "src/main/java/org/joda/time/Period.java",
+        "from_line_no": 1633,
+        "to_line_no": 1634,
+        "replaced_with": "            if (type.isSupported(DurationFieldType.MONTHS_TYPE)) {\n                int normalizedMonths = FieldUtils.safeToInt(totalMonths);\n                result = result.withMonths(normalizedMonths);\n                totalMonths = totalMonths - normalizedMonths;\n            }\n            if (totalMonths != 0) {\n                throw new UnsupportedOperationException(\"Unable to normalize as PeriodType is missing either years or months but period has a month/year amount: \" + toString());\n",
+        "replaced": "            if (months != 0) {\n                result = result.withMonths(months);\n",
+        "patch_type": "replace",
+        "next_line_no": 1635
+    }
+}

@@ -1,0 +1,11 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/Compiler.java",
+        "from_line_no": 1285,
+        "to_line_no": 1285,
+        "replaced": "          !options.skipAllPasses &&\n",
+        "patch_type": "delete",
+        "next_line_no": 1286
+    }
+}

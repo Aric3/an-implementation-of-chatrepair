@@ -1,0 +1,21 @@
+{
+    "num_of_hunks": 2,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/math/distribution/PoissonDistributionImpl.java",
+        "from_line_no": 22,
+        "to_line_no": 22,
+        "replaced_with": "import org.apache.commons.math.exception.NotStrictlyPositiveException;\n",
+        "replaced": "import org.apache.commons.math.MathRuntimeException;\n",
+        "patch_type": "replace",
+        "next_line_no": 23
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/math/distribution/PoissonDistributionImpl.java",
+        "from_line_no": 94,
+        "to_line_no": 94,
+        "replaced_with": "            throw new NotStrictlyPositiveException(LocalizedFormats.MEAN, p);\n",
+        "replaced": "            throw MathRuntimeException.createIllegalArgumentException(LocalizedFormats.NOT_POSITIVE_POISSON_MEAN, p);\n",
+        "patch_type": "replace",
+        "next_line_no": 95
+    }
+}

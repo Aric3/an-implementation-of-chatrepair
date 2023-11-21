@@ -1,0 +1,33 @@
+{
+    "num_of_hunks": 5,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/ReferenceCollectingCallback.java",
+        "replaced_with": "      for (BasicBlock block = ref.getBasicBlock();\n           block != null; block = block.getParent()) {\n        if (block.isFunction) {\n          break;\n        } else if (block.isLoop) {\n          return false;\n        }\n      }\n",
+        "patch_type": "insert",
+        "next_line_no": 361
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/ReferenceCollectingCallback.java",
+        "replaced_with": "    private final boolean isFunction;\n",
+        "patch_type": "insert",
+        "next_line_no": 545
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/jscomp/ReferenceCollectingCallback.java",
+        "replaced_with": "    private final boolean isLoop;\n",
+        "patch_type": "insert",
+        "next_line_no": 549
+    },
+    "3": {
+        "file_name": "src/com/google/javascript/jscomp/ReferenceCollectingCallback.java",
+        "replaced_with": "      this.isFunction = root.getType() == Token.FUNCTION;\n",
+        "patch_type": "insert",
+        "next_line_no": 561
+    },
+    "4": {
+        "file_name": "src/com/google/javascript/jscomp/ReferenceCollectingCallback.java",
+        "replaced_with": "      if (root.getParent() != null) {\n        int pType = root.getParent().getType();\n        this.isLoop = pType == Token.DO ||\n            pType == Token.WHILE ||\n            pType == Token.FOR;\n      } else {\n        this.isLoop = false;\n      }\n",
+        "patch_type": "insert",
+        "next_line_no": 562
+    }
+}

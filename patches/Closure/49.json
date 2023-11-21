@@ -1,0 +1,53 @@
+{
+    "num_of_hunks": 8,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java",
+        "from_line_no": 91,
+        "to_line_no": 98,
+        "replaced": "    if (declarationRoot.getType() == Token.FUNCTION) {\n      for (Node c = declarationRoot.getFirstChild().getNext().getFirstChild(); c != null; c = c.getNext()) {\n        String name = c.getString();\n        renamer.addDeclaredName(name);\n      }\n      Node functionBody = declarationRoot.getLastChild();\n      findDeclaredNames(functionBody, null, renamer);\n    }  else \n",
+        "patch_type": "delete",
+        "next_line_no": 99
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java",
+        "replaced_with": "          nameStack.push(renamer);\n        }\n        break;\n",
+        "patch_type": "insert",
+        "next_line_no": 130
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java",
+        "replaced_with": "      case Token.LP: {\n          Renamer renamer = nameStack.peek().forChildScope();\n",
+        "patch_type": "insert",
+        "next_line_no": 131
+    },
+    "3": {
+        "file_name": "src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java",
+        "replaced_with": "          for (Node c = n.getFirstChild(); c != null; c = c.getNext()) {\n            String name = c.getString();\n            renamer.addDeclaredName(name);\n          }\n",
+        "patch_type": "insert",
+        "next_line_no": 133
+    },
+    "4": {
+        "file_name": "src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java",
+        "replaced_with": "          Node functionBody = n.getNext();\n          findDeclaredNames(functionBody, null, renamer);\n",
+        "patch_type": "insert",
+        "next_line_no": 135
+    },
+    "5": {
+        "file_name": "src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java",
+        "replaced_with": "        nameStack.pop();\n",
+        "patch_type": "insert",
+        "next_line_no": 173
+    },
+    "6": {
+        "file_name": "src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java",
+        "replaced_with": "      case Token.LP:\n",
+        "patch_type": "insert",
+        "next_line_no": 177
+    },
+    "7": {
+        "file_name": "src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java",
+        "replaced_with": "        break;\n",
+        "patch_type": "insert",
+        "next_line_no": 180
+    }
+}

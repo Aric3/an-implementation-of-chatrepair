@@ -1,0 +1,35 @@
+{
+    "num_of_hunks": 5,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/NodeUtil.java",
+        "replaced_with": "      case Token.FUNCTION:\n",
+        "patch_type": "insert",
+        "next_line_no": 602
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/NodeUtil.java",
+        "replaced_with": "        Preconditions.checkState(NodeUtil.isAnonymousFunction(n));\n        return false;\n",
+        "patch_type": "insert",
+        "next_line_no": 604
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/jscomp/PureFunctionIdentifier.java",
+        "replaced_with": "    if (NodeUtil.isGetProp(name) || NodeUtil.isName(name)) {\n",
+        "patch_type": "insert",
+        "next_line_no": 177
+    },
+    "3": {
+        "file_name": "src/com/google/javascript/jscomp/PureFunctionIdentifier.java",
+        "from_line_no": 179,
+        "to_line_no": 181,
+        "replaced": "      if (!NodeUtil.isGetProp(name) && !NodeUtil.isName(name)) {\n        return null;\n      }\n",
+        "patch_type": "delete",
+        "next_line_no": 182
+    },
+    "4": {
+        "file_name": "src/com/google/javascript/jscomp/PureFunctionIdentifier.java",
+        "replaced_with": "    } else if (name.getType() == Token.OR || name.getType() == Token.HOOK) {\n      Node firstVal;\n      if (name.getType() == Token.HOOK) {\n        firstVal = name.getFirstChild().getNext();\n      } else {\n        firstVal = name.getFirstChild();\n      }\n\n      Collection<Definition> defs1 = getCallableDefinitions(definitionProvider,\n                                                            firstVal);\n      Collection<Definition> defs2 = getCallableDefinitions(definitionProvider,\n                                                            firstVal.getNext());\n      if (defs1 != null && defs2 != null) {\n        defs1.addAll(defs2);\n        return defs1;\n      } else {\n        return null;\n      }\n    } else {\n      return null;\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 198
+    }
+}

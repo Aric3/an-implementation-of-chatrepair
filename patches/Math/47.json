@@ -1,0 +1,33 @@
+{
+    "num_of_hunks": 4,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/math/complex/Complex.java",
+        "replaced_with": "    private final transient boolean isZero;\n",
+        "patch_type": "insert",
+        "next_line_no": 82
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/math/complex/Complex.java",
+        "replaced_with": "        isZero = real == 0 && imaginary == 0;\n",
+        "patch_type": "insert",
+        "next_line_no": 105
+    },
+    "2": {
+        "file_name": "src/main/java/org/apache/commons/math/complex/Complex.java",
+        "from_line_no": 256,
+        "to_line_no": 257,
+        "replaced_with": "        if (divisor.isZero) {\n            return isZero ? NaN : INF;\n",
+        "replaced": "        if (divisor.getReal() == 0.0 && divisor.getImaginary() == 0.0) {\n            return NaN;\n",
+        "patch_type": "replace",
+        "next_line_no": 258
+    },
+    "3": {
+        "file_name": "src/main/java/org/apache/commons/math/complex/Complex.java",
+        "from_line_no": 293,
+        "to_line_no": 293,
+        "replaced_with": "            return isZero ? NaN : INF;\n",
+        "replaced": "            return NaN;\n",
+        "patch_type": "replace",
+        "next_line_no": 294
+    }
+}

@@ -1,0 +1,34 @@
+{
+    "num_of_hunks": 4,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/UnreachableCodeElimination.java",
+        "from_line_no": 153,
+        "to_line_no": 158,
+        "replaced": "    if (n.getParent() == null) {\n      List<DiGraphEdge<Node,Branch>> outEdges = gNode.getOutEdges();\n      if (outEdges.size() == 1) {\n        return tryRemoveUnconditionalBranching(outEdges.get(0).getDestination().getValue());\n      }\n    }\n",
+        "patch_type": "delete",
+        "next_line_no": 159
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/UnreachableCodeElimination.java",
+        "from_line_no": 160,
+        "to_line_no": 166,
+        "replaced": "      case Token.BLOCK:\n        if (n.hasChildren()) {\n          Node first = n.getFirstChild();\n          return tryRemoveUnconditionalBranching(first);\n        } else {\n          return tryRemoveUnconditionalBranching(ControlFlowAnalysis.computeFollowNode(n));\n        }\n",
+        "patch_type": "delete",
+        "next_line_no": 167
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/jscomp/UnreachableCodeElimination.java",
+        "from_line_no": 183,
+        "to_line_no": 183,
+        "replaced_with": "          Node fallThrough = computeFollowing(n);\n",
+        "replaced": "          Node fallThrough = tryRemoveUnconditionalBranching(computeFollowing(n));\n",
+        "patch_type": "replace",
+        "next_line_no": 184
+    },
+    "3": {
+        "file_name": "src/com/google/javascript/jscomp/UnreachableCodeElimination.java",
+        "replaced_with": "    while (next != null && next.getType() == Token.BLOCK) {\n      if (next.hasChildren()) {\n        next = next.getFirstChild();\n      } else {\n        next = computeFollowing(next);\n      }\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 196
+    }
+}

@@ -1,0 +1,60 @@
+{
+    "num_of_hunks": 7,
+    "0": {
+        "file_name": "src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+        "replaced_with": "import org.mockito.mock.MockCreationSettings;\n",
+        "patch_type": "insert",
+        "next_line_no": 17
+    },
+    "1": {
+        "file_name": "src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+        "from_line_no": 71,
+        "to_line_no": 71,
+        "replaced_with": "                newDeepStubMock(returnTypeGenericMetadata, invocation.getMock()),\n",
+        "replaced": "                newDeepStubMock(returnTypeGenericMetadata),\n",
+        "patch_type": "replace",
+        "next_line_no": 72
+    },
+    "2": {
+        "file_name": "src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+        "from_line_no": 87,
+        "to_line_no": 87,
+        "replaced_with": "    private Object newDeepStubMock(GenericMetadataSupport returnTypeGenericMetadata, Object parentMock) {\n        MockCreationSettings parentMockSettings = new MockUtil().getMockSettings(parentMock);\n",
+        "replaced": "    private Object newDeepStubMock(GenericMetadataSupport returnTypeGenericMetadata) {\n",
+        "patch_type": "replace",
+        "next_line_no": 88
+    },
+    "3": {
+        "file_name": "src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+        "from_line_no": 90,
+        "to_line_no": 90,
+        "replaced_with": "                withSettingsUsing(returnTypeGenericMetadata, parentMockSettings)\n",
+        "replaced": "                withSettingsUsing(returnTypeGenericMetadata)\n",
+        "patch_type": "replace",
+        "next_line_no": 91
+    },
+    "4": {
+        "file_name": "src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+        "from_line_no": 94,
+        "to_line_no": 94,
+        "replaced_with": "    private MockSettings withSettingsUsing(GenericMetadataSupport returnTypeGenericMetadata, MockCreationSettings parentMockSettings) {\n",
+        "replaced": "    private MockSettings withSettingsUsing(GenericMetadataSupport returnTypeGenericMetadata) {\n",
+        "patch_type": "replace",
+        "next_line_no": 95
+    },
+    "5": {
+        "file_name": "src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+        "from_line_no": 99,
+        "to_line_no": 99,
+        "replaced_with": "        return propagateSerializationSettings(mockSettings, parentMockSettings)\n",
+        "replaced": "        return mockSettings.serializable()\n",
+        "patch_type": "replace",
+        "next_line_no": 100
+    },
+    "6": {
+        "file_name": "src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+        "replaced_with": "    private MockSettings propagateSerializationSettings(MockSettings mockSettings, MockCreationSettings parentMockSettings) {\n        return mockSettings.serializable(parentMockSettings.getSerializableMode());\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 103
+    }
+}

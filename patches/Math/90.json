@@ -1,0 +1,15 @@
+{
+    "num_of_hunks": 2,
+    "0": {
+        "file_name": "src/java/org/apache/commons/math/stat/Frequency.java",
+        "replaced_with": "        addValue((Comparable<?>) v);\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 110
+    },
+    "1": {
+        "file_name": "src/java/org/apache/commons/math/stat/Frequency.java",
+        "replaced_with": "    public void addValue(Comparable<?>v){\n",
+        "patch_type": "insert",
+        "next_line_no": 121
+    }
+}

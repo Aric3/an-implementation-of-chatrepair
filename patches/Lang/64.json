@@ -1,0 +1,33 @@
+{
+    "num_of_hunks": 5,
+    "0": {
+        "file_name": "src/java/org/apache/commons/lang/enums/ValuedEnum.java",
+        "replaced_with": "        if (other == this) {\n            return 0;\n        }\n        if (other.getClass() != this.getClass()) {\n            if (other.getClass().getName().equals(this.getClass().getName())) {\n                return iValue - getValueInOtherClassLoader(other);\n            }\n            throw new ClassCastException(\n                    \"Different enum class '\" + ClassUtils.getShortClassName(other.getClass()) + \"'\");\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 183
+    },
+    "1": {
+        "file_name": "src/java/org/apache/commons/lang/enums/ValuedEnum.java",
+        "replaced_with": "    private int getValueInOtherClassLoader(Object other) {\n        try {\n            Method mth = other.getClass().getMethod(\"getValue\", null);\n            Integer value = (Integer) mth.invoke(other, null);\n            return value.intValue();\n        } catch (NoSuchMethodException e) {\n",
+        "patch_type": "insert",
+        "next_line_no": 192
+    },
+    "2": {
+        "file_name": "src/java/org/apache/commons/lang/enums/ValuedEnum.java",
+        "replaced_with": "        } catch (IllegalAccessException e) {\n",
+        "patch_type": "insert",
+        "next_line_no": 193
+    },
+    "3": {
+        "file_name": "src/java/org/apache/commons/lang/enums/ValuedEnum.java",
+        "replaced_with": "        } catch (InvocationTargetException e) {\n",
+        "patch_type": "insert",
+        "next_line_no": 194
+    },
+    "4": {
+        "file_name": "src/java/org/apache/commons/lang/enums/ValuedEnum.java",
+        "replaced_with": "        }\n        throw new IllegalStateException(\"This should not happen\");\n    }\n",
+        "patch_type": "insert",
+        "next_line_no": 195
+    }
+}

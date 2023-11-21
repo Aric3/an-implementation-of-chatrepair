@@ -1,0 +1,45 @@
+{
+    "num_of_hunks": 5,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/CheckSideEffects.java",
+        "from_line_no": 101,
+        "to_line_no": 104,
+        "replaced_with": "    if (n.isExprResult() || n.isBlock()) {\n",
+        "replaced": "    if (parent.getType() == Token.COMMA) {\n      Node gramps = parent.getParent();\n      if (gramps.isCall() && parent == gramps.getFirstChild()) {\n        if (n == parent.getFirstChild() && parent.getChildCount() == 2 && n.getNext().isName() && \"eval\".equals(n.getNext().getString())) {\n",
+        "patch_type": "replace",
+        "next_line_no": 105
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/CheckSideEffects.java",
+        "from_line_no": 106,
+        "to_line_no": 106,
+        "replaced": "        }\n",
+        "patch_type": "delete",
+        "next_line_no": 107
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/jscomp/CheckSideEffects.java",
+        "from_line_no": 111,
+        "to_line_no": 125,
+        "replaced_with": "    if (n.isQualifiedName() && n.getJSDocInfo() != null) {\n",
+        "replaced": "      if (n == parent.getLastChild()) {\n        for (Node an : parent.getAncestors()) {\n          int ancestorType = an.getType();\n          if (ancestorType == Token.COMMA)\n            continue;\n          if (ancestorType != Token.EXPR_RESULT && ancestorType != Token.BLOCK)\n            return;\n          else\n            break;\n        }\n      }\n    } else if (parent.getType() != Token.EXPR_RESULT && parent.getType() != Token.BLOCK) {\n      if (parent.getType() == Token.FOR && parent.getChildCount() == 4 && (n == parent.getFirstChild() ||\n           n == parent.getFirstChild().getNext().getNext())) {\n      } else {\n",
+        "patch_type": "replace",
+        "next_line_no": 126
+    },
+    "3": {
+        "file_name": "src/com/google/javascript/jscomp/CheckSideEffects.java",
+        "from_line_no": 127,
+        "to_line_no": 127,
+        "replaced": "      }\n",
+        "patch_type": "delete",
+        "next_line_no": 128
+    },
+    "4": {
+        "file_name": "src/com/google/javascript/jscomp/CheckSideEffects.java",
+        "from_line_no": 134,
+        "to_line_no": 138,
+        "replaced": "      if (n.isQualifiedName() && n.getJSDocInfo() != null) {\n        return;\n      } else if (n.isExprResult()) {\n        return;\n      }\n",
+        "patch_type": "delete",
+        "next_line_no": 139
+    }
+}

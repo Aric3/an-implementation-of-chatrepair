@@ -1,0 +1,69 @@
+{
+    "num_of_hunks": 8,
+    "0": {
+        "file_name": "src/main/java/org/joda/time/DateTimeZone.java",
+        "replaced_with": "            map.put(\"WET\", \"WET\");\n            map.put(\"CET\", \"CET\");\n            map.put(\"MET\", \"CET\");\n            map.put(\"ECT\", \"CET\");\n            map.put(\"EET\", \"EET\");\n",
+        "patch_type": "insert",
+        "next_line_no": 564
+    },
+    "1": {
+        "file_name": "src/main/java/org/joda/time/DateTimeZone.java",
+        "from_line_no": 572,
+        "to_line_no": 572,
+        "replaced_with": "            map.put(\"IET\", \"America/Indiana/Indianapolis\");\n",
+        "replaced": "            map.put(\"IET\", \"America/Indianapolis\");\n",
+        "patch_type": "replace",
+        "next_line_no": 573
+    },
+    "2": {
+        "file_name": "src/main/java/org/joda/time/DateTimeZone.java",
+        "from_line_no": 575,
+        "to_line_no": 575,
+        "replaced_with": "            map.put(\"AGT\", \"America/Argentina/Buenos_Aires\");\n",
+        "replaced": "            map.put(\"AGT\", \"America/Buenos_Aires\");\n",
+        "patch_type": "replace",
+        "next_line_no": 576
+    },
+    "3": {
+        "file_name": "src/main/java/org/joda/time/DateTimeZone.java",
+        "from_line_no": 577,
+        "to_line_no": 578,
+        "replaced": "            map.put(\"WET\", \"Europe/London\");\n            map.put(\"ECT\", \"Europe/Paris\");\n",
+        "patch_type": "delete",
+        "next_line_no": 579
+    },
+    "4": {
+        "file_name": "src/main/java/org/joda/time/DateTimeZone.java",
+        "from_line_no": 581,
+        "to_line_no": 581,
+        "replaced": "            map.put(\"EET\", \"Europe/Bucharest\");\n",
+        "patch_type": "delete",
+        "next_line_no": 582
+    },
+    "5": {
+        "file_name": "src/main/java/org/joda/time/DateTimeZone.java",
+        "from_line_no": 583,
+        "to_line_no": 583,
+        "replaced": "            map.put(\"MET\", \"Asia/Tehran\");\n",
+        "patch_type": "delete",
+        "next_line_no": 584
+    },
+    "6": {
+        "file_name": "src/main/java/org/joda/time/DateTimeZone.java",
+        "from_line_no": 586,
+        "to_line_no": 586,
+        "replaced_with": "            map.put(\"IST\", \"Asia/Kolkata\");\n",
+        "replaced": "            map.put(\"IST\", \"Asia/Calcutta\");\n",
+        "patch_type": "replace",
+        "next_line_no": 587
+    },
+    "7": {
+        "file_name": "src/main/java/org/joda/time/DateTimeZone.java",
+        "from_line_no": 588,
+        "to_line_no": 588,
+        "replaced_with": "            map.put(\"VST\", \"Asia/Ho_Chi_Minh\");\n",
+        "replaced": "            map.put(\"VST\", \"Asia/Saigon\");\n",
+        "patch_type": "replace",
+        "next_line_no": 589
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "num_of_hunks": 2,
+    "0": {
+        "file_name": "src/java/org/apache/commons/lang/text/StrBuilder.java",
+        "replaced_with": "            if (str == null) {\n                str = \"\";\n            }\n",
+        "patch_type": "insert",
+        "next_line_no": 1186
+    },
+    "1": {
+        "file_name": "src/java/org/apache/commons/lang/text/StrBuilder.java",
+        "replaced_with": "            if (str == null) {\n                str = \"\";\n            }\n",
+        "patch_type": "insert",
+        "next_line_no": 1230
+    }
+}

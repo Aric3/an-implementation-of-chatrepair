@@ -1,0 +1,285 @@
+{
+    "num_of_hunks": 32,
+    "0": {
+        "file_name": "src/com/google/javascript/rhino/jstype/ArrowType.java",
+        "from_line_no": 177,
+        "to_line_no": 177,
+        "replaced_with": "  boolean hasEqualParameters(ArrowType that, EquivalenceMethod eqMethod) {\n",
+        "replaced": "  boolean hasEqualParameters(ArrowType that, boolean tolerateUnknowns) {\n",
+        "patch_type": "replace",
+        "next_line_no": 178
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/rhino/jstype/ArrowType.java",
+        "from_line_no": 187,
+        "to_line_no": 187,
+        "replaced_with": "                otherParamType, eqMethod)) {\n",
+        "replaced": "                otherParamType, tolerateUnknowns)) {\n",
+        "patch_type": "replace",
+        "next_line_no": 188
+    },
+    "2": {
+        "file_name": "src/com/google/javascript/rhino/jstype/ArrowType.java",
+        "from_line_no": 204,
+        "to_line_no": 204,
+        "replaced_with": "      ArrowType that, EquivalenceMethod eqMethod) {\n",
+        "replaced": "      ArrowType that, boolean tolerateUnknowns) {\n",
+        "patch_type": "replace",
+        "next_line_no": 205
+    },
+    "3": {
+        "file_name": "src/com/google/javascript/rhino/jstype/ArrowType.java",
+        "from_line_no": 206,
+        "to_line_no": 206,
+        "replaced_with": "    if (!returnType.checkEquivalenceHelper(that.returnType, eqMethod)) {\n",
+        "replaced": "    if (!returnType.checkEquivalenceHelper(that.returnType, tolerateUnknowns)) {\n",
+        "patch_type": "replace",
+        "next_line_no": 207
+    },
+    "4": {
+        "file_name": "src/com/google/javascript/rhino/jstype/ArrowType.java",
+        "from_line_no": 209,
+        "to_line_no": 209,
+        "replaced_with": "    return hasEqualParameters(that, eqMethod);\n",
+        "replaced": "    return hasEqualParameters(that, tolerateUnknowns);\n",
+        "patch_type": "replace",
+        "next_line_no": 210
+    },
+    "5": {
+        "file_name": "src/com/google/javascript/rhino/jstype/FunctionType.java",
+        "from_line_no": 792,
+        "to_line_no": 792,
+        "replaced_with": "    if (call.hasEqualParameters(other.call, EquivalenceMethod.IDENTITY)) {\n",
+        "replaced": "    if (call.hasEqualParameters(other.call, false)) {\n",
+        "patch_type": "replace",
+        "next_line_no": 793
+    },
+    "6": {
+        "file_name": "src/com/google/javascript/rhino/jstype/FunctionType.java",
+        "from_line_no": 890,
+        "to_line_no": 890,
+        "replaced_with": "      FunctionType that, EquivalenceMethod eqMethod) {\n",
+        "replaced": "      FunctionType that, boolean tolerateUnknowns) {\n",
+        "patch_type": "replace",
+        "next_line_no": 891
+    },
+    "7": {
+        "file_name": "src/com/google/javascript/rhino/jstype/FunctionType.java",
+        "from_line_no": 908,
+        "to_line_no": 909,
+        "replaced_with": "        that.typeOfThis, eqMethod) &&\n        call.checkArrowEquivalenceHelper(that.call, eqMethod);\n",
+        "replaced": "        that.typeOfThis, tolerateUnknowns) &&\n        call.checkArrowEquivalenceHelper(that.call, tolerateUnknowns);\n",
+        "patch_type": "replace",
+        "next_line_no": 910
+    },
+    "8": {
+        "file_name": "src/com/google/javascript/rhino/jstype/FunctionType.java",
+        "from_line_no": 918,
+        "to_line_no": 918,
+        "replaced_with": "    return this.call.checkArrowEquivalenceHelper(\n        otherType.call, EquivalenceMethod.IDENTITY);\n",
+        "replaced": "    return this.call.checkArrowEquivalenceHelper(otherType.call, false);\n",
+        "patch_type": "replace",
+        "next_line_no": 919
+    },
+    "9": {
+        "file_name": "src/com/google/javascript/rhino/jstype/JSType.java",
+        "from_line_no": 492,
+        "to_line_no": 492,
+        "replaced_with": "    return checkEquivalenceHelper(that, EquivalenceMethod.IDENTITY);\n",
+        "replaced": "    return checkEquivalenceHelper(that, false);\n",
+        "patch_type": "replace",
+        "next_line_no": 493
+    },
+    "10": {
+        "file_name": "src/com/google/javascript/rhino/jstype/JSType.java",
+        "from_line_no": 500,
+        "to_line_no": 500,
+        "replaced_with": "    return checkEquivalenceHelper(that, EquivalenceMethod.INVARIANT);\n",
+        "replaced": "    return checkEquivalenceHelper(that, false);\n",
+        "patch_type": "replace",
+        "next_line_no": 501
+    },
+    "11": {
+        "file_name": "src/com/google/javascript/rhino/jstype/JSType.java",
+        "from_line_no": 514,
+        "to_line_no": 514,
+        "replaced_with": "    return !checkEquivalenceHelper(that, EquivalenceMethod.DATA_FLOW);\n",
+        "replaced": "    return !checkEquivalenceHelper(that, true);\n",
+        "patch_type": "replace",
+        "next_line_no": 515
+    },
+    "12": {
+        "file_name": "src/com/google/javascript/rhino/jstype/JSType.java",
+        "from_line_no": 520,
+        "to_line_no": 520,
+        "replaced_with": "  boolean checkEquivalenceHelper(JSType that, EquivalenceMethod eqMethod) {\n",
+        "replaced": "  boolean checkEquivalenceHelper(JSType that, boolean tolerateUnknowns) {\n",
+        "patch_type": "replace",
+        "next_line_no": 521
+    },
+    "13": {
+        "file_name": "src/com/google/javascript/rhino/jstype/JSType.java",
+        "from_line_no": 528,
+        "to_line_no": 528,
+        "replaced_with": "      if (eqMethod == EquivalenceMethod.INVARIANT) {\n",
+        "replaced": "      if (tolerateUnknowns) {\n",
+        "patch_type": "replace",
+        "next_line_no": 529
+    },
+    "14": {
+        "file_name": "src/com/google/javascript/rhino/jstype/JSType.java",
+        "replaced_with": "        return true;\n      } else if (eqMethod == EquivalenceMethod.DATA_FLOW) {\n",
+        "patch_type": "insert",
+        "next_line_no": 531
+    },
+    "15": {
+        "file_name": "src/com/google/javascript/rhino/jstype/JSType.java",
+        "from_line_no": 545,
+        "to_line_no": 545,
+        "replaced_with": "          that.toMaybeUnionType(), eqMethod);\n",
+        "replaced": "          that.toMaybeUnionType(), tolerateUnknowns);\n",
+        "patch_type": "replace",
+        "next_line_no": 546
+    },
+    "16": {
+        "file_name": "src/com/google/javascript/rhino/jstype/JSType.java",
+        "from_line_no": 550,
+        "to_line_no": 550,
+        "replaced_with": "          that.toMaybeFunctionType(), eqMethod);\n",
+        "replaced": "          that.toMaybeFunctionType(), tolerateUnknowns);\n",
+        "patch_type": "replace",
+        "next_line_no": 551
+    },
+    "17": {
+        "file_name": "src/com/google/javascript/rhino/jstype/JSType.java",
+        "from_line_no": 555,
+        "to_line_no": 555,
+        "replaced_with": "          that.toMaybeRecordType(), eqMethod);\n",
+        "replaced": "          that.toMaybeRecordType(), tolerateUnknowns);\n",
+        "patch_type": "replace",
+        "next_line_no": 556
+    },
+    "18": {
+        "file_name": "src/com/google/javascript/rhino/jstype/JSType.java",
+        "from_line_no": 565,
+        "to_line_no": 566,
+        "replaced_with": "            thatParamType.getParameterType(), eqMethod);\n      } else if (eqMethod == EquivalenceMethod.IDENTITY) {\n        paramsMatch = false;\n      } else {\n",
+        "replaced": "            thatParamType.getParameterType(), tolerateUnknowns);\n      } else if (tolerateUnknowns) {\n",
+        "patch_type": "replace",
+        "next_line_no": 567
+    },
+    "19": {
+        "file_name": "src/com/google/javascript/rhino/jstype/JSType.java",
+        "from_line_no": 571,
+        "to_line_no": 572,
+        "replaced": "      } else {\n        paramsMatch = false;\n",
+        "patch_type": "delete",
+        "next_line_no": 573
+    },
+    "20": {
+        "file_name": "src/com/google/javascript/rhino/jstype/JSType.java",
+        "from_line_no": 580,
+        "to_line_no": 580,
+        "replaced_with": "          thisRootType.checkEquivalenceHelper(thatRootType, eqMethod);\n",
+        "replaced": "          thisRootType.checkEquivalenceHelper(thatRootType, tolerateUnknowns);\n",
+        "patch_type": "replace",
+        "next_line_no": 581
+    },
+    "21": {
+        "file_name": "src/com/google/javascript/rhino/jstype/JSType.java",
+        "from_line_no": 592,
+        "to_line_no": 592,
+        "replaced_with": "              that, eqMethod);\n",
+        "replaced": "              that, tolerateUnknowns);\n",
+        "patch_type": "replace",
+        "next_line_no": 593
+    },
+    "22": {
+        "file_name": "src/com/google/javascript/rhino/jstype/JSType.java",
+        "from_line_no": 598,
+        "to_line_no": 598,
+        "replaced_with": "          eqMethod);\n",
+        "replaced": "          tolerateUnknowns);\n",
+        "patch_type": "replace",
+        "next_line_no": 599
+    },
+    "23": {
+        "file_name": "src/com/google/javascript/rhino/jstype/RecordType.java",
+        "from_line_no": 118,
+        "to_line_no": 118,
+        "replaced_with": "      RecordType otherRecord, EquivalenceMethod eqMethod) {\n",
+        "replaced": "      RecordType otherRecord, boolean tolerateUnknowns) {\n",
+        "patch_type": "replace",
+        "next_line_no": 119
+    },
+    "24": {
+        "file_name": "src/com/google/javascript/rhino/jstype/RecordType.java",
+        "from_line_no": 126,
+        "to_line_no": 126,
+        "replaced_with": "              properties.get(key), eqMethod)) {\n",
+        "replaced": "              properties.get(key), tolerateUnknowns)) {\n",
+        "patch_type": "replace",
+        "next_line_no": 127
+    },
+    "25": {
+        "file_name": "src/com/google/javascript/rhino/jstype/RecordType.java",
+        "from_line_no": 204,
+        "to_line_no": 205,
+        "replaced_with": "              propType.isInvariant(altPropType)) {\n",
+        "replaced": "              (propType.isUnknownType() || altPropType.isUnknownType() ||\n                  altPropType.isEquivalentTo(propType))) {\n",
+        "patch_type": "replace",
+        "next_line_no": 206
+    },
+    "26": {
+        "file_name": "src/com/google/javascript/rhino/jstype/RecordType.java",
+        "from_line_no": 268,
+        "to_line_no": 268,
+        "replaced": "      if (!propA.isUnknownType() && !propB.isUnknownType()) {\n",
+        "patch_type": "delete",
+        "next_line_no": 269
+    },
+    "27": {
+        "file_name": "src/com/google/javascript/rhino/jstype/RecordType.java",
+        "from_line_no": 280,
+        "to_line_no": 280,
+        "replaced": "          }\n",
+        "patch_type": "delete",
+        "next_line_no": 281
+    },
+    "28": {
+        "file_name": "src/com/google/javascript/rhino/jstype/UnionType.java",
+        "from_line_no": 334,
+        "to_line_no": 335,
+        "replaced_with": "      UnionType that, EquivalenceMethod eqMethod) {\n    if (eqMethod == EquivalenceMethod.IDENTITY\n",
+        "replaced": "      UnionType that, boolean tolerateUnknowns) {\n    if (!tolerateUnknowns\n",
+        "patch_type": "replace",
+        "next_line_no": 336
+    },
+    "29": {
+        "file_name": "src/com/google/javascript/rhino/jstype/UnionType.java",
+        "from_line_no": 340,
+        "to_line_no": 340,
+        "replaced_with": "      if (!hasAlternate(alternate, eqMethod)) {\n",
+        "replaced": "      if (!hasAlternate(alternate, tolerateUnknowns)) {\n",
+        "patch_type": "replace",
+        "next_line_no": 341
+    },
+    "30": {
+        "file_name": "src/com/google/javascript/rhino/jstype/UnionType.java",
+        "from_line_no": 347,
+        "to_line_no": 347,
+        "replaced_with": "  private boolean hasAlternate(JSType type, EquivalenceMethod eqMethod) {\n",
+        "replaced": "  private boolean hasAlternate(JSType type, boolean tolerateUnknowns) {\n",
+        "patch_type": "replace",
+        "next_line_no": 348
+    },
+    "31": {
+        "file_name": "src/com/google/javascript/rhino/jstype/UnionType.java",
+        "from_line_no": 349,
+        "to_line_no": 349,
+        "replaced_with": "      if (alternate.checkEquivalenceHelper(type, eqMethod)) {\n",
+        "replaced": "      if (alternate.checkEquivalenceHelper(type, tolerateUnknowns)) {\n",
+        "patch_type": "replace",
+        "next_line_no": 350
+    }
+}

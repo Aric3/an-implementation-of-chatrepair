@@ -1,0 +1,15 @@
+{
+    "num_of_hunks": 2,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/math3/geometry/euclidean/threed/SubLine.java",
+        "replaced_with": "        if (v1D == null) {\n            return null;\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 114
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/math3/geometry/euclidean/twod/SubLine.java",
+        "replaced_with": "        if (v2D == null) {\n            return null;\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 118
+    }
+}

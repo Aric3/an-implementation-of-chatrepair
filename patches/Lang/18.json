@@ -1,0 +1,21 @@
+{
+    "num_of_hunks": 2,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/lang3/time/FastDateFormat.java",
+        "from_line_no": 495,
+        "to_line_no": 496,
+        "replaced_with": "                if (tokenLen == 2) {\n                    rule = TwoDigitYearField.INSTANCE;\n",
+        "replaced": "                if (tokenLen >= 4) {\n                    rule = selectNumberRule(Calendar.YEAR, tokenLen);\n",
+        "patch_type": "replace",
+        "next_line_no": 497
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/lang3/time/FastDateFormat.java",
+        "from_line_no": 498,
+        "to_line_no": 498,
+        "replaced_with": "                    rule = selectNumberRule(Calendar.YEAR, tokenLen < 4 ? 4 : tokenLen);\n",
+        "replaced": "                    rule = TwoDigitYearField.INSTANCE;\n",
+        "patch_type": "replace",
+        "next_line_no": 499
+    }
+}

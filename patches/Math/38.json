@@ -1,0 +1,30 @@
+{
+    "num_of_hunks": 3,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/math/optimization/direct/BOBYQAOptimizer.java",
+        "from_line_no": 1660,
+        "to_line_no": 1660,
+        "replaced_with": "//                     throw new PathIsExploredException(); // XXX\n",
+        "replaced": "                    throw new PathIsExploredException(); // XXX\n",
+        "patch_type": "replace",
+        "next_line_no": 1661
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/math/optimization/direct/BOBYQAOptimizer.java",
+        "from_line_no": 1662,
+        "to_line_no": 1663,
+        "replaced_with": "                final int iptMinus1 = ipt - 1;\n                final int jptMinus1 = jpt - 1;\n",
+        "replaced": "                final int iptMinus1 = ipt;\n                final int jptMinus1 = jpt;\n",
+        "patch_type": "replace",
+        "next_line_no": 1664
+    },
+    "2": {
+        "file_name": "src/main/java/org/apache/commons/math/optimization/direct/BOBYQAOptimizer.java",
+        "from_line_no": 1752,
+        "to_line_no": 1752,
+        "replaced_with": "//                 throw new PathIsExploredException(); // XXX\n",
+        "replaced": "                throw new PathIsExploredException(); // XXX\n",
+        "patch_type": "replace",
+        "next_line_no": 1753
+    }
+}
