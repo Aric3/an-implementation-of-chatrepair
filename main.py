@@ -5,6 +5,7 @@
 import json
 import os
 import re
+import linecache
 
 from enum import Enum
 from javalang import parse
@@ -19,18 +20,21 @@ class Cons(Enum):
     Mockito = "Mockito"
     Time = "Time"
     Patches_base_folder = "patches"
-    Buggy_Folder = "bugs"
+    Buggy_folder = "bugs"
+    Failing_tests_folder = "failing_tests"
     INFILL = "[INFILL]\n"
 
     Defects4j_Checkout = "defects4j checkout -p %s -v %s -w %s"
     Defects4j_Compile_Test = "defects4j compile ; defects4j test"
 
     Initial_1 = ("You are an automated program repair tool.\n"
-                 "The following function contains a buggy hunk that has been replaced by the mark [INFILL]:")
+                 "The following function contains a buggy hunk that has been replaced by the mark [INFILL]:\n")
     Initial_2 = "This was the original buggy hunk which was replaced by the [INFILL] mark:\n"
+
     Initial_3 = "The code fails on this test:\n"
     Initial_4 = "on this test line:\n"
     Initial_5 = "with the following test error:\n"
+
     Initial_6 = ("Please provide the correct lines at the [INFILL] location. Your code should be a replacement for ["
                  "INFILL], so don't include lines of code before and after [INFILL].")
 
@@ -49,30 +53,45 @@ def initial_input(project):
             num_of_hunks = data['num_of_hunks']
             if num_of_hunks == 1:
                 os.system(Cons.Defects4j_Checkout.value % (
-                    project, no + 'b', Cons.Buggy_Folder.value + '/' + project + no))
-                os.system(
-                    'cd ' + Cons.Buggy_Folder.value + '/' + project + no + ' && ' + Cons.Defects4j_Compile_Test.value)
+                    project, no + 'b', Cons.Buggy_folder.value + '/' + project + no))
                 file_name = data['0']['file_name']
                 patch_type = data['0']['patch_type']
-                input = Cons.Initial_1.value
+                initial_prompt = Cons.Initial_1.value
                 buggy_function = ''
+                original_buggy_hunk = ''
                 if patch_type == 'replace':
                     from_line_no = data['0']['from_line_no']
                     to_line_no = data['0']['to_line_no']
-                    replaced = data['0']['replaced']
+                    original_buggy_hunk = data['0']['replaced']
                     buggy_function = ''.join(
                         find_buggy_function(
-                            Cons.Buggy_Folder.value + '/' + project + no + '/' + file_name,
+                            Cons.Buggy_folder.value + '/' + project + no + '/' + file_name,
                             from_line_no, to_line_no, 'replace'))
-                    input = input + buggy_function + Cons.Initial_2.value + replaced + Cons.Initial_3.value
-
                 if patch_type == 'insert':
                     next_line_no = data['0']['next_line_no']
                     buggy_function = ''.join(
                         find_buggy_function(
-                            Cons.Buggy_Folder.value + '/' + project + no + '/' + file_name,
+                            Cons.Buggy_folder.value + '/' + project + no + '/' + file_name,
                             next_line_no, next_line_no, 'insert'))
-                print(buggy_function)
+
+                initial_prompt = initial_prompt + buggy_function + Cons.Initial_2.value + original_buggy_hunk
+
+                failing_test = Cons.Buggy_folder.value + '/' + project + no + '/' + Cons.Failing_tests_folder.value
+                if not os.path.exists('./'+failing_test):
+                    os.system(
+                        'cd ' + Cons.Buggy_folder.value + '/' + project + no + ' && ' + Cons.Defects4j_Compile_Test.value)
+                tests = []
+                errors = []
+                files = []
+                test_lines = []
+                find_failing_test(failing_test, tests, errors, files, test_lines)
+                for i in range(0, len(tests) - 1):
+                    initial_prompt = initial_prompt + Cons.Initial_3.value + tests[
+                        i] + Cons.Initial_4.value + linecache.getline(
+                        Cons.Buggy_folder.value + '/' + project + no + '/' + 'src/test/java/' + files[i],
+                        test_lines[i]) + Cons.Initial_5.value + errors[i]
+
+                print(initial_prompt)
 
 
 def find_buggy_function(file_path, from_line_no, to_line_no, patch_type):
@@ -104,7 +123,7 @@ def find_buggy_function(file_path, from_line_no, to_line_no, patch_type):
     return function_lines
 
 
-def find_failing_test(file_path, tests, errors, files, lines):
+def find_failing_test(file_path, tests, errors, files, test_lines):
     with open(file_path, 'r') as file:
         lines = file.readlines()
         for i in range(0, len(lines) - 1):
@@ -113,8 +132,8 @@ def find_failing_test(file_path, tests, errors, files, lines):
                 errors.append(lines[i + 1])
             match = re.search(r'\(.*Test\.java:(\d+)\)$', lines[i])
             if match:
-                files.append(''.join(re.findall(r'[A-Za-z0-9]+\.', lines[i])[0:-1])).replace('.', '/')
-                lines.append(match.group(1))
+                files.append(''.join(re.findall(r'[A-Za-z0-9]+\.', lines[i])[0:-1]).replace('.', '/'))
+                test_lines.append(match.group(1))
 
 
 # Press the green button in the gutter to run the script.
