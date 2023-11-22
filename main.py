@@ -27,7 +27,7 @@ def initial_input(project):
 
                 file_name = data['0']['file_name']
                 patch_type = data['0']['patch_type']
-                INITIAL_prompt = ''
+                initial_prompt = ''
                 if patch_type == 'replace':
                     from_line_no = data['0']['from_line_no']
                     to_line_no = data['0']['to_line_no']
@@ -36,14 +36,14 @@ def initial_input(project):
                         find_buggy_function(
                             BUGGY_PROJECT_FOLDER + '/' + project + no + '/' + file_name,
                             from_line_no, to_line_no, 'replace'))
-                    INITIAL_prompt = INITIAL_1.value + buggy_function + INITIAL_2 + original_buggy_hunk
+                    initial_prompt = INITIAL_1.value + buggy_function + INITIAL_2 + original_buggy_hunk
                 if patch_type == 'insert':
                     next_line_no = data['0']['next_line_no']
                     buggy_function = ''.join(
                         find_buggy_function(
                             BUGGY_PROJECT_FOLDER + '/' + project + no + '/' + file_name,
                             next_line_no, next_line_no, 'insert'))
-                    INITIAL_prompt = INITIAL_7 + buggy_function
+                    initial_prompt = INITIAL_7 + buggy_function
                 # If failing_test doesn't exists then run defects4j compile ; defects4j test
                 failing_test = BUGGY_PROJECT_FOLDER + '/' + project + no + '/' + FAILING_TEST_FILE
                 if not os.path.exists('./' + failing_test):
@@ -60,13 +60,13 @@ def initial_input(project):
                         file = BUGGY_PROJECT_FOLDER + '/' + project + no + TEST_PATH_PREFIX_JAVA + \
                                files[i]
                     test_line = linecache.getline(file, test_lines[i])
-                    INITIAL_prompt = INITIAL_prompt + INITIAL_3 + tests[
+                    initial_prompt = initial_prompt + INITIAL_3 + tests[
                         i] + INITIAL_4 + test_line + INITIAL_5 + errors[i]
                 if patch_type == 'replace':
-                    INITIAL_prompt += INITIAL_6
+                    initial_prompt += INITIAL_6
                 if patch_type == 'insert':
-                    INITIAL_prompt += INITIAL_8;
-                return INITIAL_prompt
+                    initial_prompt += INITIAL_8
+                return initial_prompt
 
 
 # 1.construct the initial input
