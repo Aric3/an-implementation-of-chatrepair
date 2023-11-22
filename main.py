@@ -11,7 +11,7 @@ from constants import *
 # ChatRepair Algorithm
 def initial_input(project):
     base_dir = os.path.dirname(__file__)
-    project_path = os.path.join(os.path.join(base_dir, PATCH_JSON_FOLDER), project)
+    project_path = os.path.join(base_dir, PATCH_JSON_FOLDER, project)
     files = os.listdir(project_path)
     # read the 'patches' folder
     for file in files:
@@ -21,10 +21,9 @@ def initial_input(project):
             num_of_hunks = data['num_of_hunks']
             if num_of_hunks == 1:
                 # if project folder doesn't exist then run defects4j checkout
-                if not os.path.exists(BUGGY_PROJECT_FOLDER + '/' + project + no):
-                    os.system(DEFECTS4J_CHECKOUT.value % (
-                        project, no + 'b', BUGGY_PROJECT_FOLDER + '/' + project + no))
-
+                if not os.path.exists(os.path.join(BUGGY_PROJECT_FOLDER, project + no)):
+                    os.system(DEFECTS4J_CHECKOUT % (
+                        project, no + 'b', os.path.join(BUGGY_PROJECT_FOLDER, project + no)))
                 file_name = data['0']['file_name']
                 patch_type = data['0']['patch_type']
                 initial_prompt = ''
@@ -33,32 +32,31 @@ def initial_input(project):
                     to_line_no = data['0']['to_line_no']
                     original_buggy_hunk = data['0']['replaced']
                     buggy_function = ''.join(
-                        find_buggy_function(
-                            BUGGY_PROJECT_FOLDER + '/' + project + no + '/' + file_name,
+                        find_buggy_function(os.path.join(
+                            BUGGY_PROJECT_FOLDER, project + no, file_name),
                             from_line_no, to_line_no, 'replace'))
-                    initial_prompt = INITIAL_1.value + buggy_function + INITIAL_2 + original_buggy_hunk
+                    initial_prompt = INITIAL_1 + buggy_function + INITIAL_2 + original_buggy_hunk
                 if patch_type == 'insert':
                     next_line_no = data['0']['next_line_no']
                     buggy_function = ''.join(
-                        find_buggy_function(
-                            BUGGY_PROJECT_FOLDER + '/' + project + no + '/' + file_name,
+                        find_buggy_function(os.path.join(
+                                BUGGY_PROJECT_FOLDER, project + no, file_name),
                             next_line_no, next_line_no, 'insert'))
                     initial_prompt = INITIAL_7 + buggy_function
                 # If failing_test doesn't exists then run defects4j compile ; defects4j test
-                failing_test = BUGGY_PROJECT_FOLDER + '/' + project + no + '/' + FAILING_TEST_FILE
-                if not os.path.exists('./' + failing_test):
+                failing_test = os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)
+                if not os.path.exists(failing_test):
                     os.system(
-                        'cd ' + BUGGY_PROJECT_FOLDER + '/' + project + no + ' && ' + DEFECTS4J_COMPILE_TEST)
+                        'cd ' + os.path.join(BUGGY_PROJECT_FOLDER, project + no) + ' && ' + DEFECTS4J_COMPILE_TEST)
                 tests = []
                 errors = []
                 files = []
                 test_lines = []
                 find_failing_test(failing_test, tests, errors, files, test_lines)
                 for i in range(0, len(tests)):
-                    file = BUGGY_PROJECT_FOLDER + '/' + project + no + TEST_PATH_PREFIX + files[i]
+                    file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_PATH_PREFIX, files[i])
                     if not os.path.exists(file):
-                        file = BUGGY_PROJECT_FOLDER + '/' + project + no + TEST_PATH_PREFIX_JAVA + \
-                               files[i]
+                        file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_PATH_PREFIX_JAVA, files[i])
                     test_line = linecache.getline(file, test_lines[i])
                     initial_prompt = initial_prompt + INITIAL_3 + tests[
                         i] + INITIAL_4 + test_line + INITIAL_5 + errors[i]
@@ -66,7 +64,7 @@ def initial_input(project):
                     initial_prompt += INITIAL_6
                 if patch_type == 'insert':
                     initial_prompt += INITIAL_8
-                return initial_prompt
+                print(initial_prompt)
 
 
 # 1.construct the initial input
