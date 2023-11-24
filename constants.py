@@ -31,4 +31,4 @@ INITIAL_8 = "Please provide the correct repair of this function.Make sure all fa
 
 Max_Tries = 10
 Max_Conv_len = 3
-API_KEY = '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'
+API_KEY = 'sk-BTijAxza2faVBDpy452344F136154561Ab9f4fF2037d47E0'

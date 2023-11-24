@@ -21,13 +21,14 @@ def chat_repair(project, initial_prompt):
     current_tries = 0
     plausible_patches = []
     context = []
+    openai.api_base = 'https://api.aikey.one'
     openai.api_key = API_KEY
     # while current_tries < Max_Tries and plausible_patches is None:
     #    current_length = 0
     prompt = initial_prompt
     #    while current_length < Max_Conv_len:
     context.append({'role': 'user', 'content': prompt})
-    response = openai.Completion.create(model='gpt-3.5-turbo-0301', message=context)
+    response = openai.Completion.create(model='gpt-3.5-turbo', messages=context)
     result = response.choices[0].message['content']
     context.append({'role': 'assistant', 'content': result})
     print(result)
@@ -76,10 +77,8 @@ def is_file_empty_or_not_exists(file_path):
     # 检查文件是否存在
     if not os.path.exists(file_path):
         return True  # 文件不存在
-
     # 检查文件大小
     file_size = os.path.getsize(file_path)
-
     # 判断文件是否为空或不存在
     if file_size == 0:
         return True  # 文件为空
