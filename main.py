@@ -21,15 +21,15 @@ def chat_repair(project, initial_prompt):
     current_tries = 0
     plausible_patches = []
     context = []
-    openai.api_base = 'https://api.aikey.one'
+    openai.base_url = 'https://api.aikey.one/v1/'
     openai.api_key = API_KEY
     # while current_tries < Max_Tries and plausible_patches is None:
     #    current_length = 0
     prompt = initial_prompt
     #    while current_length < Max_Conv_len:
     context.append({'role': 'user', 'content': prompt})
-    response = openai.Completion.create(model='gpt-3.5-turbo', messages=context)
-    result = response.choices[0].message['content']
+    response = openai.chat.completions.create(model='gpt-3.5-turbo', messages=context)
+    result = response.choices[0].message.content
     context.append({'role': 'assistant', 'content': result})
     print(result)
 
