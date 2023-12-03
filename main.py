@@ -1,9 +1,8 @@
 import json
-import linecache
 import os
 import re
 import openai
-
+import subprocess
 from javalang import parse
 from javalang.tree import MethodDeclaration
 from constants import *
@@ -12,82 +11,166 @@ from constants import *
 def go_chat_repair(project):
     files = os.listdir(os.path.join(PATCH_JSON_FOLDER, project))
     for file in files:
-        initial_prompt = initial_input(project, file)
+        initial_prompt = construct_initial_prompt(project, file)
         if not initial_prompt == '':
-            chat_repair(project, initial_prompt)
+            plausible_patches = chat_repair(project, initial_prompt, file)
+            print(plausible_patches)
 
 
-def chat_repair(project, initial_prompt):
+def chat_repair(project, initial_prompt, json_file):
     current_tries = 0
     plausible_patches = []
-    context = []
-    openai.base_url = 'https://api.aikey.one/v1/'
+    openai.base_url = BASE_URL
     openai.api_key = API_KEY
-    # while current_tries < Max_Tries and plausible_patches is None:
-    #    current_length = 0
-    prompt = initial_prompt
-    #    while current_length < Max_Conv_len:
-    context.append({'role': 'user', 'content': prompt})
-    response = openai.chat.completions.create(model='gpt-3.5-turbo', messages=context)
-    result = response.choices[0].message.content
-    context.append({'role': 'assistant', 'content': result})
-    print(result)
+    # 找到一个plausible patch
+    while current_tries < Max_Tries and len(plausible_patches) == 0:
+        context = []
+        current_length = 0
+        prompt = initial_prompt
+        while current_length < Max_Conv_len:
+            context.append({'role': 'user', 'content': prompt})
+            response = openai.chat.completions.create(model=Model, messages=context)
+            response_text = response.choices[0].message.content
+            context.append({'role': 'assistant', 'content': response_text})
+            patch = match_patch_code(response_text)
+            feedback = validate_patch(patch, project, json_file, plausible_patches)
+            if feedback == '':
+                break
+            else:
+                prompt = feedback
+            current_length += 1
+            current_tries += 1
+    # 当有一个plausible patch时 generate更多的plausible patch
+    if len(plausible_patches) != 0:
+        while current_tries < Max_Tries:
+            context = []
+            prompt = initial_prompt + Alt_Instruct_1 + '\n'.join(plausible_patches) + Alt_Instruct_2
+            context.append({'role': 'user', 'content': prompt})
+            response = openai.chat.completions.create(model=Model, messages=context)
+            response_text = response.choices[0].message.content
+            context.append({'role': 'assistant', 'content': response_text})
+            patch = match_patch_code(response_text)
+            feedback = validate_patch(patch, project, json_file, plausible_patches)
+            if feedback == '' and patch not in plausible_patches:
+                plausible_patches.append(patch)
+            current_tries += 1
+    return plausible_patches
 
 
-def validate(patch, project, json_file):
+# 验证对应patch 并构造feedback
+def validate_patch(patch, project, json_file, plausible_patches):
     no = json_file.rstrip('.json')
     with open(os.path.join(PATCH_JSON_FOLDER, project, json_file), 'r', encoding="latin-1") as f:
         data = json.load(f)
         f.close()
         file_name = data['0']['file_name']
         patch_type = data['0']['patch_type']
-        # replace
+        # replace类型的patch 找到对应的源代码文件 使用patch替换掉指定行
         if patch_type == 'replace':
             from_line_no = data['0']['from_line_no']
             to_line_no = data['0']['to_line_no']
             with open(os.path.join(
-                    BUGGY_PROJECT_FOLDER, project + no, file_name), mode='r', encoding='latin-1') as f:
-                lines = f.readlines()
+                    BUGGY_PROJECT_FOLDER, project + no, file_name), mode='r', encoding='latin-1') as f1:
+                lines = f1.readlines()
             del lines[from_line_no - 1:to_line_no - 1]
             lines.insert(from_line_no - 1, patch)
-            f.close()
+            f1.close()
             with open(os.path.join(
                     BUGGY_PROJECT_FOLDER, project + no, file_name), mode='w', encoding='latin-1') as f2:
                 f2.writelines(lines)
                 f2.close()
-        if patch_type == 'insert':
-            next_line_no = data['0']['next_line_no']
+        # insert类型的patch 找到的对应的函数 替换整个函数
+        if patch_type == PATCH_TYPE_INSERT:
+            # 获得函数声明所在的行
+            source_file_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, file_name)
+            start_line = get_method_declaration_line_no(source_file_path, from_line_no)
+            # 替换掉函数的INFILL部分
             with open(os.path.join(
-                    BUGGY_PROJECT_FOLDER, project + no, file_name), mode='r', encoding='latin-1') as f:
-                lines = f.readlines()
-            lines.insert(next_line_no, patch)
-            f.close()
+                    BUGGY_PROJECT_FOLDER, project + no, file_name), "r", encoding='latin-1') as file:
+                lines = file.readlines()[start_line - 1:-1]
+                file.close()
+            left_open_brackets = 0
+            right_open_brackets = 0
+            end_line_index = start_line - 2
+            for line in lines:
+                left_open_brackets += line.count('{')
+                right_open_brackets += line.count('}')
+                end_line_index += 1
+                if left_open_brackets == right_open_brackets and not left_open_brackets == 0:
+                    break
+            del lines[start_line - 1:end_line_index]
+            lines.insert(start_line - 1, patch)
+            file.close()
             with open(os.path.join(
                     BUGGY_PROJECT_FOLDER, project + no, file_name), mode='w', encoding='latin-1') as f2:
                 f2.writelines(lines)
                 f2.close()
-        # re compile and test
-        os.system(
-            'cd ' + os.path.join(BUGGY_PROJECT_FOLDER, project + no) + ' && ' + DEFECTS4J_COMPILE_TEST)
+        # 重新编译
+        stdout, stderr = run_command(
+            'cd ' + os.path.join(BUGGY_PROJECT_FOLDER, project + no) + ' && ' + DEFECTS4J_COMPILE)
+        pattern = r"compile:(.*?)BUILD FAILED"
+        result = re.search(pattern, stderr, re.DOTALL)
+        # 有编译错误 构造feedback
+        if result:
+            output = result.group(1).strip()
+            feedback = FeedBack_2 + output
+            return feedback
+        # 没有编译错误 运行defects4j test
+        else:
+            os.system('cd ' + os.path.join(BUGGY_PROJECT_FOLDER, project + no) + ' && ' + DEFECTS4J_TEST)
+            # pass全部test 添加plausible_patch
+            if is_file_empty_or_not_exists(os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)):
+                plausible_patches.append(patch)
+                return ''
+            # 未通过全部test 构造feedback
+            failing_test_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)
+            failing_test, test_error, test_file, test_line_no = get_failing_test_info(failing_test_path)
+            if not os.path.exists(os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_PATH_PREFIX, test_file)):
+                file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_PATH_PREFIX_JAVA, test_file)
+                # get the test line
+                test_lines = []
+                with open(file, mode='r', encoding='latin-1') as test_file:
+                    lines = test_file.readlines()[test_line_no - 1:]
+                    for line in lines:
+                        test_lines.append(line)
+                        if line.count(';') == 1:
+                            break
+                feedback = FeedBack_1 + INITIAL_3 + failing_test + INITIAL_4 + ''.join(
+                    test_lines) + INITIAL_5 + test_error
+                return feedback
 
-        return is_file_empty_or_not_exists(os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE))
+
+# 从chat gpt文本中提取代码部分
+def match_patch_code(response_text):
+    pattern = r"```java(.*)```"
+    match = re.search(pattern, response_text, re.DOTALL)
+    return match.group(1)
 
 
+# 判读文件是否存在或为空
 def is_file_empty_or_not_exists(file_path):
-    # 检查文件是否存在
     if not os.path.exists(file_path):
-        return True  # 文件不存在
-    # 检查文件大小
+        return True
     file_size = os.path.getsize(file_path)
-    # 判断文件是否为空或不存在
     if file_size == 0:
-        return True  # 文件为空
+        return True
     else:
-        return False  # 文件非空
+        return False
 
 
-def initial_input(project, json_file):
-    # read the specified patch json file
+# 运行系统命令并返回标准输出与标准错误输出
+def run_command(command):
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    stdout, stderr = process.communicate()
+
+    stdout = stdout.decode('utf-8')
+    stderr = stderr.decode('utf-8')
+
+    return stdout, stderr
+
+
+def construct_initial_prompt(project, json_file):
+    # 读对应json文件
     no = json_file.rstrip('.json')
     with open(os.path.join(PATCH_JSON_FOLDER, project, json_file), 'r', encoding="latin-1") as f:
         data = json.load(f)
@@ -95,53 +178,51 @@ def initial_input(project, json_file):
         num_of_hunks = data['num_of_hunks']
         # only deal with single hunk bugs
         if num_of_hunks == 1:
-            # if project folder doesn't exist then run defects4j checkout
+            # 如果还没有对应bug的文件夹 运行defects4j checkout
             if not os.path.exists(os.path.join(BUGGY_PROJECT_FOLDER, project + no)):
                 os.system(DEFECTS4J_CHECKOUT % (
                     project, no + 'b', os.path.join(BUGGY_PROJECT_FOLDER, project + no)))
             file_name = data['0']['file_name']
             patch_type = data['0']['patch_type']
             initial_prompt = ''
-            # replace
-            if patch_type == 'replace':
+            # replace类型的patch
+            if patch_type == PATCH_TYPE_REPLACE:
                 from_line_no = data['0']['from_line_no']
                 to_line_no = data['0']['to_line_no']
                 original_buggy_hunk = data['0']['replaced']
-                # find the original buggy function, add infill mark
-                buggy_function = ''.join(
-                    find_buggy_function(os.path.join(
-                        BUGGY_PROJECT_FOLDER, project + no, file_name),
-                        from_line_no, to_line_no, 'replace'))
+                source_file_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, file_name)
+                buggy_function = get_buggy_function(source_file_path, from_line_no, to_line_no, PATCH_TYPE_REPLACE)
                 # construct the initial prompt
                 initial_prompt = INITIAL_1 + buggy_function + INITIAL_2 + original_buggy_hunk
-            # insert
-            if patch_type == 'insert':
+            # insert类型的patch
+            if patch_type == PATCH_TYPE_INSERT:
                 next_line_no = data['0']['next_line_no']
-                buggy_function = ''.join(
-                    find_buggy_function(os.path.join(
-                        BUGGY_PROJECT_FOLDER, project + no, file_name),
-                        next_line_no, next_line_no, 'insert'))
+                source_file_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, file_name)
+                buggy_function = get_buggy_function(source_file_path, next_line_no, to_line_no, PATCH_TYPE_INSERT)
                 initial_prompt = INITIAL_7 + buggy_function
-            # If failing_test doesn't exists then run defects4j compile ; defects4j test
-            failing_test = os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)
-            if not os.path.exists(failing_test):
+
+            # 如果不存在failing test文件 说明没有执过defects4j test命令 执行
+            failing_test_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)
+            if not os.path.exists(failing_test_path):
                 os.system(
                     'cd ' + os.path.join(BUGGY_PROJECT_FOLDER, project + no) + ' && ' + DEFECTS4J_COMPILE_TEST)
-            # find the failing tests, test line and error message
-            tests = []
-            errors = []
-            files = []
-            test_lines = []
-            find_failing_test(failing_test, tests, errors, files, test_lines)
-            for i in range(0, len(tests)):
-                file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_PATH_PREFIX, files[i])
-                if not os.path.exists(file):
-                    file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_PATH_PREFIX_JAVA, files[i])
-                # get the test line in case multi line
-                test_line = linecache.getline(file, test_lines[i])
-                initial_prompt = initial_prompt + INITIAL_3 + tests[
-                    i] + INITIAL_4 + test_line + INITIAL_5 + errors[i]
-            # complete the initial prompt
+
+            # 添加关于failing test的信息
+            failing_test, test_error, test_file, test_line_no = get_failing_test_info(failing_test_path)
+            if not os.path.exists(os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_PATH_PREFIX, test_file)):
+                file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_PATH_PREFIX_JAVA, test_file)
+                # 根据test line所在的行到对应文件找到目标line
+                test_lines = []
+                with open(file, mode='r', encoding='latin-1') as test_file:
+                    lines = test_file.readlines()[test_line_no - 1:]
+                    for line in lines:
+                        test_lines.append(line)
+                        if line.count(';') == 1:
+                            break
+                initial_prompt = initial_prompt + INITIAL_3 + failing_test + INITIAL_4 + ''.join(
+                    test_lines) + INITIAL_5 + test_error
+
+            # 完整initial prompt的最后一句
             if patch_type == 'replace':
                 initial_prompt += INITIAL_6
             if patch_type == 'insert':
@@ -151,25 +232,58 @@ def initial_input(project, json_file):
             return ''
 
 
-# find the original buggy function
-def find_buggy_function(file_path, from_line_no, to_line_no, patch_type):
-    # get the line number of the target function declaration
-    with open(file_path, "r") as file:
+# 构造带有或不带有INFILL标志的buggy function字符串
+def get_buggy_function(file_path, from_line_no, to_line_no, patch_type):
+    start_line_no = get_method_declaration_line_no(file_path, from_line_no)
+    function_lines = get_method_lines(file_path, start_line_no)
+    if patch_type == 'replace':
+        del function_lines[from_line_no - start_line_no:to_line_no - start_line_no + 1]
+        function_lines.insert(from_line_no - start_line_no, INFILL)
+    return ''.join(function_lines)
+
+
+# 构造failing test相关的信息 根据chat repair的实现 只考虑一个failing test
+def get_failing_test_info(test_file_path):
+    with open(test_file_path, 'r', encoding='latin-1') as file:
+        lines = file.readlines()
+        for i in range(0, len(lines)):
+            # match '--- org.apache.commons.lang3.StringUtilsTest::testEscapeSurrogatePairs
+            # java.lang.StringIndexOutOfBoundsException: String index out of range: 2'
+            if re.match(r'^---', lines[i]):
+                failing_test = lines[i].strip('---')
+                test_error = lines[i + 1]
+            # match 'at org.apache.commons.lang3.StringUtilsTest.testEscapeSurrogatePairs(StringUtilsTest.java:2187)'
+            match = re.search(r'\(.*Test\.java:(\d+)\)$', lines[i])
+            if match:
+                # org/apache/commons/lang3/StringUtilsTest
+                test_file = ''.join(re.findall(r'[A-Za-z0-9]+\.', lines[i])[0:-1]).replace('.', '/')[:-1] + '.java'
+                # 2187
+                test_line_no = int(match.group(1))
+                return failing_test, test_error, test_file, test_line_no
+
+
+# 从源代码文件中找出行所在的函数定义起始在哪一行
+def get_method_declaration_line_no(source_file_path, line_no):
+    with open(source_file_path, "r") as file:
         source_code = file.read()
         file.close()
     tree = parse.parse(source_code)
     line_nos = []
-    target_line = 0
+    start_line_no = 0
     for path, node in tree.filter(MethodDeclaration):
         line_nos.append(node.position.line)
     for i in range(0, len(line_nos) - 1):
-        if line_nos[i] <= from_line_no <= line_nos[i + 1]:
-            target_line = line_nos[i]
-    if target_line == 0:
-        target_line = line_nos[len(line_nos) - 1]
-    # get the target function, replace the buggy hunk
-    with open(file_path, "r", encoding='latin-1') as file:
-        lines = file.readlines()[target_line - 1:]
+        if line_nos[i] <= line_no <= line_nos[i + 1]:
+            start_line_no = line_nos[i]
+    if start_line_no == 0:
+        start_line_no = line_nos[len(line_nos) - 1]
+    return start_line_no
+
+
+# 从源代码文件中找出对应函数的lines
+def get_method_lines(source_file_path, start_line_no):
+    with open(source_file_path, "r", encoding='latin-1') as file:
+        lines = file.readlines()[start_line_no - 1:]
         file.close()
     left_open_brackets = 0
     right_open_brackets = 0
@@ -180,30 +294,7 @@ def find_buggy_function(file_path, from_line_no, to_line_no, patch_type):
         right_open_brackets += line.count('}')
         if left_open_brackets == right_open_brackets and not left_open_brackets == 0:
             break
-    if patch_type == 'replace':
-        del function_lines[from_line_no - target_line:to_line_no - target_line + 1]
-        function_lines.insert(from_line_no - target_line, INFILL)
     return function_lines
-
-
-# find the failing tests, test line and error message
-def find_failing_test(file_path, tests, errors, files, test_lines):
-    with open(file_path, 'r', encoding='latin-1') as file:
-        lines = file.readlines()
-        for i in range(0, len(lines)):
-            # match '--- org.apache.commons.lang3.StringUtilsTest::testEscapeSurrogatePairs
-            # java.lang.StringIndexOutOfBoundsException: String index out of range: 2'
-            if re.match(r'^---', lines[i]):
-                tests.append(lines[i].strip('---'))
-                errors.append(lines[i + 1])
-            # match 'at org.apache.commons.lang3.StringUtilsTest.testEscapeSurrogatePairs(StringUtilsTest.java:2187)'
-            match = re.search(r'\(.*Test\.java:(\d+)\)$', lines[i])
-            if match:
-                # org/apache/commons/lang3/StringUtilsTest
-                files.append(
-                    ''.join(re.findall(r'[A-Za-z0-9]+\.', lines[i])[0:-1]).replace('.', '/')[:-1] + '.java')
-                # 2187
-                test_lines.append(int(match.group(1)))
 
 
 if __name__ == '__main__':
