@@ -35,10 +35,13 @@ INITIAL_3 = "The code fails on this test:\n"
 INITIAL_4 = "on this test line:\n"
 INITIAL_5 = "with the following test error:\n"
 
-INITIAL_6 = ("Please provide the correct lines at the >>>[INFILL]<<< location. Your code should be a replacement "
-             "for >>>INFILL]<<<, so don't include lines before and after >>>[INFILL]<<<.\n")
+INITIAL_6 = ("Please provide the correct lines at the >>>[INFILL]<<< location.Your answer should consist of only two "
+             "parts, an analysis of the cause of the bug and the repair code lines to replace the >>>[INFILL]<<<, "
+             "which should be contained in a markdown format code block.\n")
 INITIAL_7 = "You are an automated program repair tool.\nThe following function is a buggy function.\n"
-INITIAL_8 = "Please provide the correct repair of this function.Make sure all failing test cases pass.\n"
+INITIAL_8 = ("Please provide the correct repair of this function.Your answer should consist of only two parts, "
+             "an analysis of the cause of the bug and the repair function you give to fix the bug, which should be "
+             "contained in a markdown format code block.\n")
 
 FeedBack_1 = "Your code still not correct.\n"
 FeedBack_2 = "Your code has compilation error:\n"

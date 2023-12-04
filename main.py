@@ -40,6 +40,11 @@ def chat_repair(project, initial_prompt, json_file):
                 prompt = feedback
             current_length += 1
             current_tries += 1
+        # 保存对话到文件中
+        context_path = os.path.join(CONVERSATION_FOLDER, project, 'bug' + json_file.rstrip('.json'), str(current_tries))
+        with open(context_path, 'w') as file:
+            file.write( json.dumps(context))
+            file.close()
     # 当有一个plausible patch时 generate更多的plausible patch
     if len(plausible_patches) != 0:
         while current_tries < Max_Tries:
@@ -54,6 +59,11 @@ def chat_repair(project, initial_prompt, json_file):
             if feedback == '' and patch not in plausible_patches:
                 plausible_patches.append(patch)
             current_tries += 1
+            context_path = os.path.join(CONVERSATION_FOLDER, project, 'bug' + json_file.rstrip('.json'),
+                                        str(current_tries))
+            with open(context_path, 'a+') as file:
+                file.write(json.dumps(context))
+                file.close()
     return plausible_patches
 
 
@@ -81,24 +91,25 @@ def validate_patch(patch, project, json_file, plausible_patches):
                 f2.close()
         # insert类型的patch 找到的对应的函数 替换整个函数
         if patch_type == PATCH_TYPE_INSERT:
+            next_line_no = data['0']['next_line_no']
             # 获得函数声明所在的行
             source_file_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, file_name)
-            start_line = get_method_declaration_line_no(source_file_path, from_line_no)
+            start_line = get_method_declaration_line_no(source_file_path, next_line_no)
             # 替换掉函数的INFILL部分
             with open(os.path.join(
                     BUGGY_PROJECT_FOLDER, project + no, file_name), "r", encoding='latin-1') as file:
-                lines = file.readlines()[start_line - 1:-1]
+                lines = file.readlines()
                 file.close()
             left_open_brackets = 0
             right_open_brackets = 0
-            end_line_index = start_line - 2
-            for line in lines:
+            end_line = start_line - 1
+            for line in lines[start_line-1:-1]:
                 left_open_brackets += line.count('{')
                 right_open_brackets += line.count('}')
-                end_line_index += 1
+                end_line += 1
                 if left_open_brackets == right_open_brackets and not left_open_brackets == 0:
                     break
-            del lines[start_line - 1:end_line_index]
+            del lines[start_line - 1:end_line]
             lines.insert(start_line - 1, patch)
             file.close()
             with open(os.path.join(
@@ -125,7 +136,8 @@ def validate_patch(patch, project, json_file, plausible_patches):
             # 未通过全部test 构造feedback
             failing_test_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)
             failing_test, test_error, test_file, test_line_no = get_failing_test_info(failing_test_path)
-            if not os.path.exists(os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_PATH_PREFIX, test_file)):
+            file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_PATH_PREFIX, test_file)
+            if not os.path.exists(file):
                 file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_PATH_PREFIX_JAVA, test_file)
                 # get the test line
                 test_lines = []
@@ -198,28 +210,29 @@ def construct_initial_prompt(project, json_file):
             if patch_type == PATCH_TYPE_INSERT:
                 next_line_no = data['0']['next_line_no']
                 source_file_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, file_name)
-                buggy_function = get_buggy_function(source_file_path, next_line_no, to_line_no, PATCH_TYPE_INSERT)
+                buggy_function = get_buggy_function(source_file_path, next_line_no, next_line_no, PATCH_TYPE_INSERT)
                 initial_prompt = INITIAL_7 + buggy_function
 
-            # 如果不存在failing test文件 说明没有执过defects4j test命令 执行
+            # 如果不存在failing test文件或为空 说明没有执过defects4j test命令 执行
             failing_test_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)
-            if not os.path.exists(failing_test_path):
+            if is_file_empty_or_not_exists(failing_test_path):
                 os.system(
                     'cd ' + os.path.join(BUGGY_PROJECT_FOLDER, project + no) + ' && ' + DEFECTS4J_COMPILE_TEST)
 
             # 添加关于failing test的信息
             failing_test, test_error, test_file, test_line_no = get_failing_test_info(failing_test_path)
+            file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_PATH_PREFIX, test_file)
             if not os.path.exists(os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_PATH_PREFIX, test_file)):
                 file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_PATH_PREFIX_JAVA, test_file)
-                # 根据test line所在的行到对应文件找到目标line
-                test_lines = []
-                with open(file, mode='r', encoding='latin-1') as test_file:
-                    lines = test_file.readlines()[test_line_no - 1:]
-                    for line in lines:
-                        test_lines.append(line)
-                        if line.count(';') == 1:
+            # 根据test line所在的行到对应文件找到目标line
+            test_lines = []
+            with open(file, mode='r', encoding='latin-1') as test_file:
+                lines = test_file.readlines()[test_line_no - 1:]
+                for line in lines:
+                    test_lines.append(line)
+                    if line.count(';') == 1:
                             break
-                initial_prompt = initial_prompt + INITIAL_3 + failing_test + INITIAL_4 + ''.join(
+            initial_prompt = initial_prompt + INITIAL_3 + failing_test + INITIAL_4 + ''.join(
                     test_lines) + INITIAL_5 + test_error
 
             # 完整initial prompt的最后一句
