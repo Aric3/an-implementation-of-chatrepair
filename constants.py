@@ -41,13 +41,14 @@ INITIAL_6 = ("Please provide the correct lines at the >>>[INFILL]<<< location.Yo
 INITIAL_7 = "You are an automated program repair tool.\nThe following function is a buggy function.\n"
 INITIAL_8 = ("Please provide the correct repair of this function.Your answer should consist of only two parts, "
              "an analysis of the cause of the bug and the repair function you give to fix the bug, which should be "
-             "contained in a markdown format code block.\n")
+             "contained in a markdown format java code block.\n")
 
 FeedBack_1 = "Your code still not correct.\n"
 FeedBack_2 = "Your code has compilation error:\n"
 
 Alt_Instruct_1 = "The bug can be fixed by these patches:\n"
-Alt_Instruct_2 = "Please generate another alternative patch.\n"
+Alt_Instruct_2 = ("Please generate another alternative patch, it should be contained in a markdown format java code "
+                  "block\n")
 
 # chat repair常量配置
 Max_Tries = 10

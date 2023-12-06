@@ -1,6 +1,8 @@
 import json
 import os
 import re
+import shutil
+
 import openai
 import subprocess
 from javalang import parse
@@ -41,15 +43,17 @@ def chat_repair(project, initial_prompt, json_file):
             current_length += 1
             current_tries += 1
         # 保存对话到文件中
-        context_path = os.path.join(CONVERSATION_FOLDER, project, 'bug' + json_file.rstrip('.json'), str(current_tries))
-        with open(context_path, 'w') as file:
-            file.write( json.dumps(context))
-            file.close()
+        context_path = os.path.join(CONVERSATION_FOLDER, project, 'bug' + json_file.rstrip('.json'), str(current_tries)+'.txt')
+        file = open_file(context_path)
+        for element in context:
+            file.write(element['content'])
+            file.write('\n')
+        file.close()
     # 当有一个plausible patch时 generate更多的plausible patch
     if len(plausible_patches) != 0:
         while current_tries < Max_Tries:
             context = []
-            prompt = initial_prompt + Alt_Instruct_1 + '\n'.join(plausible_patches) + Alt_Instruct_2
+            prompt = initial_prompt.rstrip(INITIAL_6).rstrip(INITIAL_8) + Alt_Instruct_1 + '\n'.join(plausible_patches) + Alt_Instruct_2
             context.append({'role': 'user', 'content': prompt})
             response = openai.chat.completions.create(model=Model, messages=context)
             response_text = response.choices[0].message.content
@@ -59,17 +63,24 @@ def chat_repair(project, initial_prompt, json_file):
             if feedback == '' and patch not in plausible_patches:
                 plausible_patches.append(patch)
             current_tries += 1
+            # 保存对话到文件中
             context_path = os.path.join(CONVERSATION_FOLDER, project, 'bug' + json_file.rstrip('.json'),
-                                        str(current_tries))
-            with open(context_path, 'a+') as file:
-                file.write(json.dumps(context))
-                file.close()
+                                        str(current_tries)+'.txt')
+            file = open_file(context_path)
+            for element in context:
+                file.write(element['content'])
+                file.write('\n')
+            file.close()
     return plausible_patches
 
 
 # 验证对应patch 并构造feedback
 def validate_patch(patch, project, json_file, plausible_patches):
     no = json_file.rstrip('.json')
+    # 如果还没有对应bug的文件夹 运行defects4j checkout
+    if not os.path.exists(os.path.join(BUGGY_PROJECT_FOLDER, project + no)):
+        os.system(DEFECTS4J_CHECKOUT % (
+            project, no + 'b', os.path.join(BUGGY_PROJECT_FOLDER, project + no)))
     with open(os.path.join(PATCH_JSON_FOLDER, project, json_file), 'r', encoding="latin-1") as f:
         data = json.load(f)
         f.close()
@@ -95,7 +106,7 @@ def validate_patch(patch, project, json_file, plausible_patches):
             # 获得函数声明所在的行
             source_file_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, file_name)
             start_line = get_method_declaration_line_no(source_file_path, next_line_no)
-            # 替换掉函数的INFILL部分
+            # 替换掉整个函数
             with open(os.path.join(
                     BUGGY_PROJECT_FOLDER, project + no, file_name), "r", encoding='latin-1') as file:
                 lines = file.readlines()
@@ -103,7 +114,7 @@ def validate_patch(patch, project, json_file, plausible_patches):
             left_open_brackets = 0
             right_open_brackets = 0
             end_line = start_line - 1
-            for line in lines[start_line-1:-1]:
+            for line in lines[start_line - 1:-1]:
                 left_open_brackets += line.count('{')
                 right_open_brackets += line.count('}')
                 end_line += 1
@@ -139,23 +150,27 @@ def validate_patch(patch, project, json_file, plausible_patches):
             file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_PATH_PREFIX, test_file)
             if not os.path.exists(file):
                 file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_PATH_PREFIX_JAVA, test_file)
-                # get the test line
-                test_lines = []
-                with open(file, mode='r', encoding='latin-1') as test_file:
-                    lines = test_file.readlines()[test_line_no - 1:]
-                    for line in lines:
-                        test_lines.append(line)
-                        if line.count(';') == 1:
-                            break
-                feedback = FeedBack_1 + INITIAL_3 + failing_test + INITIAL_4 + ''.join(
-                    test_lines) + INITIAL_5 + test_error
-                return feedback
+            # get the test line
+            test_lines = []
+            with open(file, mode='r', encoding='latin-1') as test_file:
+                lines = test_file.readlines()[test_line_no - 1:]
+                for line in lines:
+                    test_lines.append(line)
+                    if line.count(';') == 1:
+                        break
+            feedback = FeedBack_1 + INITIAL_3 + failing_test + INITIAL_4 + ''.join(test_lines) + INITIAL_5 + test_error
+            # 删除checkout的项目文件
+            shutil.rmtree(os.path.join(BUGGY_PROJECT_FOLDER, project + no))
+            return feedback
 
 
 # 从chat gpt文本中提取代码部分
 def match_patch_code(response_text):
     pattern = r"```java(.*)```"
     match = re.search(pattern, response_text, re.DOTALL)
+    if match is None:
+        pattern = r"```(.*)```"
+        match = re.search(pattern, response_text, re.DOTALL)
     return match.group(1)
 
 
@@ -179,6 +194,16 @@ def run_command(command):
     stderr = stderr.decode('utf-8')
 
     return stdout, stderr
+
+
+# 打开文件 陆军不存在则创建
+def open_file(path):
+    # 检查路径是否存在
+    if not os.path.exists(path):
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+
+    file = open(path, 'w')
+    return file
 
 
 def construct_initial_prompt(project, json_file):
@@ -231,9 +256,9 @@ def construct_initial_prompt(project, json_file):
                 for line in lines:
                     test_lines.append(line)
                     if line.count(';') == 1:
-                            break
+                        break
             initial_prompt = initial_prompt + INITIAL_3 + failing_test + INITIAL_4 + ''.join(
-                    test_lines) + INITIAL_5 + test_error
+                test_lines) + INITIAL_5 + test_error
 
             # 完整initial prompt的最后一句
             if patch_type == 'replace':
