@@ -93,7 +93,7 @@ def validate_patch(patch, project, json_file, plausible_patches):
             with open(os.path.join(
                     BUGGY_PROJECT_FOLDER, project + no, file_name), mode='r', encoding='latin-1') as f1:
                 lines = f1.readlines()
-            del lines[from_line_no - 1:to_line_no - 1]
+            del lines[from_line_no - 1:to_line_no]
             lines.insert(from_line_no - 1, patch)
             f1.close()
             with open(os.path.join(
