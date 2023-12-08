@@ -35,6 +35,9 @@ def chat_repair(project, initial_prompt, json_file):
             response_text = response.choices[0].message.content
             context.append({'role': 'assistant', 'content': response_text})
             patch = match_patch_code(response_text)
+            # 不符合规范的回答文本 跳过此次对话
+            if patch == '':
+                break
             feedback = validate_patch(patch, project, json_file, plausible_patches)
             if feedback == '':
                 break
@@ -59,6 +62,9 @@ def chat_repair(project, initial_prompt, json_file):
             response_text = response.choices[0].message.content
             context.append({'role': 'assistant', 'content': response_text})
             patch = match_patch_code(response_text)
+            # 不符合规范的回答文本 跳过此次对话
+            if patch == '':
+                continue
             feedback = validate_patch(patch, project, json_file, plausible_patches)
             if feedback == '' and patch not in plausible_patches:
                 plausible_patches.append(patch)
@@ -171,6 +177,9 @@ def match_patch_code(response_text):
     if match is None:
         pattern = r"```(.*)```"
         match = re.search(pattern, response_text, re.DOTALL)
+    # 不符合规范的回答文本 停止此次对话
+    if match is None:
+        return ''
     return match.group(1)
 
 
