@@ -2,7 +2,7 @@ import json
 import os
 import re
 import shutil
-
+import time
 import openai
 import subprocess
 from javalang import parse
@@ -32,6 +32,8 @@ def chat_repair(project, initial_prompt, json_file):
         while current_length < Max_Conv_len:
             context.append({'role': 'user', 'content': prompt})
             response = openai.chat.completions.create(model=Model, messages=context)
+            # 程序停止25s
+            # time.sleep(25)
             response_text = response.choices[0].message.content
             context.append({'role': 'assistant', 'content': response_text})
             patch = match_patch_code(response_text)
@@ -59,6 +61,8 @@ def chat_repair(project, initial_prompt, json_file):
             prompt = initial_prompt.rstrip(INITIAL_6).rstrip(INITIAL_8) + Alt_Instruct_1 + '\n'.join(plausible_patches) + Alt_Instruct_2
             context.append({'role': 'user', 'content': prompt})
             response = openai.chat.completions.create(model=Model, messages=context)
+            # 程序停止25s
+            # time.sleep(25)
             response_text = response.choices[0].message.content
             context.append({'role': 'assistant', 'content': response_text})
             patch = match_patch_code(response_text)

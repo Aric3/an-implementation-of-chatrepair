@@ -46,13 +46,13 @@ INITIAL_8 = ("Please provide the correct repair of this function.Your answer sho
 FeedBack_1 = "Your code still not correct.\n"
 FeedBack_2 = "Your code has compilation error:\n"
 
-Alt_Instruct_1 = "The bug can be fixed by these patches:\n"
+Alt_Instruct_1 = "\nThe bug can be fixed by these patches:\n"
 Alt_Instruct_2 = ("Please generate another alternative patch, it should be contained in a markdown format java code "
                   "block\n")
 
 # chat repair常量配置
 Max_Tries = 10
 Max_Conv_len = 3
-API_KEY = 'sk-BTijAxza2faVBDpy452344F136154561Ab9f4fF2037d47E0'
-BASE_URL = 'https://api.aikey.one/v1/'
+API_KEY = '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'
+BASE_URL = 'https://api.openai.com/v1/'
 Model = "gpt-3.5-turbo"
