@@ -17,7 +17,7 @@ BUGGY_PROJECT_FOLDER = "bugs"
 FAILING_TEST_FILE = "failing_tests"
 TEST_PATH_PREFIX = "src/test"
 TEST_PATH_PREFIX_JAVA = "src/test/java"
-
+INITIAL_PROMPT_FOLDER = "initial"
 # defects4j命令常量
 DEFECTS4J_CHECKOUT = "defects4j checkout -p %s -v %s -w %s"
 DEFECTS4J_COMPILE = "defects4j compile"

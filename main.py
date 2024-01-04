@@ -14,9 +14,11 @@ def go_chat_repair(project):
     files = os.listdir(os.path.join(PATCH_JSON_FOLDER, project))
     for file in files:
         initial_prompt = construct_initial_prompt(project, file)
-        if not initial_prompt == '':
-            plausible_patches = chat_repair(project, initial_prompt, file)
-            print(plausible_patches)
+        # if not initial_prompt == '':
+        #     plausible_patches = chat_repair(project, initial_prompt, file)
+        #     print(plausible_patches)
+        f = open_file(os.path.join(INITIAL_PROMPT_FOLDER,project,file.rstrip(".json")+".txt"))
+        f.write(initial_prompt)
 
 
 def chat_repair(project, initial_prompt, json_file):
