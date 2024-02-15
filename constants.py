@@ -16,10 +16,11 @@ PATCH_JSON_FOLDER = "patches"
 CONVERSATION_FOLDER = "conversations"
 BUGGY_PROJECT_FOLDER = "bugs"
 FAILING_TEST_FILE = "failing_tests"
-TEST_PATH_PREFIX_1 = "tests"
-TEST_PATH_PREFIX_2 = "test"
-TEST_PATH_PREFIX = "src/test"
-TEST_PATH_PREFIX_JAVA = "src/test/java"
+
+Test_FilePath_Prefix = {"Closure": "test", "Mockito": "test", "Chart": "tests", "Lang": "src/test/java",
+                        "Math": "src/test/java", "Time": "src/test/java"}
+
+Test_FilePath_Prefix_1 = "src/test"
 INITIAL_PROMPT_FOLDER = "initial"
 # defects4j命令常量
 DEFECTS4J_CHECKOUT = "defects4j checkout -p %s -v %s -w %s"
@@ -35,23 +36,20 @@ INITIAL_Single_line = "The following code contains a buggy line that has been re
 INITIAL_Single_hunk = "The following code contains a buggy hunk that has been removed:\n"
 INITIAL_Single_function = "The following code contains a bug\n"
 
-
 INITIAL_Single_line_2 = "This was the original buggy line which was removed by the infill location\n"
 INITIAL_Single_hunk_2 = "This was the original buggy hunk which was removed by the infill location\n"
 
-
 Failure_Test = "The code fails on this test:\n"
-Failure_Test_line = "on this test line:\n"
+Failure_Test_line = "\non this test line:\n"
 Failure_Test_error = "with the following test error:\n"
 
-INITIAL_Single_line_final = "Please provide the correct line at the infill location.\n"
-INITIAL_Single_hunk_final = "Please provide the correct hunk at the infill location.\n"
-INITIAL_Single_function_final = "Please provide the correct function.\n"
+INITIAL_Single_line_final = "\nPlease provide the correct line at the infill location.\n"
+INITIAL_Single_hunk_final = "\nPlease provide the correct hunk at the infill location.\n"
+INITIAL_Single_function_final = "\nPlease provide the correct function.\n"
 
 FeedBack_0 = "The fixed version is still not correct.\n"
 FeedBack_1 = "It still does not fix the original test failure.\n"
 FeedBack_2 = "Code has the following compilation error:\n"
-
 
 Alt_Instruct_1 = "It can be fixed by these possible lines:\n"
 Alt_Instruct_2 = "Please generate an alternative fix lines."
