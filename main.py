@@ -14,11 +14,11 @@ def go_chat_repair(project):
     files = os.listdir(os.path.join(PATCH_JSON_FOLDER, project))
     for file in files:
         initial_prompt = construct_initial_prompt(project, file)
-        # if not initial_prompt == '':
-        #     plausible_patches = chat_repair(project, initial_prompt, file)
-        #     print(plausible_patches)
-        f = open_file(os.path.join(INITIAL_PROMPT_FOLDER,project,file.rstrip(".json")+".txt"))
-        f.write(initial_prompt)
+        if not initial_prompt == '':
+            #     plausible_patches = chat_repair(project, initial_prompt, file)
+            #     print(plausible_patches)
+            f = open_file(os.path.join(INITIAL_PROMPT_FOLDER, project, file.rstrip(".json") + ".txt"))
+            f.write(initial_prompt)
 
 
 def chat_repair(project, initial_prompt, json_file):
@@ -50,7 +50,8 @@ def chat_repair(project, initial_prompt, json_file):
             current_length += 1
             current_tries += 1
         # 保存对话到文件中
-        context_path = os.path.join(CONVERSATION_FOLDER, project, 'bug' + json_file.rstrip('.json'), str(current_tries)+'.txt')
+        context_path = os.path.join(CONVERSATION_FOLDER, project, 'bug' + json_file.rstrip('.json'),
+                                    str(current_tries) + '.txt')
         file = open_file(context_path)
         for element in context:
             file.write(element['content'])
@@ -60,7 +61,8 @@ def chat_repair(project, initial_prompt, json_file):
     if len(plausible_patches) != 0:
         while current_tries < Max_Tries:
             context = []
-            prompt = initial_prompt.rstrip(INITIAL_6).rstrip(INITIAL_8) + Alt_Instruct_1 + '\n'.join(plausible_patches) + Alt_Instruct_2
+            prompt = initial_prompt.rstrip(INITIAL_6).rstrip(INITIAL_8) + Alt_Instruct_1 + '\n'.join(
+                plausible_patches) + Alt_Instruct_2
             context.append({'role': 'user', 'content': prompt})
             response = openai.chat.completions.create(model=Model, messages=context)
             # 程序停止25s
@@ -77,7 +79,7 @@ def chat_repair(project, initial_prompt, json_file):
             current_tries += 1
             # 保存对话到文件中
             context_path = os.path.join(CONVERSATION_FOLDER, project, 'bug' + json_file.rstrip('.json'),
-                                        str(current_tries)+'.txt')
+                                        str(current_tries) + '.txt')
             file = open_file(context_path)
             for element in context:
                 file.write(element['content'])
@@ -211,7 +213,7 @@ def run_command(command):
     return stdout, stderr
 
 
-# 打开文件 陆军不存在则创建
+# 打开文件 如果不存在则创建
 def open_file(path):
     # 检查路径是否存在
     if not os.path.exists(path):
@@ -228,7 +230,6 @@ def construct_initial_prompt(project, json_file):
         data = json.load(f)
         f.close()
         num_of_hunks = data['num_of_hunks']
-        # only deal with single hunk bugs
         if num_of_hunks == 1:
             # 如果还没有对应bug的文件夹 运行defects4j checkout
             if not os.path.exists(os.path.join(BUGGY_PROJECT_FOLDER, project + no)):
@@ -236,7 +237,7 @@ def construct_initial_prompt(project, json_file):
                     project, no + 'b', os.path.join(BUGGY_PROJECT_FOLDER, project + no)))
             file_name = data['0']['file_name']
             patch_type = data['0']['patch_type']
-            initial_prompt = ''
+            initial_prompt = INITIAL_APR_tool
             # replace类型的patch
             if patch_type == PATCH_TYPE_REPLACE:
                 from_line_no = data['0']['from_line_no']
@@ -245,25 +246,40 @@ def construct_initial_prompt(project, json_file):
                 source_file_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, file_name)
                 buggy_function = get_buggy_function(source_file_path, from_line_no, to_line_no, PATCH_TYPE_REPLACE)
                 # construct the initial prompt
-                initial_prompt = INITIAL_1 + buggy_function + INITIAL_2 + original_buggy_hunk
+                # single line的patch
+                if from_line_no == to_line_no:
+                    initial_prompt += INITIAL_Single_line + buggy_function + INITIAL_Single_line_2 + original_buggy_hunk
+                # single hunk的patch
+                else:
+                    initial_prompt += INITIAL_Single_hunk + buggy_function + INITIAL_Single_hunk_2 + original_buggy_hunk
+            # delete类型的patch
+            if patch_type == PATCH_TYPE_DELETE:
+                next_line_no = data['0']['next_line_no']
+                source_file_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, file_name)
+                buggy_function = get_buggy_function(source_file_path, from_line_no, next_line_no, PATCH_TYPE_DELETE)
+                initial_prompt += INITIAL_Single_function + buggy_function
             # insert类型的patch
             if patch_type == PATCH_TYPE_INSERT:
                 next_line_no = data['0']['next_line_no']
                 source_file_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, file_name)
                 buggy_function = get_buggy_function(source_file_path, next_line_no, next_line_no, PATCH_TYPE_INSERT)
-                initial_prompt = INITIAL_7 + buggy_function
+                initial_prompt += INITIAL_Single_function + buggy_function
 
             # 如果不存在failing test文件或为空 说明没有执过defects4j test命令 执行
-            failing_test_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)
-            if is_file_empty_or_not_exists(failing_test_path):
+            failure_test_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)
+            if is_file_empty_or_not_exists(failure_test_path):
                 os.system(
                     'cd ' + os.path.join(BUGGY_PROJECT_FOLDER, project + no) + ' && ' + DEFECTS4J_COMPILE_TEST)
 
             # 添加关于failing test的信息
-            failing_test, test_error, test_file, test_line_no = get_failing_test_info(failing_test_path)
+            failing_test, test_error, test_file, test_line_no = get_failing_test_info(failure_test_path)
             file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_PATH_PREFIX, test_file)
             if not os.path.exists(os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_PATH_PREFIX, test_file)):
                 file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_PATH_PREFIX_JAVA, test_file)
+                if not os.path.exists(file):
+                    file = os.path.join(BUGGY_PROJECT_FOLDER, project + no,TEST_PATH_PREFIX_1, test_file)
+                    if not os.path.exists(file):
+                        file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_PATH_PREFIX_2, test_file)
             # 根据test line所在的行到对应文件找到目标line
             test_lines = []
             with open(file, mode='r', encoding='latin-1') as test_file:
@@ -289,9 +305,12 @@ def construct_initial_prompt(project, json_file):
 def get_buggy_function(file_path, from_line_no, to_line_no, patch_type):
     start_line_no = get_method_declaration_line_no(file_path, from_line_no)
     function_lines = get_method_lines(file_path, start_line_no)
-    if patch_type == 'replace':
+    if patch_type == PATCH_TYPE_REPLACE or PATCH_TYPE_DELETE:
+        # del删除数组的元素 包含左边界 不包含右边界
         del function_lines[from_line_no - start_line_no:to_line_no - start_line_no + 1]
         function_lines.insert(from_line_no - start_line_no, INFILL)
+    if patch_type == PATCH_TYPE_INSERT:
+        function_lines.insert(to_line_no - start_line_no, INFILL)
     return ''.join(function_lines)
 
 
@@ -306,7 +325,7 @@ def get_failing_test_info(test_file_path):
                 failing_test = lines[i].strip('---')
                 test_error = lines[i + 1]
             # match 'at org.apache.commons.lang3.StringUtilsTest.testEscapeSurrogatePairs(StringUtilsTest.java:2187)'
-            match = re.search(r'\(.*Test\.java:(\d+)\)$', lines[i])
+            match = re.search(r'\(.*Tests?\.java:(\d+)\)$', lines[i])
             if match:
                 # org/apache/commons/lang3/StringUtilsTest
                 test_file = ''.join(re.findall(r'[A-Za-z0-9]+\.', lines[i])[0:-1]).replace('.', '/')[:-1] + '.java'
@@ -351,4 +370,4 @@ def get_method_lines(source_file_path, start_line_no):
 
 
 if __name__ == '__main__':
-    go_chat_repair(LANG)
+    go_chat_repair(Closure)

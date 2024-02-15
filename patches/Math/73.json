@@ -1,9 +1,0 @@
-{
-    "num_of_hunks": 1,
-    "0": {
-        "file_name": "src/main/java/org/apache/commons/math/analysis/solvers/BrentSolver.java",
-        "replaced_with": "        if (yMin * yMax > 0) {\n            throw MathRuntimeException.createIllegalArgumentException(\n                  NON_BRACKETING_MESSAGE, min, max, yMin, yMax);\n        }\n",
-        "patch_type": "insert",
-        "next_line_no": 136
-    }
-}

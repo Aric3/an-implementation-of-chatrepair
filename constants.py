@@ -9,12 +9,15 @@ TIME = "Time"
 # patch类型
 PATCH_TYPE_REPLACE = 'replace'
 PATCH_TYPE_INSERT = 'insert'
+PATCH_TYPE_DELETE = 'delete'
 
 # 文件夹常量
 PATCH_JSON_FOLDER = "patches"
 CONVERSATION_FOLDER = "conversations"
 BUGGY_PROJECT_FOLDER = "bugs"
 FAILING_TEST_FILE = "failing_tests"
+TEST_PATH_PREFIX_1 = "tests"
+TEST_PATH_PREFIX_2 = "test"
 TEST_PATH_PREFIX = "src/test"
 TEST_PATH_PREFIX_JAVA = "src/test/java"
 INITIAL_PROMPT_FOLDER = "initial"
@@ -25,30 +28,33 @@ DEFECTS4J_TEST = "defects4j test"
 DEFECTS4J_COMPILE_TEST = "defects4j compile ; defects4j test"
 
 # Prompt常量
-Example = ""
 INFILL = ">>>[INFILL]<<<\n"
-INITIAL_1 = ("You are an automated program repair tool.\n"
-             "The following function contains a buggy hunk that has been replaced by the mark >>>[INFILL]<<<:\n")
-INITIAL_2 = "This was the original buggy hunk which was replaced by the >>>[INFILL]<<< mark:\n"
+INITIAL_APR_tool = "You are an Automated Program Repair Tool.\n"
+Few_Shot_Example = ""
+INITIAL_Single_line = "The following code contains a buggy line that has been removed:\n"
+INITIAL_Single_hunk = "The following code contains a buggy hunk that has been removed:\n"
+INITIAL_Single_function = "The following code contains a bug\n"
 
-INITIAL_3 = "The code fails on this test:\n"
-INITIAL_4 = "on this test line:\n"
-INITIAL_5 = "with the following test error:\n"
 
-INITIAL_6 = ("Please provide the correct lines at the >>>[INFILL]<<< location.Your answer should consist of only two "
-             "parts, an analysis of the cause of the bug and the repair code lines to replace the >>>[INFILL]<<<, "
-             "which should be contained in a markdown format code block.\n")
-INITIAL_7 = "You are an automated program repair tool.\nThe following function is a buggy function.\n"
-INITIAL_8 = ("Please provide the correct repair of this function.Your answer should consist of only two parts, "
-             "an analysis of the cause of the bug and the repair function you give to fix the bug, which should be "
-             "contained in a markdown format java code block.\n")
+INITIAL_Single_line_2 = "This was the original buggy line which was removed by the infill location\n"
+INITIAL_Single_hunk_2 = "This was the original buggy hunk which was removed by the infill location\n"
 
-FeedBack_1 = "Your code still not correct.\n"
-FeedBack_2 = "Your code has compilation error:\n"
 
-Alt_Instruct_1 = "\nThe bug can be fixed by these patches:\n"
-Alt_Instruct_2 = ("Please generate another alternative patch, it should be contained in a markdown format java code "
-                  "block\n")
+Failure_Test = "The code fails on this test:\n"
+Failure_Test_line = "on this test line:\n"
+Failure_Test_error = "with the following test error:\n"
+
+INITIAL_Single_line_final = "Please provide the correct line at the infill location.\n"
+INITIAL_Single_hunk_final = "Please provide the correct hunk at the infill location.\n"
+INITIAL_Single_function_final = "Please provide the correct function.\n"
+
+FeedBack_0 = "The fixed version is still not correct.\n"
+FeedBack_1 = "It still does not fix the original test failure.\n"
+FeedBack_2 = "Code has the following compilation error:\n"
+
+
+Alt_Instruct_1 = "It can be fixed by these possible lines:\n"
+Alt_Instruct_2 = "Please generate an alternative fix lines."
 
 # chat repair常量配置
 Max_Tries = 10
