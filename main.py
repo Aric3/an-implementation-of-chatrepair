@@ -442,4 +442,3 @@ if __name__ == '__main__':
                 chat_initial(p)
             else:
                 go_chat_repair(p)
-    go_chat_repair(Closure)
