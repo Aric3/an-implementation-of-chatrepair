@@ -1,0 +1,18 @@
+You are an Automated Program Repair Tool.
+The following code contains a buggy line that has been removed:
+    public Paint getPaint(double value) {
+        double v = Math.max(value, this.lowerBound);
+        v = Math.min(v, this.upperBound);
+>>>[INFILL]<<<
+                - this.lowerBound) * 255.0);
+        return new Color(g, g, g);
+    }
+This was the original buggy line which was removed by the infill location
+        int g = (int) ((value - this.lowerBound) / (this.upperBound 
+The code fails on this test:
+org.jfree.chart.renderer.junit.GrayPaintScaleTests::testGetPaint
+on this test line:
+        c = (Color) gps.getPaint(-0.5);
+with the following test error:
+java.lang.IllegalArgumentException: Color parameter outside of expected range: Red Green Blue
+Please provide the correct line at the infill location.

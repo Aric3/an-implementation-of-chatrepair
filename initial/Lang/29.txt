@@ -1,0 +1,14 @@
+You are an Automated Program Repair Tool.
+The following code contains a buggy line that has been removed:
+>>>[INFILL]<<<
+        return toVersionInt(toJavaVersionIntArray(version, JAVA_VERSION_TRIM_SIZE));
+    }
+This was the original buggy line which was removed by the infill location
+    static float toJavaVersionInt(String version) {
+The code fails on this test:
+org.apache.commons.lang3.SystemUtilsTest::testJavaVersionAsInt
+on this test line:
+        assertEquals(0, SystemUtils.toJavaVersionInt(null));
+with the following test error:
+junit.framework.AssertionFailedError: expected:<0> but was:<0.0>
+Please provide the correct line at the infill location.

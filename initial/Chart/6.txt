@@ -1,0 +1,22 @@
+You are an Automated Program Repair Tool.
+The following code contains a buggy line that has been removed:
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof ShapeList)) {
+            return false;
+        }
+>>>[INFILL]<<<
+
+    }
+This was the original buggy line which was removed by the infill location
+        return super.equals(obj);
+The code fails on this test:
+org.jfree.chart.util.junit.ShapeListTests::testSerialization
+on this test line:
+        assertEquals(l1, l2);
+with the following test error:
+junit.framework.AssertionFailedError: expected:<org.jfree.chart.util.ShapeList@d1921e0b> but was:<org.jfree.chart.util.ShapeList@c949b0>
+Please provide the correct line at the infill location.

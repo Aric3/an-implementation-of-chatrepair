@@ -1,0 +1,16 @@
+You are an Automated Program Repair Tool.
+The following code contains a buggy line that has been removed:
+    public String generateToolTipFragment(String toolTipText) {
+>>>[INFILL]<<<
+            + "\" alt=\"\"";
+    }
+This was the original buggy line which was removed by the infill location
+        return " title=\"" + toolTipText
+The code fails on this test:
+org.jfree.chart.imagemap.junit.StandardToolTipTagFragmentGeneratorTests::testGenerateURLFragment
+on this test line:
+        assertEquals(" title=\"Series &quot;A&quot;, 100.0\" alt=\"\"",
+                g.generateToolTipFragment("Series \"A\", 100.0"));
+with the following test error:
+junit.framework.ComparisonFailure: expected:< title="Series [&quot;A&quot;], 100.0" alt=""> but was:< title="Series ["A"], 100.0" alt="">
+Please provide the correct line at the infill location.

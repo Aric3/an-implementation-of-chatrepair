@@ -14,6 +14,8 @@ PATCH_TYPE_INSERT = 'insert'
 PATCH_TYPE_DELETE = 'delete'
 
 # 文件夹常量
+LOG_FILE = "logs.txt"
+
 PATCH_JSON_FOLDER = "patches"
 ChatRepair_FOLDER = "chatrepair"
 InitialChat_FOLDER = "initial-chat"
@@ -23,7 +25,6 @@ FAILING_TEST_FILE = "failing_tests"
 
 Test_FilePath_Prefix = {"Closure": "test", "Mockito": "test", "Chart": "tests", "Lang": "src/test/java",
                         "Math": "src/test/java", "Time": "src/test/java"}
-
 Test_FilePath_Prefix_1 = "src/test"
 INITIAL_PROMPT_FOLDER = "initial"
 # defects4j命令常量

@@ -336,7 +336,14 @@ def construct_initial_prompt(project, json_file):
                 os.system('cd ' + os.path.join(BUGGY_PROJECT_FOLDER, project + no) + ' && ' + DEFECTS4J_COMPILE_TEST)
 
             # 添加关于failure test的信息
-            failure_test, test_error, test_file, test_line_no = get_failure_test_info(failure_test_path)
+            try:
+                failure_test, test_error, test_file, test_line_no = get_failure_test_info(failure_test_path)
+            except TypeError as e:
+                print("Wrong! File:"+failure_test_path+" Not able to handle. With", e)
+                with open(LOG_FILE, 'a') as file:
+                    file.write("Wrong! File:"+failure_test_path+" Not able to handle." + "\n")
+                    file.close()
+                return ''
             # 为test_file的路径添加前缀
             file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, Test_FilePath_Prefix[project], test_file)
             if is_file_empty_or_not_exists(file):
@@ -382,13 +389,13 @@ def get_buggy_function(file_path, from_line_no, to_line_no, patch_type):
 def get_failure_test_info(test_file_path):
     with open(test_file_path, 'r', encoding='latin-1') as file:
         lines = file.readlines()
-        failing_test = lines[0].strip('--- ')
+        failing_test = lines[0].strip('--- ').rstrip()
         test_error = lines[1].rstrip()
         test_function = failing_test.split("::")[1].rstrip()
         test_file = failing_test.split("::")[0].replace('.', '/') + '.java'
         for i in range(2, len(lines)):
             if test_function in lines[i]:
-                test_line_no = re.search(r'(\d+)\)', lines[i]).group(1)
+                test_line_no = int(re.search(r'(\d+)\)', lines[i]).group(1))
                 return failing_test, test_error, test_file, test_line_no
 
 
@@ -438,7 +445,7 @@ if __name__ == '__main__':
         else:
             if ins == "initial-save":
                 save_initial(p)
-            if ins == "initial-chat":
+            elif ins == "initial-chat":
                 chat_initial(p)
             else:
                 go_chat_repair(p)
