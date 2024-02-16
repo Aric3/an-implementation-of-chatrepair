@@ -2,7 +2,8 @@ import json
 import os
 import re
 import shutil
-import time
+import sys
+
 import openai
 import subprocess
 from javalang import parse
@@ -10,14 +11,44 @@ from javalang.tree import MethodDeclaration
 from constants import *
 
 
-def go_chat_repair(project):
+def save_initial(project):
     files = os.listdir(os.path.join(PATCH_JSON_FOLDER, project))
     for file in files:
         initial_prompt = construct_initial_prompt(project, file)
-
         if not initial_prompt == '':
             f = open_file(os.path.join(INITIAL_PROMPT_FOLDER, project, file.rstrip(".json") + ".txt"))
             f.write(initial_prompt)
+    print("Success!\nInitial Prompt is saved in " + INITIAL_PROMPT_FOLDER + "/" + project + "!")
+
+
+def chat_initial(project):
+    files = os.listdir(os.path.join(PATCH_JSON_FOLDER, project))
+    for file in files:
+        initial_prompt = construct_initial_prompt(project, file)
+        if not initial_prompt == '':
+            context = [{'role': 'user', 'content': initial_prompt}]
+            response = openai.chat.completions.create(model=Model, messages=context)
+            # 程序停止25s
+            # time.sleep(25)
+            response_text = response.choices[0].message.content
+            context.append({'role': 'assistant', 'content': response_text})
+            context_path = os.path.join(InitialChat_FOLDER, project, 'bug' + file.rstrip('.json') + '.txt')
+            file = open_file(context_path)
+            for element in context:
+                file.write(element['content'])
+                file.write('\n')
+            file.close()
+    print("Success!\nContext is saved in " + InitialChat_FOLDER + "/" + project + "!")
+
+
+def go_chat_repair(project):
+    openai.base_url = BASE_URL
+    openai.api_key = API_KEY
+    files = os.listdir(os.path.join(PATCH_JSON_FOLDER, project))
+    for file in files:
+        initial_prompt = construct_initial_prompt(project, file)
+        if not initial_prompt == '':
+            chat_repair(project, initial_prompt, file)
 
 
 def chat_repair(project, initial_prompt, json_file):
@@ -49,7 +80,7 @@ def chat_repair(project, initial_prompt, json_file):
             current_length += 1
             current_tries += 1
         # 保存对话到文件中
-        context_path = os.path.join(CONVERSATION_FOLDER, project, 'bug' + json_file.rstrip('.json'),
+        context_path = os.path.join(ChatRepair_FOLDER, project, 'bug' + json_file.rstrip('.json'),
                                     str(current_tries) + '.txt')
         file = open_file(context_path)
         for element in context:
@@ -60,7 +91,7 @@ def chat_repair(project, initial_prompt, json_file):
     if len(plausible_patches) != 0:
         while current_tries < Max_Tries:
             context = []
-            prompt = deleteByStartAndEnd(initial_prompt,IN + Alt_Instruct_1 + '\n'.join(
+            prompt = delete_substring_to_end(initial_prompt, "Please provide") + Alt_Instruct_1 + '\n'.join(
                 plausible_patches) + Alt_Instruct_2
             context.append({'role': 'user', 'content': prompt})
             response = openai.chat.completions.create(model=Model, messages=context)
@@ -77,13 +108,14 @@ def chat_repair(project, initial_prompt, json_file):
                 plausible_patches.append(patch)
             current_tries += 1
             # 保存对话到文件中
-            context_path = os.path.join(CONVERSATION_FOLDER, project, 'bug' + json_file.rstrip('.json'),
+            context_path = os.path.join(ChatRepair_FOLDER, project, 'bug' + json_file.rstrip('.json'),
                                         str(current_tries) + '.txt')
             file = open_file(context_path)
             for element in context:
                 file.write(element['content'])
                 file.write('\n')
             file.close()
+    print("Success!\nContext is saved in " + ChatRepair_FOLDER + "/" + project + "!")
     return plausible_patches
 
 
@@ -157,14 +189,12 @@ def validate_patch(patch, project, json_file, plausible_patches):
                     BUGGY_PROJECT_FOLDER, project + no, file_name), mode='w', encoding='latin-1') as f2:
                 f2.writelines(lines)
                 f2.close()
-
-        feedback = ''
         # 重新编译
         stdout, stderr = run_command(
             'cd ' + os.path.join(BUGGY_PROJECT_FOLDER, project + no) + ' && ' + DEFECTS4J_COMPILE)
         pattern = r"compile:(.*?)BUILD FAILED"
         result = re.search(pattern, stderr, re.DOTALL)
-        # 有编译错误 构造feedback
+        feedback = ""
         if result:
             output = result.group(1).strip()
             feedback = FeedBack_0 + FeedBack_2 + output
@@ -226,15 +256,13 @@ def is_file_empty_or_not_exists(file_path):
         return False
 
 
-def deleteByStartAndEnd(s, start, end):
-    # 找出两个字符串在原始字符串中的位置，开始位置是：开始始字符串的最左边第一个位置，结束位置是：结束字符串的最右边的第一个位置
-    x1 = s.index(start)
-    x2 = s.index(end) + len(end)  # s.index()函数算出来的是字符串的最左边的第一个位置
-    # 找出两个字符串之间的内容
-    x3 = s[x1:x2]
-    # 将内容替换为控制符串
-    result = s.replace(x3, "")
-    return result
+def delete_substring_to_end(s, subs):
+    index = s.find(subs)  # 查找子串在字符串中的位置
+    if index != -1:
+        new_string = s[:index]  # 使用切片操作获取子串之前的部分
+        return new_string
+    else:
+        return s
 
 
 # 运行系统命令并返回标准输出与标准错误输出
@@ -400,4 +428,18 @@ def get_method_lines(source_file_path, start_line_no):
 
 
 if __name__ == '__main__':
+    ins, p = sys.argv[1:3]
+    if ins not in ["chatrepair", "initial-save", "initial-chat"]:
+        print("Instruction only support \"chatrepair\"and\"initial\"")
+    else:
+        if p not in PROJECTS:
+            print("Project only support these:\n")
+            print(PROJECTS)
+        else:
+            if ins == "initial-save":
+                save_initial(p)
+            if ins == "initial-chat":
+                chat_initial(p)
+            else:
+                go_chat_repair(p)
     go_chat_repair(Closure)

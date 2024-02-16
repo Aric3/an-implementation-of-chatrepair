@@ -6,6 +6,8 @@ MATH = "Math"
 MOCKITO = "Mockito"
 TIME = "Time"
 
+PROJECTS = ["Chart", "Closure", "Lang", "Math", "Mockito", "Time"]
+
 # patch类型
 PATCH_TYPE_REPLACE = 'replace'
 PATCH_TYPE_INSERT = 'insert'
@@ -13,7 +15,9 @@ PATCH_TYPE_DELETE = 'delete'
 
 # 文件夹常量
 PATCH_JSON_FOLDER = "patches"
-CONVERSATION_FOLDER = "conversations"
+ChatRepair_FOLDER = "chatrepair"
+InitialChat_FOLDER = "initial-chat"
+
 BUGGY_PROJECT_FOLDER = "bugs"
 FAILING_TEST_FILE = "failing_tests"
 
@@ -51,8 +55,8 @@ FeedBack_0 = "The fixed version is still not correct.\n"
 FeedBack_1 = "It still does not fix the original test failure.\n"
 FeedBack_2 = "Code has the following compilation error:\n"
 
-Alt_Instruct_1 = "It can be fixed by these possible lines:\n"
-Alt_Instruct_2 = "Please generate an alternative fix lines."
+Alt_Instruct_1 = "It can be fixed by these possible patches:\n"
+Alt_Instruct_2 = "Please generate an alternative patch."
 
 # chat repair常量配置
 Max_Tries = 10
