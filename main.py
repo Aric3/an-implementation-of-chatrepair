@@ -22,6 +22,8 @@ def save_initial(project):
 
 
 def chat_initial(project):
+    openai.base_url = BASE_URL
+    openai.api_key = API_KEY
     files = os.listdir(os.path.join(PATCH_JSON_FOLDER, project))
     for file in files:
         initial_prompt = construct_initial_prompt(project, file)
@@ -319,6 +321,8 @@ def construct_initial_prompt(project, json_file):
                     initial_prompt += INITIAL_Single_hunk + buggy_function + INITIAL_Single_hunk_2 + original_buggy_hunk
             # delete类型的patch
             if patch_type == PATCH_TYPE_DELETE:
+                from_line_no = data['0']['from_line_no']
+                to_line_no = data['0']['to_line_no']
                 next_line_no = data['0']['next_line_no']
                 source_file_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, file_name)
                 buggy_function = get_buggy_function(source_file_path, from_line_no, next_line_no, PATCH_TYPE_DELETE)

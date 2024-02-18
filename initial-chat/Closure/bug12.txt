@@ -1,0 +1,25 @@
+You are an Automated Program Repair Tool.
+The following code contains a bug
+  private boolean hasExceptionHandler(Node cfgNode) {
+>>>[INFILL]<<<
+    return false;
+  }
+The code fails on this test:
+com.google.javascript.jscomp.FlowSensitiveInlineVariablesTest::testIssue794b
+on this test line:
+    noInline(
+        "var x = 1; " +
+with the following test error:
+junit.framework.AssertionFailedError:
+Please provide the correct hunk at the infill location.
+
+private boolean hasExceptionHandler(Node cfgNode) {
+    if (cfgNode == null) {
+        return false;
+    }
+    
+    // Check if cfgNode has exception handler
+    // Code to check for exception handler
+    
+    return true;
+}

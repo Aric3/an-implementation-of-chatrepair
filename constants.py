@@ -60,8 +60,8 @@ Alt_Instruct_1 = "It can be fixed by these possible patches:\n"
 Alt_Instruct_2 = "Please generate an alternative patch."
 
 # chat repair常量配置
-Max_Tries = 10
+Max_Tries = 3
 Max_Conv_len = 3
-API_KEY = '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'
-BASE_URL = 'https://api.openai.com/v1/'
+API_KEY = 'sk-BTijAxza2faVBDpy452344F136154561Ab9f4fF2037d47E0'
+BASE_URL = 'https://api.aikey.one/v1/'
 Model = "gpt-3.5-turbo"

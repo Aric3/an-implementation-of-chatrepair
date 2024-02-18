@@ -1,0 +1,17 @@
+You are an Automated Program Repair Tool.
+The following code contains a buggy line that has been removed:
+    public Object clone() throws CloneNotSupportedException {
+>>>[INFILL]<<<
+        return clone;
+    }
+This was the original buggy line which was removed by the infill location
+        Object clone = createCopy(0, getItemCount() - 1);
+The code fails on this test:
+org.jfree.data.time.junit.MonthTests::testParseMonth
+on this test line:
+        assertEquals(3, month.getMonth());
+with the following test error:
+junit.framework.AssertionFailedError: expected:<3> but was:<1>
+Please provide the correct line at the infill location.
+
+        Object clone = super.clone();

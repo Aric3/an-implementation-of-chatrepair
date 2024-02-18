@@ -1,0 +1,31 @@
+You are an Automated Program Repair Tool.
+The following code contains a buggy line that has been removed:
+>>>[INFILL]<<<
+    private static int stringToWeek(String s) {
+
+        int result = -1;
+        s = s.replace('W', ' ');
+        s = s.trim();
+        try {
+            result = Integer.parseInt(s);
+            if ((result < 1) || (result > LAST_WEEK_IN_YEAR)) {
+                result = -1;
+            }
+        }
+        catch (NumberFormatException e) {
+            // suppress
+        }
+        return result;
+
+    }
+This was the original buggy line which was removed by the infill location
+        this(time, RegularTimePeriod.DEFAULT_TIME_ZONE, Locale.getDefault());
+The code fails on this test:
+org.jfree.data.time.junit.MonthTests::testParseMonth
+on this test line:
+        assertEquals(3, month.getMonth());
+with the following test error:
+junit.framework.AssertionFailedError: expected:<3> but was:<1>
+Please provide the correct line at the infill location.
+
+        result = Integer.parseInt(s);

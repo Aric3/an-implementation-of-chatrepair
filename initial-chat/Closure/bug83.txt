@@ -1,0 +1,32 @@
+You are an Automated Program Repair Tool.
+The following code contains a buggy line that has been removed:
+      public int parseArguments(Parameters params) throws CmdLineException {
+>>>[INFILL]<<<
+
+        if (param == null) {
+          setter.addValue(true);
+          return 0;
+        } else {
+          String lowerParam = param.toLowerCase();
+          if (TRUES.contains(lowerParam)) {
+            setter.addValue(true);
+          } else if (FALSES.contains(lowerParam)) {
+            setter.addValue(false);
+          } else {
+            setter.addValue(true);
+            return 0;
+          }
+          return 1;
+        }
+      }
+This was the original buggy line which was removed by the infill location
+        String param = params.getParameter(0);
+The code fails on this test:
+com.google.javascript.jscomp.CommandLineRunnerTest::testVersionFlag2
+on this test line:
+    testSame("");
+with the following test error:
+junit.framework.AssertionFailedError
+Please provide the correct line at the infill location.
+
+        String param = params.getParameter(0, "");
