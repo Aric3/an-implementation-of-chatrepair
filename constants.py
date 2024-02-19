@@ -17,8 +17,9 @@ PATCH_TYPE_DELETE = 'delete'
 LOG_FILE = "logs.txt"
 
 PATCH_JSON_FOLDER = "patches"
-ChatRepair_FOLDER = "chatrepair"
+ChatRepair_FOLDER = "chat-repair"
 InitialChat_FOLDER = "initial-chat"
+INITIAL_PROMPT_FOLDER = "initial"
 
 BUGGY_PROJECT_FOLDER = "bugs"
 FAILING_TEST_FILE = "failing_tests"
@@ -26,7 +27,7 @@ FAILING_TEST_FILE = "failing_tests"
 Test_FilePath_Prefix = {"Closure": "test", "Mockito": "test", "Chart": "tests", "Lang": "src/test/java",
                         "Math": "src/test/java", "Time": "src/test/java"}
 Test_FilePath_Prefix_1 = "src/test"
-INITIAL_PROMPT_FOLDER = "initial"
+
 # defects4j命令常量
 DEFECTS4J_CHECKOUT = "defects4j checkout -p %s -v %s -w %s"
 DEFECTS4J_COMPILE = "defects4j compile"
@@ -62,6 +63,9 @@ Alt_Instruct_2 = "Please generate an alternative patch."
 # chat repair常量配置
 Max_Tries = 3
 Max_Conv_len = 3
-API_KEY = 'sk-BTijAxza2faVBDpy452344F136154561Ab9f4fF2037d47E0'
-BASE_URL = 'https://api.aikey.one/v1/'
+# API_KEY = 'sk-BTijAxza2faVBDpy452344F136154561Ab9f4fF2037d47E0'
+# BASE_URL = 'https://api.aikey.one/v1/'
+
+API_KEY = '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'
+BASE_URL = 'https://uu.tanpan.eu.org/v1/'
 Model = "gpt-3.5-turbo"

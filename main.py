@@ -164,7 +164,7 @@ def validate_patch(patch, project, json_file, plausible_patches):
                 f2.writelines(lines)
                 f2.close()
         # delete类型的patch 找到的对应的函数 替换整个函数
-        if patch_type == PATCH_TYPE_INSERT:
+        if patch_type == PATCH_TYPE_DELETE:
             single_function = True
             next_line_no = data['0']['next_line_no']
             # 获得函数声明所在的行
