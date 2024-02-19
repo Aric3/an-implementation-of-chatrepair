@@ -55,7 +55,7 @@ INITIAL_Single_function_final = "\nPlease provide the correct function.\n"
 
 FeedBack_0 = "The fixed version is still not correct.\n"
 FeedBack_1 = "It still does not fix the original test failure.\n"
-FeedBack_2 = "Code has the following compilation error:\n"
+FeedBack_2 = "Code has compilation error.\n"
 
 Alt_Instruct_1 = "It can be fixed by these possible patches:\n"
 Alt_Instruct_2 = "Please generate an alternative patch."
