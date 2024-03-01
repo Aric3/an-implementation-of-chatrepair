@@ -29,18 +29,18 @@ def chat_initial(project):
         initial_prompt = construct_initial_prompt(project, file)
         if not initial_prompt == '':
             context = [{'role': 'user', 'content': initial_prompt}]
-            response = openai.chat.completions.create(model=Model, messages=context)
+            response = openai.chat.completions.create(model=MODEL, messages=context)
             # 程序停止25s
             # time.sleep(25)
             response_text = response.choices[0].message.content
             context.append({'role': 'assistant', 'content': response_text})
-            context_path = os.path.join(InitialChat_FOLDER, project, 'bug' + file.rstrip('.json') + '.txt')
+            context_path = os.path.join(INITIALCHAT_FOLDER, project, 'bug' + file.rstrip('.json') + '.txt')
             file = open_file(context_path)
             for element in context:
                 file.write(element['content'])
                 file.write('\n')
             file.close()
-    print("Success!\nContext is saved in " + InitialChat_FOLDER + "/" + project + "!")
+    print("Success!\nContext is saved in " + INITIALCHAT_FOLDER + "/" + project + "!")
 
 
 def go_chat_repair(project):
@@ -65,7 +65,7 @@ def chat_repair(project, initial_prompt, json_file):
         prompt = initial_prompt
         while current_length < Max_Conv_len:
             context.append({'role': 'user', 'content': prompt})
-            response = openai.chat.completions.create(model=Model, messages=context)
+            response = openai.chat.completions.create(model=MODEL, messages=context)
             # 程序停止25s
             # time.sleep(25)
             response_text = response.choices[0].message.content
@@ -82,7 +82,7 @@ def chat_repair(project, initial_prompt, json_file):
             current_length += 1
             current_tries += 1
         # 保存对话到文件中
-        context_path = os.path.join(ChatRepair_FOLDER, project, 'bug' + json_file.rstrip('.json'),
+        context_path = os.path.join(CHATREPAIR_FOLDER, project, 'bug' + json_file.rstrip('.json'),
                                     str(current_tries) + '.txt')
         file = open_file(context_path)
         for element in context:
@@ -96,7 +96,7 @@ def chat_repair(project, initial_prompt, json_file):
             prompt = delete_substring_to_end(initial_prompt, "Please provide") + Alt_Instruct_1 + '\n'.join(
                 plausible_patches) + Alt_Instruct_2
             context.append({'role': 'user', 'content': prompt})
-            response = openai.chat.completions.create(model=Model, messages=context)
+            response = openai.chat.completions.create(model=MODEL, messages=context)
             # 程序停止25s
             # time.sleep(25)
             response_text = response.choices[0].message.content
@@ -110,14 +110,14 @@ def chat_repair(project, initial_prompt, json_file):
                 plausible_patches.append(patch)
             current_tries += 1
             # 保存对话到文件中
-            context_path = os.path.join(ChatRepair_FOLDER, project, 'bug' + json_file.rstrip('.json'),
+            context_path = os.path.join(CHATREPAIR_FOLDER, project, 'bug' + json_file.rstrip('.json'),
                                         str(current_tries) + '.txt')
             file = open_file(context_path)
             for element in context:
                 file.write(element['content'])
                 file.write('\n')
             file.close()
-    print("Success!\nContext is saved in " + ChatRepair_FOLDER + "/" + project + "!")
+    print("Success!\nContext is saved in " + CHATREPAIR_FOLDER + "/" + project + "!")
     return plausible_patches
 
 
@@ -194,12 +194,15 @@ def validate_patch(patch, project, json_file, plausible_patches):
         # 重新编译
         stdout, stderr = run_command(
             'cd ' + os.path.join(BUGGY_PROJECT_FOLDER, project + no) + ' && ' + DEFECTS4J_COMPILE)
-        pattern = r"compile:(.*?)BUILD FAILED"
+        pattern = r"BUILD FAILED"
         result = re.search(pattern, stderr, re.DOTALL)
         feedback = ""
         if result:
-            # output = result.group(1).strip()
-            feedback = FeedBack_0 + FeedBack_2
+            errs = stderr.split("\n")
+            for i in range(len(errs)):
+                if re.search(r":\serror:\s",lines[i]):
+                    errmsg = 'error' + lines[i].split('error')[1]
+            feedback = FeedBack_0 + FeedBack_2 + errmsg
         # 没有编译错误 运行defects4j test
         else:
             os.system('cd ' + os.path.join(BUGGY_PROJECT_FOLDER, project + no) + ' && ' + DEFECTS4J_TEST)
@@ -210,9 +213,9 @@ def validate_patch(patch, project, json_file, plausible_patches):
             # 未通过全部test 构造feedback
             failure_test_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)
             failure_test, test_error, test_file, test_line_no = get_failure_test_info(failure_test_path)
-            file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, Test_FilePath_Prefix[project], test_file)
+            file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_FILEPATH_PREFIX[project], test_file)
             if not os.path.exists(file):
-                file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, Test_FilePath_Prefix_1, test_file)
+                file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_FILEPATH_PREFIX_1, test_file)
             # get the test line
             test_lines = []
             with open(file, mode='r', encoding='latin-1') as test_file:
@@ -349,9 +352,9 @@ def construct_initial_prompt(project, json_file):
                     file.close()
                 return ''
             # 为test_file的路径添加前缀
-            file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, Test_FilePath_Prefix[project], test_file)
+            file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_FILEPATH_PREFIX[project], test_file)
             if is_file_empty_or_not_exists(file):
-                file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, Test_FilePath_Prefix_1, test_file)
+                file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_FILEPATH_PREFIX_1, test_file)
             # 根据test line所在的行到对应文件找到目标line
             test_lines = []
             with open(file, mode='r', encoding='latin-1') as test_file:
