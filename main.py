@@ -10,6 +10,9 @@ from javalang import parse
 from javalang.tree import MethodDeclaration
 from constants import *
 
+# 上一个失败的测试用例
+previous_failure_test = ''
+
 
 def save_initial(project):
     files = os.listdir(os.path.join(PATCH_JSON_FOLDER, project))
@@ -123,6 +126,7 @@ def chat_repair(project, initial_prompt, json_file):
 
 # 验证对应patch 并构造feedback
 def validate_patch(patch, project, json_file, plausible_patches):
+    global previous_failure_test
     no = json_file.rstrip('.json')
     # 如果还没有对应bug的文件夹 运行defects4j checkout
     if not os.path.exists(os.path.join(BUGGY_PROJECT_FOLDER, project + no)):
@@ -200,7 +204,7 @@ def validate_patch(patch, project, json_file, plausible_patches):
         if result:
             errs = stderr.split("\n")
             for i in range(len(errs)):
-                if re.search(r":\serror:\s",lines[i]):
+                if re.search(r":\serror:\s", lines[i]):
                     errmsg = 'error' + lines[i].split('error')[1]
             feedback = FeedBack_0 + FeedBack_2 + errmsg
         # 没有编译错误 运行defects4j test
@@ -216,16 +220,20 @@ def validate_patch(patch, project, json_file, plausible_patches):
             file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_FILEPATH_PREFIX[project], test_file)
             if not os.path.exists(file):
                 file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_FILEPATH_PREFIX_1, test_file)
-            # get the test line
-            test_lines = []
-            with open(file, mode='r', encoding='latin-1') as test_file:
-                lines = test_file.readlines()[test_line_no - 1:]
-                for line in lines:
-                    test_lines.append(line)
-                    if line.count(';') == 1:
-                        break
-            feedback = FeedBack_0 + Failure_Test + failure_test + Failure_Test_line + ''.join(
-                test_lines) + Failure_Test_error + test_error
+            if failure_test == previous_failure_test:
+                feedback = FeedBack_0 + FeedBack_1
+            else:
+                previous_failure_test = failure_test
+                # get the test line
+                test_lines = []
+                with open(file, mode='r', encoding='latin-1') as test_file:
+                    lines = test_file.readlines()[test_line_no - 1:]
+                    for line in lines:
+                        test_lines.append(line)
+                        if line.count(';') == 1:
+                            break
+                feedback = FeedBack_0 + Failure_Test + failure_test + Failure_Test_line + ''.join(
+                    test_lines) + Failure_Test_error + test_error
             # 删除checkout的项目文件
             shutil.rmtree(os.path.join(BUGGY_PROJECT_FOLDER, project + no))
         if single_line:
@@ -292,6 +300,7 @@ def open_file(path):
 
 
 def construct_initial_prompt(project, json_file):
+    global previous_failure_test
     # 读对应json文件
     no = json_file.rstrip('.json')
     with open(os.path.join(PATCH_JSON_FOLDER, project, json_file), 'r', encoding="latin-1") as f:
@@ -346,11 +355,13 @@ def construct_initial_prompt(project, json_file):
             try:
                 failure_test, test_error, test_file, test_line_no = get_failure_test_info(failure_test_path)
             except TypeError as e:
-                print("Wrong! File:"+failure_test_path+" Not able to handle. With", e)
+                print("Wrong! File:" + failure_test_path + " Not able to handle. With", e)
                 with open(LOG_FILE, 'a') as file:
-                    file.write("Wrong! File:"+failure_test_path+" Not able to handle." + "\n")
+                    file.write("Wrong! File:" + failure_test_path + " Not able to handle." + "\n")
                     file.close()
                 return ''
+            # 设置全局变量 上一个失败的测试
+            previous_failure_test = failure_test
             # 为test_file的路径添加前缀
             file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_FILEPATH_PREFIX[project], test_file)
             if is_file_empty_or_not_exists(file):
@@ -444,7 +455,7 @@ def get_method_lines(source_file_path, start_line_no):
 if __name__ == '__main__':
     ins, p = sys.argv[1:3]
     if ins not in ["chatrepair", "initial-save", "initial-chat"]:
-        print("Instruction only support \"chatrepair\"and\"initial\"")
+        print("Instruction only support \"chatrepair\"and\"initial-save\" and \"initial-chat\"")
     else:
         if p not in PROJECTS:
             print("Project only support these:\n")
