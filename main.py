@@ -208,6 +208,8 @@ def validate_patch(patch, project, json_file, plausible_patches):
                 errmsg = 'error' + lines[i].split('error')[1]
                 feedback = FeedBack_0 + FeedBack_2 + errmsg
                 break
+        if feedback == '':
+            feedback = FeedBack_0 + FeedBack_3
     # 没有编译错误 运行defects4j test
     else:
         os.system('cd ' + os.path.join(BUGGY_PROJECT_FOLDER, project + no) + ' && ' + DEFECTS4J_TEST)
@@ -238,7 +240,7 @@ def validate_patch(patch, project, json_file, plausible_patches):
                         break
             feedback = FeedBack_0 + Failure_Test + failure_test + Failure_Test_line + ''.join(
                 test_lines) + Failure_Test_error + test_error
-
+    print('***************************************************************************'+feedback)
     if single_line:
         feedback += INITIAL_Single_line_final
     if single_function:
