@@ -66,7 +66,7 @@ INITIAL_Single_hunk_final = "\nPlease provide an analysis of the failure and cor
 INITIAL_Single_function_final = "\nPlease provide an analysis of the failure and correct function in the form of Java Markdown code block.\n"
 
 FeedBack_0 = "The fixed version is still not correct.\n"
-FeedBack_1 = "It still does not fix the original test failure.\n"
+FeedBack_1 = "It still does not fix the original test failure."
 FeedBack_2 = "Code has the following compilation error.\n"
 
 Alt_Instruct_1 = "It can be fixed by these possible patches:\n"
@@ -88,4 +88,3 @@ BASE_URL = 'https://api.aikey.one/v1/'
 # 师兄的接口（openai官方接口）
 #API_KEY = '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'
 #BASE_URL = 'https://uu.tanpan.eu.org/v1/'
-

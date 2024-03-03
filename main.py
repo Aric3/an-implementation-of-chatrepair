@@ -69,8 +69,8 @@ def chat_repair(project, initial_prompt, json_file):
         while current_length < Max_Conv_len:
             context.append({'role': 'user', 'content': prompt})
             response = openai.chat.completions.create(model=MODEL, messages=context)
-            # 程序停止25s
-            # time.sleep(25)
+            # 程序停止1s
+            # time.sleep(1)
             response_text = response.choices[0].message.content
             context.append({'role': 'assistant', 'content': response_text})
             patch = match_patch_code(response_text)
@@ -206,7 +206,8 @@ def validate_patch(patch, project, json_file, plausible_patches):
             for i in range(len(errs)):
                 if re.search(r":\serror:\s", lines[i]):
                     errmsg = 'error' + lines[i].split('error')[1]
-            feedback = FeedBack_0 + FeedBack_2 + errmsg
+                    feedback = FeedBack_0 + FeedBack_2 + errmsg
+                    break
         # 没有编译错误 运行defects4j test
         else:
             os.system('cd ' + os.path.join(BUGGY_PROJECT_FOLDER, project + no) + ' && ' + DEFECTS4J_TEST)
