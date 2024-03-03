@@ -25,7 +25,7 @@ project:
 
 eg:
 run this command:
-`python main.py initial-save Lang`
+`python3 main.py initial-save Lang`
 will save initial prompt of all bugs of the project Lang.
 
 **Note that a valid openai apikey and secret is necessary!**

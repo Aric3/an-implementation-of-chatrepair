@@ -195,58 +195,59 @@ def validate_patch(patch, project, json_file, plausible_patches):
                     BUGGY_PROJECT_FOLDER, project + no, file_name), mode='w', encoding='latin-1') as f2:
                 f2.writelines(lines)
                 f2.close()
-        # 重新编译
-        stdout, stderr = run_command(
-            'cd ' + os.path.join(BUGGY_PROJECT_FOLDER, project + no) + ' && ' + DEFECTS4J_COMPILE)
-        pattern = r"BUILD FAILED"
-        result = re.search(pattern, stderr, re.DOTALL)
-        feedback = ""
-        if result:
-            errs = stderr.split("\n")
-            for i in range(len(errs)):
-                if re.search(r":\serror:\s", lines[i]):
-                    errmsg = 'error' + lines[i].split('error')[1]
-                    feedback = FeedBack_0 + FeedBack_2 + errmsg
-                    break
-        # 没有编译错误 运行defects4j test
-        else:
-            os.system('cd ' + os.path.join(BUGGY_PROJECT_FOLDER, project + no) + ' && ' + DEFECTS4J_TEST)
-            # pass全部test 添加plausible_patch
-            if is_file_empty_or_not_exists(os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)):
-                plausible_patches.append(patch)
-                # 删除checkout的项目文件
-                shutil.rmtree(os.path.join(BUGGY_PROJECT_FOLDER, project + no))
-                return ''
-            # 未通过全部test 构造feedback
-            failure_test_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)
-            failure_test, test_error, test_file, test_line_no = get_failure_test_info(failure_test_path)
-            file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_FILEPATH_PREFIX[project], test_file)
-            if not os.path.exists(file):
-                file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_FILEPATH_PREFIX_1, test_file)
-            if failure_test == previous_failure_test:
-                feedback = FeedBack_0 + FeedBack_1
-            else:
-                previous_failure_test = failure_test
-                # get the test line
-                test_lines = []
-                with open(file, mode='r', encoding='latin-1') as test_file:
-                    lines = test_file.readlines()[test_line_no - 1:]
-                    for line in lines:
-                        test_lines.append(line)
-                        if line.count(';') == 1:
-                            break
-                feedback = FeedBack_0 + Failure_Test + failure_test + Failure_Test_line + ''.join(
-                    test_lines) + Failure_Test_error + test_error
+    # 重新编译
+    stdout, stderr = run_command(
+        'cd ' + os.path.join(BUGGY_PROJECT_FOLDER, project + no) + ' && ' + DEFECTS4J_COMPILE)
+    pattern = r"BUILD FAILED"
+    result = re.search(pattern, stderr, re.DOTALL)
+    feedback = ''
+    if result:
+        errs = stderr.split("\n")
+        for i in range(len(errs)):
+            if re.search(r":\serror:\s", lines[i]):
+                errmsg = 'error' + lines[i].split('error')[1]
+                feedback = FeedBack_0 + FeedBack_2 + errmsg
+                break
+    # 没有编译错误 运行defects4j test
+    else:
+        os.system('cd ' + os.path.join(BUGGY_PROJECT_FOLDER, project + no) + ' && ' + DEFECTS4J_TEST)
+        # pass全部test 添加plausible_patch
+        if is_file_empty_or_not_exists(os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)):
+            plausible_patches.append(patch)
+            # 删除checkout的项目文件
+            shutil.rmtree(os.path.join(BUGGY_PROJECT_FOLDER, project + no))
+            return ''
 
-        if single_line:
-            feedback += INITIAL_Single_line_final
-        if single_function:
-            feedback += INITIAL_Single_function_final
+        # 未通过全部test 构造feedback
+        failure_test_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)
+        failure_test, test_error, test_file, test_line_no = get_failure_test_info(failure_test_path)
+        file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_FILEPATH_PREFIX[project], test_file)
+        if not os.path.exists(file):
+            file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_FILEPATH_PREFIX_1, test_file)
+        if failure_test == previous_failure_test:
+            feedback = FeedBack_0 + FeedBack_1
         else:
-            feedback += INITIAL_Single_hunk_final
-        # 删除checkout的项目文件
-        shutil.rmtree(os.path.join(BUGGY_PROJECT_FOLDER, project + no))
-        return feedback
+            previous_failure_test = failure_test
+            # get the test line
+            test_lines = []
+            with open(file, mode='r', encoding='latin-1') as test_file:
+                lines = test_file.readlines()[test_line_no - 1:]
+                for line in lines:
+                    test_lines.append(line)
+                    if line.count(';') == 1:
+                        break
+            feedback = FeedBack_0 + Failure_Test + failure_test + Failure_Test_line + ''.join(
+                test_lines) + Failure_Test_error + test_error
+
+    if single_line:
+        feedback += INITIAL_Single_line_final
+    if single_function:
+        feedback += INITIAL_Single_function_final
+    else:
+        feedback += INITIAL_Single_hunk_final
+    # 删除checkout的项目文件
+    shutil.rmtree(os.path.join(BUGGY_PROJECT_FOLDER, project + no))
+    return feedback
 
 
 # 从chat gpt文本中提取代码部分
