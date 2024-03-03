@@ -214,6 +214,8 @@ def validate_patch(patch, project, json_file, plausible_patches):
             # pass全部test 添加plausible_patch
             if is_file_empty_or_not_exists(os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)):
                 plausible_patches.append(patch)
+                # 删除checkout的项目文件
+                shutil.rmtree(os.path.join(BUGGY_PROJECT_FOLDER, project + no))
                 return ''
             # 未通过全部test 构造feedback
             failure_test_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)
@@ -235,14 +237,15 @@ def validate_patch(patch, project, json_file, plausible_patches):
                             break
                 feedback = FeedBack_0 + Failure_Test + failure_test + Failure_Test_line + ''.join(
                     test_lines) + Failure_Test_error + test_error
-            # 删除checkout的项目文件
-            shutil.rmtree(os.path.join(BUGGY_PROJECT_FOLDER, project + no))
+
         if single_line:
             feedback += INITIAL_Single_line_final
         if single_function:
             feedback += INITIAL_Single_function_final
         else:
             feedback += INITIAL_Single_hunk_final
+        # 删除checkout的项目文件
+        shutil.rmtree(os.path.join(BUGGY_PROJECT_FOLDER, project + no))
         return feedback
 
 
