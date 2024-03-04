@@ -3,6 +3,7 @@ import os
 import re
 import shutil
 import sys
+import time
 
 import openai
 import subprocess
@@ -33,8 +34,8 @@ def chat_initial(project):
         if not initial_prompt == '':
             context = [{'role': 'user', 'content': initial_prompt}]
             response = openai.chat.completions.create(model=MODEL, messages=context)
-            # 程序停止25s
-            # time.sleep(25)
+            # 程序停止1s
+            time.sleep(1)
             response_text = response.choices[0].message.content
             context.append({'role': 'assistant', 'content': response_text})
             context_path = os.path.join(INITIALCHAT_FOLDER, project, 'bug' + file.rstrip('.json') + '.txt')
@@ -70,7 +71,7 @@ def chat_repair(project, initial_prompt, json_file):
             context.append({'role': 'user', 'content': prompt})
             response = openai.chat.completions.create(model=MODEL, messages=context)
             # 程序停止1s
-            # time.sleep(1)
+            time.sleep(1)
             response_text = response.choices[0].message.content
             context.append({'role': 'assistant', 'content': response_text})
             patch = match_patch_code(response_text)
@@ -96,12 +97,12 @@ def chat_repair(project, initial_prompt, json_file):
     if len(plausible_patches) != 0:
         while current_tries < Max_Tries:
             context = []
-            prompt = delete_substring_to_end(initial_prompt, "Please provide") + Alt_Instruct_1 + '\n'.join(
+            prompt = delete_substring_to_end(initial_prompt.split('<Example end>')[1].strip(), "Please provide") + Alt_Instruct_1 + '\n'.join(
                 plausible_patches) + Alt_Instruct_2
             context.append({'role': 'user', 'content': prompt})
             response = openai.chat.completions.create(model=MODEL, messages=context)
-            # 程序停止25s
-            # time.sleep(25)
+            # 程序停止1s
+            time.sleep(1)
             response_text = response.choices[0].message.content
             context.append({'role': 'assistant', 'content': response_text})
             patch = match_patch_code(response_text)
@@ -240,12 +241,11 @@ def validate_patch(patch, project, json_file, plausible_patches):
                         break
             feedback = FeedBack_0 + Failure_Test + failure_test + Failure_Test_line + ''.join(
                 test_lines) + Failure_Test_error + test_error
-    print('***************************************************************************'+feedback)
     if single_line:
         feedback += INITIAL_Single_line_final
     if single_function:
         feedback += INITIAL_Single_function_final
-    else:
+    if not single_line and not single_function:
         feedback += INITIAL_Single_hunk_final
     # 删除checkout的项目文件
     shutil.rmtree(os.path.join(BUGGY_PROJECT_FOLDER, project + no))
@@ -321,7 +321,7 @@ def construct_initial_prompt(project, json_file):
                     project, no + 'b', os.path.join(BUGGY_PROJECT_FOLDER, project + no)))
             file_name = data['0']['file_name']
             patch_type = data['0']['patch_type']
-            initial_prompt = INITIAL_APR_tool
+            initial_prompt = INITIAL_APR_TOOL + INTIIAL_APR_EXAMPLE + get_example(project+'_example.txt')
             single_line = False
             # replace类型的patch
             if patch_type == PATCH_TYPE_REPLACE:
@@ -458,6 +458,11 @@ def get_method_lines(source_file_path, start_line_no):
             break
     return function_lines
 
+def get_example(example_file):
+    with open(example_file, 'r') as f:
+        example = f.read()
+        f.close()
+        return example
 
 if __name__ == '__main__':
     ins, p = sys.argv[1:3]

@@ -36,15 +36,8 @@ DEFECTS4J_COMPILE_TEST = "defects4j compile ; defects4j test"
 
 # Prompt常量
 INFILL = ">>>[INFILL]<<<\n"
-INITIAL_APR_tool = "You are an Automated Program Repair Tool.\n"
-
-# 每个项目的few shot example
-Example_Chart = ""
-Example_Lang = ""
-Example_Closure = ""
-Example_Math = ""
-Example_Time = ""
-Example_Mockito = ""
+INITIAL_APR_TOOL = "You are an Automated Program Repair Tool.\n"
+INTIIAL_APR_EXAMPLE = "Here is an example of a repair job:\n"
 
 INITIAL_Single_line = "The following code contains a buggy line that has been removed:\n"
 INITIAL_Single_hunk = "The following code contains a buggy hunk that has been removed:\n"
@@ -61,14 +54,14 @@ Failure_Test_error = "with the following test error:\n"
 # INITIAL_Single_hunk_final = "\nPlease provide the correct hunk at the infill location.\n"
 # INITIAL_Single_function_final = "\nPlease provide the correct function.\n"
 
-INITIAL_Single_line_final = "\nPlease provide an analysis of the failure and correct line at the infill location in the form of Java Markdown code block.\n"
-INITIAL_Single_hunk_final = "\nPlease provide an analysis of the failure and correct hunk at the infill location in the form of Java Markdown code block.\n"
-INITIAL_Single_function_final = "\nPlease provide an analysis of the failure and correct function in the form of Java Markdown code block.\n"
+INITIAL_Single_line_final = "\nPlease provide an analysis of the problem and correct line at the infill location in the form of Java Markdown code block.\n"
+INITIAL_Single_hunk_final = "\nPlease provide an analysis of the problem and correct hunk at the infill location in the form of Java Markdown code block.\n"
+INITIAL_Single_function_final = "\nPlease provide an analysis of the problem and correct function in the form of Java Markdown code block.\n"
 
 FeedBack_0 = "The fixed version is still not correct.\n"
 FeedBack_1 = "It still does not fix the original test failure."
 FeedBack_2 = "Code has the following compilation error.\n"
-FeedBack_3 = "Code has compilation error.\n"
+FeedBack_3 = "Code has compilation error."
 
 Alt_Instruct_1 = "It can be fixed by these possible patches:\n"
 Alt_Instruct_2 = "Please generate an alternative patch."
@@ -87,5 +80,5 @@ API_KEY = 'sk-BTijAxza2faVBDpy452344F136154561Ab9f4fF2037d47E0'
 BASE_URL = 'https://api.aikey.one/v1/'
 
 # 师兄的接口（openai官方接口）
-#API_KEY = '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'
-#BASE_URL = 'https://uu.tanpan.eu.org/v1/'
+# API_KEY = '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'
+# BASE_URL = 'https://uu.tanpan.eu.org/v1/'
