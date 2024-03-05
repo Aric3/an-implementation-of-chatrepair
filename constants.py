@@ -68,7 +68,7 @@ Alt_Instruct_2 = "Please generate an alternative patch."
 
 # chatrepair常量配置
 # 最大调用api次数
-Max_Tries = 20
+Max_Tries = 24
 # 一个对话中的最大问答次数
 Max_Conv_len = 3
 

@@ -33,7 +33,7 @@ The correct fix should ensure that the comparison is done using the 24-hour cloc
 
 3. Correct code at the Infill Location:
 
-``` java
+```java
 cal1.get(Calendar.HOUR_OF_DAY) == cal2.get(Calendar.HOUR_OF_DAY) &&
 ```
 <Example end>

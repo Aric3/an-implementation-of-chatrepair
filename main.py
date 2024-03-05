@@ -97,8 +97,10 @@ def chat_repair(project, initial_prompt, json_file):
     if len(plausible_patches) != 0:
         while current_tries < Max_Tries:
             context = []
-            prompt = delete_substring_to_end(initial_prompt.split('<Example end>')[1].strip(), "Please provide") + Alt_Instruct_1 + '\n'.join(
-                plausible_patches) + Alt_Instruct_2
+            patches_prompt = ''
+            for i in range(len(plausible_patches)):
+                patches_prompt += 'plausible patch '+str(i+1)+' :\n'+plausible_patches[i]+'\n'
+            prompt = delete_substring_to_end(initial_prompt.split('<Example end>')[1].strip(), "Please provide") + Alt_Instruct_1 + patches_prompt+ Alt_Instruct_2
             context.append({'role': 'user', 'content': prompt})
             response = openai.chat.completions.create(model=MODEL, messages=context)
             # 程序停止1s
@@ -128,6 +130,8 @@ def chat_repair(project, initial_prompt, json_file):
 # 验证对应patch 并构造feedback
 def validate_patch(patch, project, json_file, plausible_patches):
     global previous_failure_test
+    temp_javafile = ''
+    javafile_path = ''
     no = json_file.rstrip('.json')
     # 如果还没有对应bug的文件夹 运行defects4j checkout
     if not os.path.exists(os.path.join(BUGGY_PROJECT_FOLDER, project + no)):
@@ -136,8 +140,17 @@ def validate_patch(patch, project, json_file, plausible_patches):
     with open(os.path.join(PATCH_JSON_FOLDER, project, json_file), 'r', encoding="latin-1") as f:
         data = json.load(f)
         f.close()
+        
         file_name = data['0']['file_name']
         patch_type = data['0']['patch_type']
+        javafile_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, file_name)
+        
+        # 备份需要修改的文件 在一次验证结束后恢复
+        with open(javafile_path, mode='r', encoding='latin-1') as javafile:
+            temp_javafile = javafile.read()
+            javafile.close
+            
+        # single line 和 single function标志  
         single_line = False
         single_function = False
         # replace类型的patch 找到对应的源代码文件 使用patch替换掉指定行
@@ -146,28 +159,28 @@ def validate_patch(patch, project, json_file, plausible_patches):
             to_line_no = data['0']['to_line_no']
             if from_line_no == to_line_no:
                 single_line = True
-            with open(os.path.join(
-                    BUGGY_PROJECT_FOLDER, project + no, file_name), mode='r', encoding='latin-1') as f1:
+            # 读java file
+            with open(javafile_path, mode='r', encoding='latin-1') as f1:
                 lines = f1.readlines()
             del lines[from_line_no - 1:to_line_no]
             lines.insert(from_line_no - 1, patch)
             f1.close()
-            with open(os.path.join(
-                    BUGGY_PROJECT_FOLDER, project + no, file_name), mode='w', encoding='latin-1') as f2:
+            # 修改之后重新写入java file
+            with open(javafile_path, mode='w', encoding='latin-1') as f2:
                 f2.writelines(lines)
                 f2.close()
+            #print(''.join(lines))
         # insert类型的patch
         if patch_type == PATCH_TYPE_INSERT:
             next_line_no = data['0']['next_line_no']
-            with open(os.path.join(
-                    BUGGY_PROJECT_FOLDER, project + no, file_name), mode='r', encoding='latin-1') as f1:
+            with open(javafile_path, mode='r', encoding='latin-1') as f1:
                 lines = f1.readlines()
             lines.insert(next_line_no - 1, patch)
             f1.close()
-            with open(os.path.join(
-                    BUGGY_PROJECT_FOLDER, project + no, file_name), mode='w', encoding='latin-1') as f2:
+            with open(javafile_path, mode='w', encoding='latin-1') as f2:
                 f2.writelines(lines)
                 f2.close()
+            #print(''.join(lines))
         # delete类型的patch 找到的对应的函数 替换整个函数
         if patch_type == PATCH_TYPE_DELETE:
             single_function = True
@@ -176,8 +189,7 @@ def validate_patch(patch, project, json_file, plausible_patches):
             source_file_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, file_name)
             start_line = get_method_declaration_line_no(source_file_path, next_line_no)
             # 替换掉整个函数
-            with open(os.path.join(
-                    BUGGY_PROJECT_FOLDER, project + no, file_name), "r", encoding='latin-1') as file:
+            with open(javafile_path, "r", encoding='latin-1') as file:
                 lines = file.readlines()
                 file.close()
             left_open_brackets = 0
@@ -192,8 +204,7 @@ def validate_patch(patch, project, json_file, plausible_patches):
             del lines[start_line - 1:end_line]
             lines.insert(start_line - 1, patch)
             file.close()
-            with open(os.path.join(
-                    BUGGY_PROJECT_FOLDER, project + no, file_name), mode='w', encoding='latin-1') as f2:
+            with open(javafile_path, mode='w', encoding='latin-1') as f2:
                 f2.writelines(lines)
                 f2.close()
     # 重新编译
@@ -205,8 +216,8 @@ def validate_patch(patch, project, json_file, plausible_patches):
     if result:
         errs = stderr.split("\n")
         for i in range(len(errs)):
-            if re.search(r":\serror:\s", lines[i]):
-                errmsg = 'error' + lines[i].split('error')[1]
+            if re.search(r":\serror:\s", errs[i]):
+                errmsg = 'error' + errs[i].split('error')[1]
                 feedback = FeedBack_0 + FeedBack_2 + errmsg
                 break
         if feedback == '':
@@ -217,10 +228,7 @@ def validate_patch(patch, project, json_file, plausible_patches):
         # pass全部test 添加plausible_patch
         if is_file_empty_or_not_exists(os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)):
             plausible_patches.append(patch)
-            # 删除checkout的项目文件
-            shutil.rmtree(os.path.join(BUGGY_PROJECT_FOLDER, project + no))
             return ''
-
         # 未通过全部test 构造feedback
         failure_test_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)
         failure_test, test_error, test_file, test_line_no = get_failure_test_info(failure_test_path)
@@ -241,14 +249,17 @@ def validate_patch(patch, project, json_file, plausible_patches):
                         break
             feedback = FeedBack_0 + Failure_Test + failure_test + Failure_Test_line + ''.join(
                 test_lines) + Failure_Test_error + test_error
+    # 编译测试结束后恢复java文件的内容
+    # shutil.rmtree(os.path.join(BUGGY_PROJECT_FOLDER, project + no))
+    with open(javafile_path, mode='w', encoding='latin-1') as javafile:
+        javafile.write(temp_javafile)
+        javafile.close()
     if single_line:
         feedback += INITIAL_Single_line_final
     if single_function:
         feedback += INITIAL_Single_function_final
     if not single_line and not single_function:
         feedback += INITIAL_Single_hunk_final
-    # 删除checkout的项目文件
-    shutil.rmtree(os.path.join(BUGGY_PROJECT_FOLDER, project + no))
     return feedback
 
 
