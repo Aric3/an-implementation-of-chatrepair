@@ -41,7 +41,7 @@ INTIIAL_APR_EXAMPLE = "Here is an example of a repair job:\n"
 
 INITIAL_Single_line = "The following code contains a buggy line that has been removed:\n"
 INITIAL_Single_hunk = "The following code contains a buggy hunk that has been removed:\n"
-INITIAL_Single_function = "The following code contains a bug\n"
+INITIAL_Single_function = "The following code contains a bug:\n"
 
 INITIAL_Single_line_2 = "This was the original buggy line which was removed by the infill location\n"
 INITIAL_Single_hunk_2 = "This was the original buggy hunk which was removed by the infill location\n"
@@ -54,9 +54,9 @@ Failure_Test_error = "with the following test error:\n"
 # INITIAL_Single_hunk_final = "\nPlease provide the correct hunk at the infill location.\n"
 # INITIAL_Single_function_final = "\nPlease provide the correct function.\n"
 
-INITIAL_Single_line_final = "\nPlease provide an analysis of the problem and correct line at the infill location in the form of Java Markdown code block.\n"
-INITIAL_Single_hunk_final = "\nPlease provide an analysis of the problem and correct hunk at the infill location in the form of Java Markdown code block.\n"
-INITIAL_Single_function_final = "\nPlease provide an analysis of the problem and correct function in the form of Java Markdown code block.\n"
+INITIAL_Single_line_final = "\nPlease provide an analysis of the problem and the expected behaviour of the correct fix, and the correct line at the infill location in the form of Java Markdown code block.\n"
+INITIAL_Single_hunk_final = "\nPlease provide an analysis of the problem and the expected behaviour of the correct fix, and the correct hunk at the infill location in the form of Java Markdown code block.\n"
+INITIAL_Single_function_final = "\nPlease provide an analysis of the problem and the expected behaviour of the correct fix, and the correct function in the form of Java Markdown code block.\n"
 
 FeedBack_0 = "The fixed version is still not correct.\n"
 FeedBack_1 = "It still does not fix the original test failure."

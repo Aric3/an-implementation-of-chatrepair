@@ -321,7 +321,7 @@ def construct_initial_prompt(project, json_file):
                     project, no + 'b', os.path.join(BUGGY_PROJECT_FOLDER, project + no)))
             file_name = data['0']['file_name']
             patch_type = data['0']['patch_type']
-            initial_prompt = INITIAL_APR_TOOL + INTIIAL_APR_EXAMPLE + get_example(project+'_example.txt')
+            initial_prompt = INITIAL_APR_TOOL + INTIIAL_APR_EXAMPLE + get_example('Lang_example.txt')
             single_line = False
             # replace类型的patch
             if patch_type == PATCH_TYPE_REPLACE:
@@ -361,6 +361,7 @@ def construct_initial_prompt(project, json_file):
             # 添加关于failure test的信息
             try:
                 failure_test, test_error, test_file, test_line_no = get_failure_test_info(failure_test_path)
+                #print(failure_test, test_error, test_file, test_line_no)
             except TypeError as e:
                 print("Wrong! File:" + failure_test_path + " Not able to handle. With", e)
                 with open(LOG_FILE, 'a') as file:
@@ -379,13 +380,13 @@ def construct_initial_prompt(project, json_file):
                 lines = test_file.readlines()[test_line_no - 1:]
                 for line in lines:
                     test_lines.append(line)
-                    if line.count(';') == 1:
+                    if re.sub(r'\".*?\"', '', line).count(';') == 1:
                         break
             initial_prompt += Failure_Test + failure_test + Failure_Test_line + ''.join(
                 test_lines) + Failure_Test_error + test_error
 
             # 完整initial prompt的最后一句
-            if patch_type == PATCH_TYPE_REPLACE or PATCH_TYPE_INSERT:
+            if patch_type == PATCH_TYPE_REPLACE or patch_type == PATCH_TYPE_INSERT:
                 if single_line:
                     initial_prompt += INITIAL_Single_line_final
                 else:
@@ -417,10 +418,11 @@ def get_failure_test_info(test_file_path):
         failing_test = lines[0].strip('--- ').rstrip()
         test_error = lines[1].rstrip()
         test_function = failing_test.split("::")[1].rstrip()
-        test_file = failing_test.split("::")[0].replace('.', '/') + '.java'
+        # test_file = failing_test.split("::")[0].replace('.', '/') + '.java'
         for i in range(2, len(lines)):
-            if test_function in lines[i]:
+            if test_function in lines[i] :
                 test_line_no = int(re.search(r'(\d+)\)', lines[i]).group(1))
+                test_file = delete_substring_to_end(lines[i],'.'+test_function).split('at ')[1].replace('.', '/') + '.java'
                 return failing_test, test_error, test_file, test_line_no
 
 
