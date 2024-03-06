@@ -1,0 +1,12 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/org/mockito/internal/util/reflection/GenericMetadataSupport.java",
+        "from_line_no": 79,
+        "to_line_no": 79,
+        "replaced_with": "            } else if (typeParameter != actualTypeArgument) {\n",
+        "replaced": "            } else {\n",
+        "patch_type": "replace",
+        "next_line_no": 80
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/main/java/org/joda/time/format/DateTimeParserBucket.java",
+        "replaced_with": "            if (resetFields) {\n                for (int i = 0; i < count; i++) {\n                    millis = savedFields[i].set(millis, i == (count - 1));\n                }\n            }\n",
+        "patch_type": "insert",
+        "next_line_no": 355
+    }
+}

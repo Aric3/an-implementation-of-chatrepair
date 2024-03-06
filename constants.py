@@ -58,13 +58,13 @@ INITIAL_Single_line_final = "\nPlease provide an analysis of the problem and the
 INITIAL_Single_hunk_final = "\nPlease provide an analysis of the problem and the expected behaviour of the correct fix, and the correct hunk at the infill location in the form of Java Markdown code block.\n"
 INITIAL_Single_function_final = "\nPlease provide an analysis of the problem and the expected behaviour of the correct fix, and the correct function in the form of Java Markdown code block.\n"
 
-FeedBack_0 = "The fixed version is still not correct.\n"
+FeedBack_0 = "The fixed version is still not correct."
 FeedBack_1 = "It still does not fix the original test failure."
-FeedBack_2 = "Code has the following compilation error.\n"
+FeedBack_2 = "Code has the following compilation error: "
 FeedBack_3 = "Code has compilation error."
 
 Alt_Instruct_1 = "It can be fixed by these possible patches:\n"
-Alt_Instruct_2 = "Please generate an alternative patch."
+Alt_Instruct_2 = "Please generate an alternative patch in the form of Java Markdown code block."
 
 # chatrepair常量配置
 # 最大调用api次数
@@ -76,9 +76,9 @@ Max_Conv_len = 3
 MODEL = "gpt-3.5-turbo"
 
 #第三方网站aikey的接口
-API_KEY = 'sk-BTijAxza2faVBDpy452344F136154561Ab9f4fF2037d47E0'
-BASE_URL = 'https://api.aikey.one/v1/'
+#API_KEY = 'sk-BTijAxza2faVBDpy452344F136154561Ab9f4fF2037d47E0'
+#BASE_URL = 'https://api.aikey.one/v1/'
 
 # 师兄的接口（openai官方接口）
-# API_KEY = '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'
-# BASE_URL = 'https://uu.tanpan.eu.org/v1/'
+API_KEY = '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'
+BASE_URL = 'https://uu.tanpan.eu.org/v1/'

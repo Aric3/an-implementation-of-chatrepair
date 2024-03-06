@@ -1,0 +1,27 @@
+{
+    "num_of_hunks": 3,
+    "0": {
+        "file_name": "src/main/java/org/joda/time/DateTimeZone.java",
+        "from_line_no": 279,
+        "to_line_no": 279,
+        "replaced_with": "        if (minutesOffset < -59 || minutesOffset > 59) {\n",
+        "replaced": "        if (minutesOffset < 0 || minutesOffset > 59) {\n",
+        "patch_type": "replace",
+        "next_line_no": 280
+    },
+    "1": {
+        "file_name": "src/main/java/org/joda/time/DateTimeZone.java",
+        "replaced_with": "        if (hoursOffset > 0 && minutesOffset < 0) {\n            throw new IllegalArgumentException(\"Positive hours must not have negative minutes: \" + minutesOffset);\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 282
+    },
+    "2": {
+        "file_name": "src/main/java/org/joda/time/DateTimeZone.java",
+        "from_line_no": 286,
+        "to_line_no": 286,
+        "replaced_with": "                minutesOffset = hoursInMinutes - Math.abs(minutesOffset);\n",
+        "replaced": "                minutesOffset = hoursInMinutes - minutesOffset;\n",
+        "patch_type": "replace",
+        "next_line_no": 287
+    }
+}

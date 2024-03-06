@@ -1,0 +1,15 @@
+{
+    "num_of_hunks": 2,
+    "0": {
+        "file_name": "src/main/java/org/joda/time/chrono/BasicMonthOfYearDateTimeField.java",
+        "replaced_with": "        if (partial.size() > 0 && partial.getFieldType(0).equals(DateTimeFieldType.monthOfYear()) && fieldIndex == 0) {\n",
+        "patch_type": "insert",
+        "next_line_no": 209
+    },
+    "1": {
+        "file_name": "src/main/java/org/joda/time/chrono/BasicMonthOfYearDateTimeField.java",
+        "replaced_with": "            int curMonth0 = partial.getValue(0) - 1;\n            int newMonth = ((curMonth0 + (valueToAdd % 12) + 12) % 12) + 1;\n            return set(partial, 0, values, newMonth);\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 210
+    }
+}

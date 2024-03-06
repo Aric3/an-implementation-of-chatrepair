@@ -1,0 +1,12 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/main/java/org/joda/time/tz/ZoneInfoCompiler.java",
+        "from_line_no": 68,
+        "to_line_no": 71,
+        "replaced_with": "    static ThreadLocal<Boolean> cVerbose = new ThreadLocal<Boolean>() {\n        protected Boolean initialValue() {\n            return Boolean.FALSE;\n        }\n    };\n",
+        "replaced": "    static ThreadLocal<Boolean> cVerbose = new ThreadLocal<Boolean>();\n    static {\n        cVerbose.set(Boolean.FALSE);\n    }\n",
+        "patch_type": "replace",
+        "next_line_no": 72
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "num_of_hunks": 2,
+    "0": {
+        "file_name": "source/org/jfree/data/time/TimePeriodValues.java",
+        "from_line_no": 300,
+        "to_line_no": 300,
+        "replaced_with": "            long s = getDataItem(this.maxMiddleIndex).getPeriod().getStart()\n",
+        "replaced": "            long s = getDataItem(this.minMiddleIndex).getPeriod().getStart()\n",
+        "patch_type": "replace",
+        "next_line_no": 301
+    },
+    "1": {
+        "file_name": "source/org/jfree/data/time/TimePeriodValues.java",
+        "from_line_no": 302,
+        "to_line_no": 302,
+        "replaced_with": "            long e = getDataItem(this.maxMiddleIndex).getPeriod().getEnd()\n",
+        "replaced": "            long e = getDataItem(this.minMiddleIndex).getPeriod().getEnd()\n",
+        "patch_type": "replace",
+        "next_line_no": 303
+    }
+}

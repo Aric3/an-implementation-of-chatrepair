@@ -7,9 +7,5 @@ done
 for project in "${projects[@]}"
 do
     echo "Runing initial chat............."$project""
-    python3 main.py initial-save "$project"
-done
-do
-    echo "Runing chatrepair............."$project""
-    python3 main.py initial-save "$project"
+    python3 main.py initial-chat "$project"
 done

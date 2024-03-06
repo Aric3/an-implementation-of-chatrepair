@@ -51,10 +51,16 @@ def go_chat_repair(project):
     openai.base_url = BASE_URL
     openai.api_key = API_KEY
     files = os.listdir(os.path.join(PATCH_JSON_FOLDER, project))
-    for file in files:
-        initial_prompt = construct_initial_prompt(project, file)
+    i = 0
+    while i < len(files):
+        initial_prompt = construct_initial_prompt(project, files[i])
+        # 测试文件不符合要求 或 不是 single hunk 跳过当前文件
+        if initial_prompt == '':
+            i += 1
         if not initial_prompt == '':
-            chat_repair(project, initial_prompt, file)
+            # chatrepair抛出异常 重试当前bug
+            if chat_repair(project, initial_prompt, files[i]) != 'Exception':
+                i +=1
 
 
 def chat_repair(project, initial_prompt, json_file):
@@ -81,6 +87,8 @@ def chat_repair(project, initial_prompt, json_file):
             feedback = validate_patch(patch, project, json_file, plausible_patches)
             if feedback == '':
                 break
+            if feedback == 'Exception':
+                return 'Exception'
             else:
                 prompt = feedback
             current_length += 1
@@ -112,6 +120,8 @@ def chat_repair(project, initial_prompt, json_file):
             if patch == '':
                 continue
             feedback = validate_patch(patch, project, json_file, plausible_patches)
+            if feedback == 'Exception':
+                return 'Exception'
             if feedback == '' and patch not in plausible_patches:
                 plausible_patches.append(patch)
             current_tries += 1
@@ -231,7 +241,15 @@ def validate_patch(patch, project, json_file, plausible_patches):
             return ''
         # 未通过全部test 构造feedback
         failure_test_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)
+        
         failure_test, test_error, test_file, test_line_no = get_failure_test_info(failure_test_path)
+        if test_file == '' or test_line_no == '':
+            print("Warning!!! Unable to handle file [" + failure_test_path + "]while validate the patch.")
+            with open(LOG_FILE, 'a') as file:
+                file.write(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))+"\nWarning!!! Unable to handle file [" + failure_test_path + "] while validate the patch.")
+                file.close()
+                return 'Exception'
+        
         file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_FILEPATH_PREFIX[project], test_file)
         if not os.path.exists(file):
             file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_FILEPATH_PREFIX_1, test_file)
@@ -265,6 +283,8 @@ def validate_patch(patch, project, json_file, plausible_patches):
 
 # 从chat gpt文本中提取代码部分
 def match_patch_code(response_text):
+    if(response_text.count('```java') > 1):
+        response_text = '\n'.join(response_text.split('\n')[1:])
     pattern = r"```java(.*)```"
     match = re.search(pattern, response_text, re.DOTALL)
     if match is None:
@@ -370,13 +390,12 @@ def construct_initial_prompt(project, json_file):
                 os.system('cd ' + os.path.join(BUGGY_PROJECT_FOLDER, project + no) + ' && ' + DEFECTS4J_COMPILE_TEST)
 
             # 添加关于failure test的信息
-            try:
-                failure_test, test_error, test_file, test_line_no = get_failure_test_info(failure_test_path)
+            failure_test, test_error, test_file, test_line_no = get_failure_test_info(failure_test_path)
                 #print(failure_test, test_error, test_file, test_line_no)
-            except TypeError as e:
-                print("Wrong! File:" + failure_test_path + " Not able to handle. With", e)
+            if test_file == '' or test_line_no == '':
+                print("Wrong!!! Unable to handle file:[" + failure_test_path + '] while construct the initial prompt.')
                 with open(LOG_FILE, 'a') as file:
-                    file.write("Wrong! File:" + failure_test_path + " Not able to handle." + "\n")
+                    file.write(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))+"\nWrong!!! Unable to handle file [" + failure_test_path + "] while construct the initial prompt.")
                     file.close()
                 return ''
             # 设置全局变量 上一个失败的测试
@@ -431,11 +450,19 @@ def get_failure_test_info(test_file_path):
         test_function = failing_test.split("::")[1].rstrip()
         # test_file = failing_test.split("::")[0].replace('.', '/') + '.java'
         for i in range(2, len(lines)):
-            if test_function in lines[i] :
-                test_line_no = int(re.search(r'(\d+)\)', lines[i]).group(1))
-                test_file = delete_substring_to_end(lines[i],'.'+test_function).split('at ')[1].replace('.', '/') + '.java'
-                return failing_test, test_error, test_file, test_line_no
-
+            if test_function in lines[i]:
+                try:
+                    test_line_no = int(re.search(r'(\d+)\)', lines[i]).group(1))
+                    test_file = delete_substring_to_end(lines[i],'.'+test_function).split('at ')[1].replace('.', '/') + '.java'
+                    return failing_test, test_error, test_file, test_line_no
+                except AttributeError as e:
+                    print("Warning!!! Unable to handle file [" + test_file_path + "]while get the the test info:",e)
+                    with open(LOG_FILE, 'a') as file:
+                        file.write(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))+"\nWarning!!! Unable to handle file [" + test_file_path + "] while get the the test info.")
+                        file.close()
+                    return failing_test, test_error, '', ''
+        # 不符合要求的failing_test文件
+        return failing_test, test_error, '', ''
 
 # 从源代码文件中找出行所在的函数定义起始在哪一行
 def get_method_declaration_line_no(source_file_path, line_no):
