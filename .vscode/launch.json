@@ -9,9 +9,7 @@
             "type": "debugpy",
             "request": "launch",
             "python": "/usr/bin/python3.8",
-            "args": [
-              "chatrepair",
-              "Lang",
+            "args": ["chatrepair", "Lang", "y"
             ],      
             "program": "${file}",
             "console": "integratedTerminal",

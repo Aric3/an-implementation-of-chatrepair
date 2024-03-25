@@ -56,7 +56,7 @@ Failure_Test_error = "with the following test error:\n"
 
 INITIAL_Single_line_final = "\nPlease provide an analysis of the problem and the expected behaviour of the correct fix, and the correct line at the infill location in the form of Java Markdown code block.\n"
 INITIAL_Single_hunk_final = "\nPlease provide an analysis of the problem and the expected behaviour of the correct fix, and the correct hunk at the infill location in the form of Java Markdown code block.\n"
-INITIAL_Single_function_final = "\nPlease provide an analysis of the problem and the expected behaviour of the correct fix, and the correct function in the form of Java Markdown code block.\n"
+INITIAL_Single_function_final = "\nPlease provide an analysis of the problem and the expected behaviour of the correct fix, and the correct version of the function in the form of Java Markdown code block.\n"
 
 FeedBack_0 = "The fixed version is still not correct."
 FeedBack_1 = "It still does not fix the original test failure."
@@ -65,6 +65,10 @@ FeedBack_3 = "Code has compilation error."
 
 Alt_Instruct_1 = "It can be fixed by these possible patches:\n"
 Alt_Instruct_2 = "Please generate an alternative patch in the form of Java Markdown code block."
+
+Alt_Instruct_3 = "It can be fixed by these possible correct version:\n"
+Alt_Instruct_4 = "Please generate an alternative correct version of the function in the form of Java Markdown code block."
+
 
 # chatrepair常量配置
 # 最大调用api次数

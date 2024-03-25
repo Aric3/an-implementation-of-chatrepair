@@ -1,0 +1,9 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "source/org/jfree/data/time/TimeSeries.java",
+        "replaced_with": "        copy.minY = Double.NaN;\n        copy.maxY = Double.NaN;\n",
+        "patch_type": "insert",
+        "next_line_no": 1057
+    }
+}

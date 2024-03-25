@@ -15,22 +15,30 @@ from constants import *
 previous_failure_test = ''
 
 
-def save_initial(project):
+def save_initial(project, all_single_function_flag):
     files = os.listdir(os.path.join(PATCH_JSON_FOLDER, project))
     for file in files:
-        initial_prompt = construct_initial_prompt(project, file)
+        initial_prompt = ''
+        if all_single_function_flag == True:
+            initial_prompt = construct_single_function_initial_prompt(project,file)
+        else:
+            initial_prompt = construct_initial_prompt(project, file)
         if not initial_prompt == '':
             f = open_file(os.path.join(INITIAL_PROMPT_FOLDER, project, file.rstrip(".json") + ".txt"))
             f.write(initial_prompt)
     print("Success!\nInitial Prompt is saved in " + INITIAL_PROMPT_FOLDER + "/" + project + "!")
 
 
-def chat_initial(project):
+def chat_initial(project, all_single_function_flag):
     openai.base_url = BASE_URL
     openai.api_key = API_KEY
     files = os.listdir(os.path.join(PATCH_JSON_FOLDER, project))
     for file in files:
-        initial_prompt = construct_initial_prompt(project, file)
+        initial_prompt = ''
+        if all_single_function_flag == True:
+            initial_prompt = construct_single_function_initial_prompt(project,file)
+        else:
+            initial_prompt = construct_initial_prompt(project, file)
         if not initial_prompt == '':
             context = [{'role': 'user', 'content': initial_prompt}]
             response = openai.chat.completions.create(model=MODEL, messages=context)
@@ -47,23 +55,27 @@ def chat_initial(project):
     print("Success!\nContext is saved in " + INITIALCHAT_FOLDER + "/" + project + "!")
 
 
-def go_chat_repair(project):
+def go_chat_repair(project, all_single_function_flag):
     openai.base_url = BASE_URL
     openai.api_key = API_KEY
     files = os.listdir(os.path.join(PATCH_JSON_FOLDER, project))
     i = 0
     while i < len(files):
-        initial_prompt = construct_initial_prompt(project, files[i])
+        initial_prompt = ''
+        if all_single_function_flag == True:
+            initial_prompt = construct_single_function_initial_prompt(project,files[i])
+        else:
+            initial_prompt = construct_initial_prompt(project, files[i])
         # 测试文件不符合要求 或 不是 single hunk 跳过当前文件
         if initial_prompt == '':
             i += 1
         if not initial_prompt == '':
             # chatrepair抛出异常 重试当前bug
-            if chat_repair(project, initial_prompt, files[i]) != 'Exception':
+            if chat_repair(project, initial_prompt, files[i], all_single_function_flag) != 'Exception':
                 i +=1
 
 
-def chat_repair(project, initial_prompt, json_file):
+def chat_repair(project, initial_prompt, json_file, all_single_function_flag):
     current_tries = 0
     plausible_patches = []
     openai.base_url = BASE_URL
@@ -80,11 +92,11 @@ def chat_repair(project, initial_prompt, json_file):
             time.sleep(1)
             response_text = response.choices[0].message.content
             context.append({'role': 'assistant', 'content': response_text})
-            patch = match_patch_code(response_text)
+            patch = match_patch_code(response_text).strip()
             # 不符合规范的回答文本 跳过此次对话
             if patch == '':
                 break
-            feedback = validate_patch(patch, project, json_file, plausible_patches)
+            feedback = validate_patch(patch, project, json_file, plausible_patches, all_single_function_flag)
             if feedback == '':
                 break
             if feedback == 'Exception':
@@ -106,9 +118,15 @@ def chat_repair(project, initial_prompt, json_file):
         while current_tries < Max_Tries:
             context = []
             patches_prompt = ''
+            patch_or_function = 'plausible patch '
+            if all_single_function_flag:
+                patch_or_function = 'Correct version '
             for i in range(len(plausible_patches)):
-                patches_prompt += 'plausible patch '+str(i+1)+' :\n'+plausible_patches[i]+'\n'
-            prompt = delete_substring_to_end(initial_prompt.split('<Example end>')[1].strip(), "Please provide") + Alt_Instruct_1 + patches_prompt+ Alt_Instruct_2
+                patches_prompt += patch_or_function +str(i+1)+' :'+plausible_patches[i]+'\n'
+            if all_single_function_flag:
+                prompt = delete_substring_to_end(initial_prompt.split('<Example end>')[1].strip(), "Please provide") + Alt_Instruct_3 + patches_prompt+ Alt_Instruct_4
+            else: 
+                prompt = delete_substring_to_end(initial_prompt.split('<Example end>')[1].strip(), "Please provide") + Alt_Instruct_1 + patches_prompt+ Alt_Instruct_2
             context.append({'role': 'user', 'content': prompt})
             response = openai.chat.completions.create(model=MODEL, messages=context)
             # 程序停止1s
@@ -119,10 +137,10 @@ def chat_repair(project, initial_prompt, json_file):
             # 不符合规范的回答文本 跳过此次对话
             if patch == '':
                 continue
-            feedback = validate_patch(patch, project, json_file, plausible_patches)
+            feedback = validate_patch(patch, project, json_file, plausible_patches, all_single_function_flag)
             if feedback == 'Exception':
                 return 'Exception'
-            if feedback == '' and patch not in plausible_patches:
+            if feedback == '' and patch.strip() not in plausible_patches:
                 plausible_patches.append(patch)
             current_tries += 1
             # 保存对话到文件中
@@ -138,7 +156,7 @@ def chat_repair(project, initial_prompt, json_file):
 
 
 # 验证对应patch 并构造feedback
-def validate_patch(patch, project, json_file, plausible_patches):
+def validate_patch(patch, project, json_file, plausible_patches, all_single_function_flag):
     global previous_failure_test
     temp_javafile = ''
     javafile_path = ''
@@ -150,19 +168,17 @@ def validate_patch(patch, project, json_file, plausible_patches):
     with open(os.path.join(PATCH_JSON_FOLDER, project, json_file), 'r', encoding="latin-1") as f:
         data = json.load(f)
         f.close()
-        
-        file_name = data['0']['file_name']
-        patch_type = data['0']['patch_type']
-        javafile_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, file_name)
-        
-        # 备份需要修改的文件 在一次验证结束后恢复
-        with open(javafile_path, mode='r', encoding='latin-1') as javafile:
-            temp_javafile = javafile.read()
-            javafile.close
-            
-        # single line 和 single function标志  
-        single_line = False
-        single_function = False
+    # single line 和 single function标志  
+    single_line = False
+    single_function = False 
+    file_name = data['0']['file_name']
+    patch_type = data['0']['patch_type']
+    javafile_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, file_name)
+    # 备份需要修改的文件 在一次验证结束后恢复
+    with open(javafile_path, mode='r', encoding='latin-1') as javafile:
+        temp_javafile = javafile.read()
+        javafile.close
+    if all_single_function_flag == False:  
         # replace类型的patch 找到对应的源代码文件 使用patch替换掉指定行
         if patch_type == PATCH_TYPE_REPLACE:
             from_line_no = data['0']['from_line_no']
@@ -178,8 +194,7 @@ def validate_patch(patch, project, json_file, plausible_patches):
             # 修改之后重新写入java file
             with open(javafile_path, mode='w', encoding='latin-1') as f2:
                 f2.writelines(lines)
-                f2.close()
-            #print(''.join(lines))
+            f2.close()
         # insert类型的patch
         if patch_type == PATCH_TYPE_INSERT:
             next_line_no = data['0']['next_line_no']
@@ -190,33 +205,59 @@ def validate_patch(patch, project, json_file, plausible_patches):
             with open(javafile_path, mode='w', encoding='latin-1') as f2:
                 f2.writelines(lines)
                 f2.close()
-            #print(''.join(lines))
+                #print(''.join(lines))
         # delete类型的patch 找到的对应的函数 替换整个函数
         if patch_type == PATCH_TYPE_DELETE:
             single_function = True
             next_line_no = data['0']['next_line_no']
-            # 获得函数声明所在的行
-            source_file_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, file_name)
-            start_line = get_method_declaration_line_no(source_file_path, next_line_no)
-            # 替换掉整个函数
-            with open(javafile_path, "r", encoding='latin-1') as file:
-                lines = file.readlines()
-                file.close()
-            left_open_brackets = 0
-            right_open_brackets = 0
-            end_line = start_line - 1
-            for line in lines[start_line - 1:-1]:
-                left_open_brackets += line.count('{')
-                right_open_brackets += line.count('}')
-                end_line += 1
-                if left_open_brackets == right_open_brackets and not left_open_brackets == 0:
-                    break
-            del lines[start_line - 1:end_line]
-            lines.insert(start_line - 1, patch)
-            file.close()
-            with open(javafile_path, mode='w', encoding='latin-1') as f2:
-                f2.writelines(lines)
-                f2.close()
+            rewrite_function_to_javafile(next_line_no, javafile_path, patch)
+    if all_single_function_flag == True:
+        next_line_no = data['0']['next_line_no']
+        rewrite_function_to_javafile(next_line_no, javafile_path, patch)
+    # 执行 defect4j compile ; defects4j test 并返回feedback
+    feedback = construct_feedback_after_validate(project, no, patch, plausible_patches)
+    # 返回空字符 则patch正确 
+    if feedback == '':
+        return ''
+    # 编译测试结束后恢复java文件的内容
+    # shutil.rmtree(os.path.join(BUGGY_PROJECT_FOLDER, project + no))
+    with open(javafile_path, mode='w', encoding='latin-1') as javafile:
+        javafile.write(temp_javafile)
+        javafile.close()
+    if single_line:
+        feedback += INITIAL_Single_line_final
+    if single_function or all_single_function_flag:
+        feedback += INITIAL_Single_function_final
+    if all_single_function_flag == False and not single_line and not single_function:
+        feedback += INITIAL_Single_hunk_final
+    return feedback
+
+def rewrite_function_to_javafile(next_line_no, javafile_path, patch):
+    # 获得函数声明所在的行
+    start_line = get_method_declaration_line_no(javafile_path, next_line_no)
+    # 替换掉整个函数
+    with open(javafile_path, "r", encoding='latin-1') as file:
+        lines = file.readlines()
+        file.close()
+    left_open_brackets = 0
+    right_open_brackets = 0
+    end_line = start_line - 1
+    for line in lines[start_line - 1:-1]:
+        left_open_brackets += line.count('{')
+        right_open_brackets += line.count('}')
+        end_line += 1
+        if left_open_brackets == right_open_brackets and not left_open_brackets == 0:
+            break
+    del lines[start_line - 1:end_line]
+    lines.insert(start_line - 1, patch)
+    file.close()
+    with open(javafile_path, mode='w', encoding='latin-1') as f2:
+        f2.writelines(lines)
+    f2.close()
+
+
+def construct_feedback_after_validate(project, no, patch, plausible_patches):
+    global previous_failure_test
     # 重新编译
     stdout, stderr = run_command(
         'cd ' + os.path.join(BUGGY_PROJECT_FOLDER, project + no) + ' && ' + DEFECTS4J_COMPILE)
@@ -267,17 +308,6 @@ def validate_patch(patch, project, json_file, plausible_patches):
                         break
             feedback = FeedBack_0 + Failure_Test + failure_test + Failure_Test_line + ''.join(
                 test_lines) + Failure_Test_error + test_error
-    # 编译测试结束后恢复java文件的内容
-    # shutil.rmtree(os.path.join(BUGGY_PROJECT_FOLDER, project + no))
-    with open(javafile_path, mode='w', encoding='latin-1') as javafile:
-        javafile.write(temp_javafile)
-        javafile.close()
-    if single_line:
-        feedback += INITIAL_Single_line_final
-    if single_function:
-        feedback += INITIAL_Single_function_final
-    if not single_line and not single_function:
-        feedback += INITIAL_Single_hunk_final
     return feedback
 
 
@@ -384,36 +414,7 @@ def construct_initial_prompt(project, json_file):
                 buggy_function = get_buggy_function(source_file_path, next_line_no, next_line_no, PATCH_TYPE_INSERT)
                 initial_prompt += INITIAL_Single_function + buggy_function
 
-            # 如果不存在failing test文件或为空 说明没有执过defects4j test命令 执行
-            failure_test_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)
-            if is_file_empty_or_not_exists(failure_test_path):
-                os.system('cd ' + os.path.join(BUGGY_PROJECT_FOLDER, project + no) + ' && ' + DEFECTS4J_COMPILE_TEST)
-
-            # 添加关于failure test的信息
-            failure_test, test_error, test_file, test_line_no = get_failure_test_info(failure_test_path)
-                #print(failure_test, test_error, test_file, test_line_no)
-            if test_file == '' or test_line_no == '':
-                print("Wrong!!! Unable to handle file:[" + failure_test_path + '] while construct the initial prompt.')
-                with open(LOG_FILE, 'a') as file:
-                    file.write(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))+"\nWrong!!! Unable to handle file [" + failure_test_path + "] while construct the initial prompt.")
-                    file.close()
-                return ''
-            # 设置全局变量 上一个失败的测试
-            previous_failure_test = failure_test
-            # 为test_file的路径添加前缀
-            file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_FILEPATH_PREFIX[project], test_file)
-            if is_file_empty_or_not_exists(file):
-                file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_FILEPATH_PREFIX_1, test_file)
-            # 根据test line所在的行到对应文件找到目标line
-            test_lines = []
-            with open(file, mode='r', encoding='latin-1') as test_file:
-                lines = test_file.readlines()[test_line_no - 1:]
-                for line in lines:
-                    test_lines.append(line)
-                    if re.sub(r'\".*?\"', '', line).count(';') == 1:
-                        break
-            initial_prompt += Failure_Test + failure_test + Failure_Test_line + ''.join(
-                test_lines) + Failure_Test_error + test_error
+            initial_prompt += prompt_add_failure_test_info(project, json_file)
 
             # 完整initial prompt的最后一句
             if patch_type == PATCH_TYPE_REPLACE or patch_type == PATCH_TYPE_INSERT:
@@ -423,10 +424,65 @@ def construct_initial_prompt(project, json_file):
                     initial_prompt += INITIAL_Single_hunk_final
             else:
                 initial_prompt += INITIAL_Single_function_final
-            return initial_prompt
+            return initial_prompt            
         else:
             return ''
 
+def construct_single_function_initial_prompt(project, json_file):
+    global previous_failure_test
+    # 读对应json文件
+    no = json_file.rstrip('.json')
+    with open(os.path.join(PATCH_JSON_FOLDER, project, json_file), 'r', encoding="latin-1") as f:
+        data = json.load(f)
+        f.close()
+    if not os.path.exists(os.path.join(BUGGY_PROJECT_FOLDER, project + no)):
+        os.system(DEFECTS4J_CHECKOUT % (project, no + 'b', os.path.join(BUGGY_PROJECT_FOLDER, project + no)))
+    initial_prompt = INITIAL_APR_TOOL + INTIIAL_APR_EXAMPLE + get_example('Lang_single_function_example.txt')
+    next_line_no = data['0']['next_line_no']
+    file_name = data['0']['file_name']
+    source_file_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, file_name)
+    buggy_function = get_buggy_function(source_file_path, next_line_no, next_line_no, PATCH_TYPE_DELETE)
+    failure_info = prompt_add_failure_test_info(project, json_file)
+    if failure_info != '':
+        initial_prompt += INITIAL_Single_function + buggy_function + failure_info + INITIAL_Single_function_final
+    else:
+        initial_prompt = ''
+    return initial_prompt
+    
+
+def prompt_add_failure_test_info(project,json_file):
+    global previous_failure_test
+    no = json_file.rstrip('.json')
+    failure_test_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)
+    if is_file_empty_or_not_exists(failure_test_path):
+        os.system('cd ' + os.path.join(BUGGY_PROJECT_FOLDER, project + no) + ' && ' + DEFECTS4J_COMPILE_TEST)
+    # 添加关于failure test的信息
+    failure_test, test_error, test_file, test_line_no = get_failure_test_info(failure_test_path)
+    #print(failure_test, test_error, test_file, test_line_no)
+    if test_file == '' or test_line_no == '':
+        print("Wrong!!! Unable to handle file:[" + failure_test_path + '] while construct the initial prompt.')
+        with open(LOG_FILE, 'a') as file:
+            file.write(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))+"\nWrong!!! Unable to handle file [" + failure_test_path + "] while construct the initial prompt.")
+            file.close()
+            return ''
+    # 设置全局变量 上一个失败的测试
+    previous_failure_test = failure_test
+    # 为test_file的路径添加前缀
+    file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_FILEPATH_PREFIX[project], test_file)
+    if is_file_empty_or_not_exists(file):
+        file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_FILEPATH_PREFIX_1, test_file)
+    # 根据test line所在的行到对应文件找到目标line
+    test_lines = []
+    with open(file, mode='r', encoding='latin-1') as test_file:
+        lines = test_file.readlines()[test_line_no - 1:]
+        for line in lines:
+            test_lines.append(line)
+            if re.sub(r'\".*?\"', '', line).count(';') == 1:
+                break
+        return Failure_Test + failure_test + Failure_Test_line + ''.join(test_lines) + Failure_Test_error + test_error
+    
+    
+    
 
 # 构造带有或不带有INFILL标志的buggy function字符串
 def get_buggy_function(file_path, from_line_no, to_line_no, patch_type):
@@ -466,7 +522,7 @@ def get_failure_test_info(test_file_path):
 
 # 从源代码文件中找出行所在的函数定义起始在哪一行
 def get_method_declaration_line_no(source_file_path, line_no):
-    with open(source_file_path, "r") as file:
+    with open(source_file_path, "r",encoding="latin-1") as file:
         source_code = file.read()
         file.close()
     tree = parse.parse(source_code)
@@ -505,7 +561,7 @@ def get_example(example_file):
         return example
 
 if __name__ == '__main__':
-    ins, p = sys.argv[1:3]
+    ins, p, all = sys.argv[1:4]
     if ins not in ["chatrepair", "initial-save", "initial-chat"]:
         print("Instruction only support \"chatrepair\"and\"initial-save\" and \"initial-chat\"")
     else:
@@ -513,9 +569,15 @@ if __name__ == '__main__':
             print("Project only support these:\n")
             print(PROJECTS)
         else:
-            if ins == "initial-save":
-                save_initial(p)
-            elif ins == "initial-chat":
-                chat_initial(p)
-            else:
-                go_chat_repair(p)
+            if ins == "initial-save" and all == 'y':
+                save_initial(p,True)
+            elif ins == "initial-save" and all == 'n':
+                save_initial(p,False)
+            elif ins == "initial-chat" and all == 'y':
+                chat_initial(p, True)
+            elif ins == "initial-chat" and all == 'n':
+                chat_initial(p, False)
+            elif ins == "chatrepair" and all == 'y':
+                go_chat_repair(p,True)
+            elif ins == "chatrepair" and all == 'n':
+                go_chat_repair(p, False)
