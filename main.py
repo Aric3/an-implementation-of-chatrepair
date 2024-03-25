@@ -122,7 +122,7 @@ def chat_repair(project, initial_prompt, json_file, all_single_function_flag):
             if all_single_function_flag:
                 patch_or_function = 'Correct version '
             for i in range(len(plausible_patches)):
-                patches_prompt += patch_or_function +str(i+1)+' :'+plausible_patches[i]+'\n'
+                patches_prompt += patch_or_function +str(i+1)+' :\n'+plausible_patches[i]+'\n'
             if all_single_function_flag:
                 prompt = delete_substring_to_end(initial_prompt.split('<Example end>')[1].strip(), "Please provide") + Alt_Instruct_3 + patches_prompt+ Alt_Instruct_4
             else: 
@@ -133,7 +133,7 @@ def chat_repair(project, initial_prompt, json_file, all_single_function_flag):
             time.sleep(1)
             response_text = response.choices[0].message.content
             context.append({'role': 'assistant', 'content': response_text})
-            patch = match_patch_code(response_text)
+            patch = match_patch_code(response_text).strip()
             # 不符合规范的回答文本 跳过此次对话
             if patch == '':
                 continue
@@ -259,8 +259,9 @@ def rewrite_function_to_javafile(next_line_no, javafile_path, patch):
 def construct_feedback_after_validate(project, no, patch, plausible_patches):
     global previous_failure_test
     # 重新编译
-    stdout, stderr = run_command(
-        'cd ' + os.path.join(BUGGY_PROJECT_FOLDER, project + no) + ' && ' + DEFECTS4J_COMPILE)
+    flag, stdout, stderr = run_command(DEFECTS4J_COMPILE.split(' '),'latin-1', os.path.join(BUGGY_PROJECT_FOLDER, project + no),15)
+    if not flag:
+        print(stderr)    
     pattern = r"BUILD FAILED"
     result = re.search(pattern, stderr, re.DOTALL)
     feedback = ''
@@ -275,39 +276,41 @@ def construct_feedback_after_validate(project, no, patch, plausible_patches):
             feedback = FeedBack_0 + FeedBack_3
     # 没有编译错误 运行defects4j test
     else:
-        os.system('cd ' + os.path.join(BUGGY_PROJECT_FOLDER, project + no) + ' && ' + DEFECTS4J_TEST)
-        # pass全部test 添加plausible_patch
-        if is_file_empty_or_not_exists(os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)):
-            plausible_patches.append(patch)
-            return ''
-        # 未通过全部test 构造feedback
-        failure_test_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)
-        
-        failure_test, test_error, test_file, test_line_no = get_failure_test_info(failure_test_path)
-        if test_file == '' or test_line_no == '':
-            print("Warning!!! Unable to handle file [" + failure_test_path + "]while validate the patch.")
-            with open(LOG_FILE, 'a') as file:
-                file.write(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))+"\nWarning!!! Unable to handle file [" + failure_test_path + "] while validate the patch.")
-                file.close()
-                return 'Exception'
-        
-        file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_FILEPATH_PREFIX[project], test_file)
-        if not os.path.exists(file):
-            file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_FILEPATH_PREFIX_1, test_file)
-        if failure_test == previous_failure_test:
-            feedback = FeedBack_0 + FeedBack_1
-        else:
-            previous_failure_test = failure_test
-            # get the test line
-            test_lines = []
-            with open(file, mode='r', encoding='latin-1') as test_file:
-                lines = test_file.readlines()[test_line_no - 1:]
-                for line in lines:
-                    test_lines.append(line)
-                    if line.count(';') == 1:
-                        break
-            feedback = FeedBack_0 + Failure_Test + failure_test + Failure_Test_line + ''.join(
-                test_lines) + Failure_Test_error + test_error
+        flag, stdout, stderr = run_command(DEFECTS4J_TEST.split(' '),'latin-1', os.path.join(BUGGY_PROJECT_FOLDER, project + no),15)
+        if not flag and stderr.count('[ERROR]') != 0:
+            feedback = FeedBack_0 + FeedBack_4
+        elif flag:    
+            # pass全部test 添加plausible_patch
+            if is_file_empty_or_not_exists(os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)):
+                plausible_patches.append(patch)
+                return ''
+            # 未通过全部test 构造feedback
+            failure_test_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)
+            failure_test, test_error, test_file, test_line_no = get_failure_test_info(failure_test_path)
+            if test_file == '' or test_line_no == '':
+                print("Warning!!! Unable to handle file [" + failure_test_path + "]while validate the patch.")
+                with open(LOG_FILE, 'a') as file:
+                    file.write(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))+"\nWarning!!! Unable to handle file [" + failure_test_path + "] while validate the patch.")
+                    file.close()
+                    return 'Exception'
+            
+            file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_FILEPATH_PREFIX[project], test_file)
+            if not os.path.exists(file):
+                file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_FILEPATH_PREFIX_1, test_file)
+            if failure_test == previous_failure_test:
+                feedback = FeedBack_0 + FeedBack_1
+            else:
+                previous_failure_test = failure_test
+                # get the test line
+                test_lines = []
+                with open(file, mode='r', encoding='latin-1') as test_file:
+                    lines = test_file.readlines()[test_line_no - 1:]
+                    for line in lines:
+                        test_lines.append(line)
+                        if line.count(';') == 1:
+                            break
+                feedback = FeedBack_0 + Failure_Test + failure_test + Failure_Test_line + ''.join(
+                    test_lines) + Failure_Test_error + test_error
     return feedback
 
 
@@ -347,14 +350,18 @@ def delete_substring_to_end(s, subs):
 
 
 # 运行系统命令并返回标准输出与标准错误输出
-def run_command(command):
-    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-    stdout, stderr = process.communicate()
 
-    stdout = stdout.decode('utf-8')
-    stderr = stderr.decode('utf-8')
+def run_command(cmd, encoding='utf-8', cwd=None, timeout=None):
+    try:
+        finished = subprocess.run(cmd, capture_output=True, cwd=cwd, timeout=timeout)
+        finished.check_returncode()
+        return True, finished.stdout.decode(encoding), finished.stderr.decode(encoding)
+    except subprocess.CalledProcessError:
+        return False, finished.stdout.decode(encoding), finished.stderr.decode(encoding)
+    except subprocess.TimeoutExpired:
+        return False, '[ERROR]:{} time out after {} seconds'.format(cmd, timeout), '[ERROR]:{} time out after {} seconds'.format(cmd, timeout)
 
-    return stdout, stderr
+
 
 
 # 打开文件 如果不存在则创建

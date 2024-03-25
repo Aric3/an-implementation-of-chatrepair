@@ -62,6 +62,7 @@ FeedBack_0 = "The fixed version is still not correct."
 FeedBack_1 = "It still does not fix the original test failure."
 FeedBack_2 = "Code has the following compilation error: "
 FeedBack_3 = "Code has compilation error."
+FeedBack_4 = "The program timed out while executing the test case in 15s."
 
 Alt_Instruct_1 = "It can be fixed by these possible patches:\n"
 Alt_Instruct_2 = "Please generate an alternative patch in the form of Java Markdown code block."
