@@ -92,7 +92,7 @@ def chat_repair(project, initial_prompt, json_file, all_single_function_flag):
             time.sleep(1)
             response_text = response.choices[0].message.content
             context.append({'role': 'assistant', 'content': response_text})
-            patch = match_patch_code(response_text).strip()
+            patch = match_patch_code(response_text)
             # 不符合规范的回答文本 跳过此次对话
             if patch == '':
                 break
@@ -133,14 +133,14 @@ def chat_repair(project, initial_prompt, json_file, all_single_function_flag):
             time.sleep(1)
             response_text = response.choices[0].message.content
             context.append({'role': 'assistant', 'content': response_text})
-            patch = match_patch_code(response_text).strip()
+            patch = match_patch_code(response_text)
             # 不符合规范的回答文本 跳过此次对话
             if patch == '':
                 continue
             feedback = validate_patch(patch, project, json_file, plausible_patches, all_single_function_flag)
             if feedback == 'Exception':
                 return 'Exception'
-            if feedback == '' and patch.strip() not in plausible_patches:
+            if feedback == '' and patch not in plausible_patches:
                 plausible_patches.append(patch)
             current_tries += 1
             # 保存对话到文件中

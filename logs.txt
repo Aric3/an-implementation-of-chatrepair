@@ -4,4 +4,15 @@ Wrong!!! Unable to handle file [bugs/Lang57/failing_tests] while construct the i
 Warning!!! Unable to handle file [bugs/Math19/failing_tests] while validate the patch.2024-03-06 12:27:47
 Wrong!!! Unable to handle file [bugs/Math19/failing_tests] while construct the initial prompt.2024-03-06 12:28:18
 Wrong!!! Unable to handle file [bugs/Math34/failing_tests] while construct the initial prompt.2024-03-06 13:36:25
-Wrong!!! Unable to handle file [bugs/Mockito8/failing_tests] while construct the initial prompt.
+Wrong!!! Unable to handle file [bugs/Mockito8/failing_tests] while construct the initial prompt.2024-03-25 07:15:23
+Warning!!! Unable to handle file [bugs/Lang1/failing_tests] while get the the test info.2024-03-25 07:15:23
+Warning!!! Unable to handle file [bugs/Lang1/failing_tests] while validate the patch.2024-03-25 07:18:30
+Warning!!! Unable to handle file [bugs/Lang1/failing_tests] while get the the test info.2024-03-25 07:18:30
+Warning!!! Unable to handle file [bugs/Lang1/failing_tests] while validate the patch.2024-03-25 07:19:18
+Warning!!! Unable to handle file [bugs/Lang1/failing_tests] while get the the test info.2024-03-25 07:19:18
+Warning!!! Unable to handle file [bugs/Lang1/failing_tests] while validate the patch.2024-03-25 07:19:58
+Warning!!! Unable to handle file [bugs/Lang1/failing_tests] while get the the test info.2024-03-25 07:19:58
+Warning!!! Unable to handle file [bugs/Lang1/failing_tests] while validate the patch.2024-03-25 07:20:26
+Warning!!! Unable to handle file [bugs/Lang1/failing_tests] while get the the test info.2024-03-25 07:20:26
+Warning!!! Unable to handle file [bugs/Lang1/failing_tests] while validate the patch.2024-03-25 22:49:01
+Warning!!! Unable to handle file [bugs/Time5/failing_tests] while validate the patch.

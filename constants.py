@@ -62,7 +62,7 @@ FeedBack_0 = "The fixed version is still not correct."
 FeedBack_1 = "It still does not fix the original test failure."
 FeedBack_2 = "Code has the following compilation error: "
 FeedBack_3 = "Code has compilation error."
-FeedBack_4 = "The program timed out while executing the test case in 15s."
+FeedBack_4 = "The program timed out while executing the test cases in 15s."
 
 Alt_Instruct_1 = "It can be fixed by these possible patches:\n"
 Alt_Instruct_2 = "Please generate an alternative patch in the form of Java Markdown code block."
@@ -81,9 +81,9 @@ Max_Conv_len = 3
 MODEL = "gpt-3.5-turbo"
 
 #第三方网站aikey的接口
-#API_KEY = 'sk-BTijAxza2faVBDpy452344F136154561Ab9f4fF2037d47E0'
-#BASE_URL = 'https://api.aikey.one/v1/'
+# API_KEY = 'sk-BTijAxza2faVBDpy452344F136154561Ab9f4fF2037d47E0'
+# BASE_URL = 'https://api.aikey.one/v1/'
 
 # 师兄的接口（openai官方接口）
 API_KEY = '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'
-BASE_URL = 'https://uu.tanpan.eu.org/v1/'
+BASE_URL = 'http://84.33.244.4/v1/'

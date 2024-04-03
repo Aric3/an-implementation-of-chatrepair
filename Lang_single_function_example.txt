@@ -18,7 +18,7 @@ the code fails on this test: org.apache.commons.lang3.time.DateUtilsTest::testIs
 on this test line:
 assertFalse("LANG-677", DateUtils.isSameLocalTime(cal3, cal4));
 with the following test error:
---- org.apache.commons.lang3.time.DateUtilsTest::testIsSameLocalTime_Cal
+junit.framework.AssertionFailedError: LANG-677
 Please provide an analysis of the problem and the expected behaviour of the correct fix, and the correct version of the function in the form of Java Markdown code block.
 Example response:
 
