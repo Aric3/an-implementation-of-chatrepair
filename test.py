@@ -1,0 +1,28 @@
+def not_exist(list, s):
+    for l in list:
+        if l.replace(' ','').replace('\n','') == s.replace(' ','').replace('\n',''):
+            return False
+    return True
+
+if __name__ == '__main__':
+
+    s = '\npublic static boolean toBoolean(String str) {\n    // Previously used equalsIgnoreCase, which was fast for interned \'true\'.\n    // Non interned \'true\' matched 15 times slower.\n    //\n    // Optimisation provides same performance as before for interned \'true\'.\n    // Similar performance for null, \'false\', and other strings not length 2/3/4.\n    // \'true\'/\'TRUE\' match 4 times slower, \'tRUE\'/\'True\' 7 times slower.\n    if ("true".equals(str)) {\n        return true;\n    }\n    if (str == null || str.length() < 2) {\n        return false;\n    }\n    String lowerCaseStr = str.toLowerCase();\n    \n    if (lowerCaseStr.equals("on") || lowerCaseStr.equals("yes") || lowerCaseStr.equals("true")) {\n        return true;\n    }\n    if (lowerCaseStr.equals("fal") || lowerCaseStr.equals("fals") || lowerCaseStr.equals("false")) {\n        return false;\n    }\n    \n    return false;\n}\n'
+
+    b = '\npublic static boolean toBoolean(String str) {\n    // Previously used equalsIgnoreCase, which was fast for interned \'true\'.\n    // Non interned \'true\' matched 15 times slower.\n    //\n    // Optimisation provides same performance as before for interned \'true\'.\n    // Similar performance for null, \'false\', and other strings not length 2/3/4.\n    // \'true\'/\'TRUE\' match 4 times slower, \'tRUE\'/\'True\' 7 times slower.\n    if ("true".equals(str)) {\n        return true;\n    }\n    if (str == null || str.length() < 2) {\n        return false;\n    }\n    String lowerCaseStr = str.toLowerCase();\n    \n    if (lowerCaseStr.equals("on") || lowerCaseStr.equals("yes") || lowerCaseStr.equals("true")) {\n        return true;\n    }\n    \n    return false;\n}\n'
+    
+    c = '\npublic static boolean toBoolean(String str) {\n    // Previously used equalsIgnoreCase, which was fast for interned \'true\'.\n    // Non interned \'true\' matched 15 times slower.\n    //\n    // Optimisation provides same performance as before for interned \'true\'.\n    // Similar performance for null, \'false\', and other strings not length 2/3/4.\n    // \'true\'/\'TRUE\' match 4 times slower, \'tRUE\'/\'True\' 7 times slower.\n    if ("true".equals(str)) {\n        return true;\n    }\n    if (str == null) {\n        return false;\n    }\n    String lowerCaseStr = str.toLowerCase();\n    \n    if (lowerCaseStr.equals("on") || lowerCaseStr.equals("yes") || lowerCaseStr.equals("true")) {\n        return true;\n    }\n    \n    return false;\n}\n'
+    
+    d = '\npublic static boolean toBoolean(String str) {\n    // Previously used equalsIgnoreCase, which was fast for interned \'true\'.\n    // Non interned \'true\' matched 15 times slower.\n    //\n    // Optimisation provides same performance as before for interned \'true\'.\n    // Similar performance for null, \'false\', and other strings not length 2/3/4.\n    // \'true\'/\'TRUE\' match 4 times slower, \'tRUE\'/\'True\' 7 times slower.\n    if ("true".equals(str)) {\n        return true;\n    }\n    if (str == null || str.length() < 2) {\n        return false;\n    }\n    String lowerCaseStr = str.toLowerCase();\n    \n    if (lowerCaseStr.equals("on") || lowerCaseStr.equals("yes") || lowerCaseStr.equals("true")) {\n        return true;\n    }\n    return false;\n}\n'
+    
+    e = '\npublic static boolean toBoolean(String str) {\n    // Previously used equalsIgnoreCase, which was fast for interned \'true\'.\n    // Non interned \'true\' matched 15 times slower.\n    //\n    // Optimisation provides same performance as before for interned \'true\'.\n    // Similar performance for null, \'false\', and other strings not length 2/3/4.\n    // \'true\'/\'TRUE\' match 4 times slower, \'tRUE\'/\'True\' 7 times slower.\n    if ("true".equals(str)) {\n        return true;\n    }\n    if (str == null || str.length() < 2) {\n        return false;\n    }\n    String lowerCaseStr = str.toLowerCase();\n    \n    if (lowerCaseStr.equals("on") || lowerCaseStr.equals("yes") || lowerCaseStr.equals("true")) {\n        return true;\n    }\n    \n    return false;\n}\n'
+    
+    f = '\npublic static boolean toBoolean(String str) {\n    if ("true".equals(str)) {\n        return true;\n    }\n    if (str == null || str.length() < 2) {\n        return false;\n    }\n    String lowerCaseStr = str.toLowerCase();\n    \n    if (lowerCaseStr.equals("on") || lowerCaseStr.equals("yes") || lowerCaseStr.equals("true")) {\n        return true;\n    }\n    \n    return false;\n}\n'
+    
+    g = '\npublic static boolean toBoolean(String str) {\n    if ("true".equals(str)) {\n        return true;\n    }\n    if (str == null || str.length() < 2) {\n        return false;\n    }\n    String lowerCaseStr = str.toLowerCase();\n    \n    if (lowerCaseStr.equals("on") || lowerCaseStr.equals("yes") || lowerCaseStr.equals("true")) {\n        return true;\n    }\n    \n    return false;\n}\n'
+    
+    h = '\npublic static boolean toBoolean(String str) {\n    if ("true".equals(str)) {\n        return true;\n    }\n    if (str == null || str.length() < 2) {\n        return false;\n    }\n    String lowerCaseStr = str.toLowerCase();\n    \n    if (lowerCaseStr.equals("on") || lowerCaseStr.equals("yes") || lowerCaseStr.equals("true")) {\n        return true;\n    }\n    \n    return false;\n}\n'
+    
+    l=[]
+    l.append(b.replace(' ','').replace('\n',''))
+
+    print(not_exist(l,d))

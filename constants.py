@@ -17,8 +17,8 @@ PATCH_TYPE_DELETE = 'delete'
 LOG_FILE = "logs.txt"
 
 PATCH_JSON_FOLDER = "patches"
-CHATREPAIR_FOLDER = "chat-repair"
-INITIALCHAT_FOLDER = "initial-chat"
+CHATREPAIR_FOLDER = "chatrepair"
+INITIALCHAT_FOLDER = "initialchat"
 INITIAL_PROMPT_FOLDER = "initial"
 
 BUGGY_PROJECT_FOLDER = "bugs"
@@ -33,7 +33,7 @@ DEFECTS4J_CHECKOUT = "defects4j checkout -p %s -v %s -w %s"
 DEFECTS4J_COMPILE = "defects4j compile"
 DEFECTS4J_TEST = "defects4j test"
 DEFECTS4J_COMPILE_TEST = "defects4j compile ; defects4j test"
-
+TEST_TIMEOUT_MAX_S = 15
 # Prompt常量
 INFILL = ">>>[INFILL]<<<\n"
 INITIAL_APR_TOOL = "You are an Automated Program Repair Tool.\n"
@@ -64,11 +64,20 @@ FeedBack_2 = "Code has the following compilation error: "
 FeedBack_3 = "Code has compilation error."
 FeedBack_4 = "The program timed out while executing the test cases in 15s."
 
+
 Alt_Instruct_1 = "It can be fixed by these possible patches:\n"
 Alt_Instruct_2 = "Please generate an alternative patch in the form of Java Markdown code block."
 
 Alt_Instruct_3 = "It can be fixed by these possible correct version:\n"
 Alt_Instruct_4 = "Please generate an alternative correct version of the function in the form of Java Markdown code block."
+
+FEEDBACK_STATISTICS_FILE = 'feedback_statistics.csv'
+ALTERNATIVES_STATISTICS_FILE = 'alternatives_statistics.csv'
+INITIALCHAT_STATISTIFCS_FILE = 'initialchat_statistics.csv'
+
+# initialchat常量配置
+NUMOFREPEAT_PER_BUG = 3
+PATCH_FAILURE_CATEGORY = ['FNT','FOT','CE','CE','TOUT','P']
 
 
 # chatrepair常量配置

@@ -1,7 +1,7 @@
 import json
 import os
 import re
-import shutil
+import difflib
 import sys
 import time
 
@@ -24,7 +24,7 @@ def save_initial(project, all_single_function_flag):
         else:
             initial_prompt = construct_initial_prompt(project, file)
         if not initial_prompt == '':
-            f = open_file(os.path.join(INITIAL_PROMPT_FOLDER, project, file.rstrip(".json") + ".txt"))
+            f = open_file(os.path.join(INITIAL_PROMPT_FOLDER, project, file.rstrip(".json") + ".txt"),'w')
             f.write(initial_prompt)
     print("Success!\nInitial Prompt is saved in " + INITIAL_PROMPT_FOLDER + "/" + project + "!")
 
@@ -32,29 +32,70 @@ def save_initial(project, all_single_function_flag):
 def chat_initial(project, all_single_function_flag):
     openai.base_url = BASE_URL
     openai.api_key = API_KEY
-    files = os.listdir(os.path.join(PATCH_JSON_FOLDER, project))
-    for file in files:
-        initial_prompt = ''
-        if all_single_function_flag == True:
-            initial_prompt = construct_single_function_initial_prompt(project,file)
-        else:
-            initial_prompt = construct_initial_prompt(project, file)
-        if not initial_prompt == '':
-            context = [{'role': 'user', 'content': initial_prompt}]
-            response = openai.chat.completions.create(model=MODEL, messages=context)
-            # 程序停止1s
-            time.sleep(1)
-            response_text = response.choices[0].message.content
-            context.append({'role': 'assistant', 'content': response_text})
-            context_path = os.path.join(INITIALCHAT_FOLDER, project, 'bug' + file.rstrip('.json') + '.txt')
-            file = open_file(context_path)
-            for element in context:
-                file.write(element['content'])
-                file.write('\n')
+    json_files = os.listdir(os.path.join(PATCH_JSON_FOLDER, project))
+    for json_file in json_files:
+        i = 0
+        no = json_file.rstrip('.json')
+        while i < NUMOFREPEAT_PER_BUG:
+            initial_prompt = ''
+            if all_single_function_flag == True:
+                initial_prompt = construct_single_function_initial_prompt(project, json_file)
+            else:
+                initial_prompt = construct_initial_prompt(project, json_file)
+            if not initial_prompt == '':
+                context = [{'role': 'user', 'content': initial_prompt}]
+                response = openai.chat.completions.create(model=MODEL, messages=context)
+                # 程序停止1s
+                time.sleep(1)
+                response_text = response.choices[0].message.content
+                context.append({'role': 'assistant', 'content': response_text})
+                patch = match_patch_code(response_text)
+                # 如果没有符合规范的patch 重新开始本次循环
+                if patch == '':
+                    continue
+                # 获得结果信息
+                result = []
+                feedback = validate_patch(patch, project, json_file, all_single_function_flag, result)
+                if feedback == 'Exception':
+                    continue
+                if all_single_function_flag:
+                    # 获得patch与buggy function的diff结果
+                    diff_result = diff_buggy_and_new(project, json_file, patch)
+                    # 保存对话到各自的文件
+                    context_path = os.path.join(INITIALCHAT_FOLDER, project, 'bug' + no,str(i+1)+'.txt')
+                    file = open_file(context_path,'w')
+                    for element in context:
+                        file.write(element['content'])
+                        file.write('\n\n')
+                    file.write(diff_result)
+                    file.close()
+                i += 1
+            else:
+                break
+            # 保存数据到整合文件
+            file = open_file(os.path.join(INITIALCHAT_FOLDER,INITIALCHAT_STATISTIFCS_FILE),'a')
+            file.write(project+', '+ no +', '+PATCH_FAILURE_CATEGORY[result[0]]+'\n')
             file.close()
-    print("Success!\nContext is saved in " + INITIALCHAT_FOLDER + "/" + project + "!")
-
-
+            
+            
+def diff_buggy_and_new(project, json_file, new_function):
+    no = json_file.rstrip('.json')
+    with open(os.path.join(PATCH_JSON_FOLDER, project, json_file), 'r', encoding="latin-1") as f:
+        data = json.load(f)
+        f.close()
+    if not os.path.exists(os.path.join(BUGGY_PROJECT_FOLDER, project + no)):
+        os.system(DEFECTS4J_CHECKOUT % (project, no + 'b', os.path.join(BUGGY_PROJECT_FOLDER, project + no)))
+    next_line_no = data['0']['next_line_no']
+    file_name = data['0']['file_name']
+    source_file_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, file_name)
+    buggy_function = get_buggy_function(source_file_path, next_line_no, next_line_no, PATCH_TYPE_DELETE)
+    diff = difflib.Differ()
+    buggy_squences = [line for line in buggy_function.splitlines(True) if line.strip()]
+    new_squences = [line for line in new_function.splitlines(True) if line.strip()]
+    return ''.join(diff.compare(buggy_squences,new_squences))
+     
+     
+     
 def go_chat_repair(project, all_single_function_flag):
     openai.base_url = BASE_URL
     openai.api_key = API_KEY
@@ -80,11 +121,21 @@ def chat_repair(project, initial_prompt, json_file, all_single_function_flag):
     plausible_patches = []
     openai.base_url = BASE_URL
     openai.api_key = API_KEY
+    
+    # 统计feedback状态的值
+    fa = 0
+    fb = 0
+    first_plausible_try = 0
+    
     # 找到一个plausible patch
     while current_tries < Max_Tries and len(plausible_patches) == 0:
         context = []
         current_length = 0
         prompt = initial_prompt
+        
+        # 添加统计feedback 效果的数组
+        feedback_list = []
+        
         while current_length < Max_Conv_len:
             context.append({'role': 'user', 'content': prompt})
             response = openai.chat.completions.create(model=MODEL, messages=context)
@@ -96,8 +147,11 @@ def chat_repair(project, initial_prompt, json_file, all_single_function_flag):
             # 不符合规范的回答文本 跳过此次对话
             if patch == '':
                 break
-            feedback = validate_patch(patch, project, json_file, plausible_patches, all_single_function_flag)
+            feedback = validate_patch(patch, project, json_file, all_single_function_flag, feedback_list)
             if feedback == '':
+                plausible_patches.append(patch)
+                current_length += 1
+                current_tries += 1
                 break
             if feedback == 'Exception':
                 return 'Exception'
@@ -105,16 +159,38 @@ def chat_repair(project, initial_prompt, json_file, all_single_function_flag):
                 prompt = feedback
             current_length += 1
             current_tries += 1
-        # 保存对话到文件中
+            
+        # 处理feedback_list 没有修对的情况下 validate函数被调用3次 修对的情况下validate函数被调用1次 或 2次 或 3次
+        a, b =process_fb_list(feedback_list)
+        fa += a
+        fb += b
+        # 保存结果到各自文件中
+        file = open_file(os.path.join(CHATREPAIR_FOLDER, project, json_file.rstrip('.json')),'a')
+        file.write('current trys: '+str(current_tries)+', feedback list: '+str(feedback_list)+' Feedback statistics: '+ str(fa) + '/' + str(fb)+'\n')
+        if feedback_list[len(feedback_list)-1] == 5:
+            first_plausible_try = current_tries
+            file.write('current trys: '+str(current_tries)+', feedback list: '+str(feedback_list)+' First plausible patch at '+str(current_tries)+' tries!\n')
+        file.close
+        
+        # 保存对话到各自文件中
         context_path = os.path.join(CHATREPAIR_FOLDER, project, 'bug' + json_file.rstrip('.json'),
                                     str(current_tries) + '.txt')
-        file = open_file(context_path)
+        file = open_file(context_path,'w')
         for element in context:
             file.write(element['content'])
-            file.write('\n')
+            file.write('\n\n')
         file.close()
+        
+    # 保存结果到整合表中
+    file = open_file(os.path.join(CHATREPAIR_FOLDER, FEEDBACK_STATISTICS_FILE),'a')
+    file.write(project+', '+ json_file.rstrip('.json')+', '+str(fa)+', '+str(fb)+', '+str(first_plausible_try))
+    file.close()
+        
+        
     # 当有一个plausible patch时 generate更多的plausible patch
     if len(plausible_patches) != 0:
+        alternatives_list = []
+        duplicates_num = 0
         while current_tries < Max_Tries:
             context = []
             patches_prompt = ''
@@ -137,26 +213,45 @@ def chat_repair(project, initial_prompt, json_file, all_single_function_flag):
             # 不符合规范的回答文本 跳过此次对话
             if patch == '':
                 continue
-            feedback = validate_patch(patch, project, json_file, plausible_patches, all_single_function_flag)
+            feedback = validate_patch(patch, project, json_file, all_single_function_flag,alternatives_list)
             if feedback == 'Exception':
                 return 'Exception'
-            if feedback == '' and patch not in plausible_patches:
-                plausible_patches.append(patch)
+            # 判断是否已经包含指定字符串
+            if feedback == '':
+                if not_exist(plausible_patches, patch):
+                    plausible_patches.append(patch)
+                else:
+                    duplicates_num += 1
             current_tries += 1
             # 保存对话到文件中
             context_path = os.path.join(CHATREPAIR_FOLDER, project, 'bug' + json_file.rstrip('.json'),
                                         str(current_tries) + '.txt')
-            file = open_file(context_path)
+            file = open_file(context_path,'w')
             for element in context:
                 file.write(element['content'])
                 file.write('\n')
             file.close()
-    print("Success!\nContext is saved in " + CHATREPAIR_FOLDER + "/" + project + "!")
+    # 获得各类patch数量        
+    num_ce_patches, num_f_patches, num_to_patches, num_plausible_patches = proces_alter_list(alternatives_list)
+    # 加上the first plausible patch
+    num_plausible_patches+=1
+    # 保存结果到各自文件
+    file = open_file(os.path.join(CHATREPAIR_FOLDER, project, json_file.rstrip('.json'))+'.txt','a')
+    file.write('current trys: '+str(current_tries)+'. Below is statistics of all generation patches:\n')
+    file.write('\nCompilation Error patches number: '+str(num_ce_patches)+'\nFailure patches number: '
+               +str(num_f_patches)+'\nTime out patches number: '+str(num_to_patches)+'\nPlausible patches number: '
+               +str(num_plausible_patches)+'\nDuplicate plausible patches number: '+str(duplicates_num))
+    file.close()
+    # 保存结果到整合文件
+    file = open_file(os.path.join(CHATREPAIR_FOLDER, ALTERNATIVES_STATISTICS_FILE),'a')
+    file.write(project+', '+ json_file.rstrip('.json')+', '+str(num_ce_patches)+', '+str(num_f_patches)+', '
+               +str(num_to_patches)+', '+str(num_plausible_patches)+', '+str(duplicates_num)+', '+str(len(plausible_patches)))
+    file.close()
     return plausible_patches
 
 
 # 验证对应patch 并构造feedback
-def validate_patch(patch, project, json_file, plausible_patches, all_single_function_flag):
+def validate_patch(patch, project, json_file, all_single_function_flag,fb_list):
     global previous_failure_test
     temp_javafile = ''
     javafile_path = ''
@@ -174,6 +269,7 @@ def validate_patch(patch, project, json_file, plausible_patches, all_single_func
     file_name = data['0']['file_name']
     patch_type = data['0']['patch_type']
     javafile_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, file_name)
+    
     # 备份需要修改的文件 在一次验证结束后恢复
     with open(javafile_path, mode='r', encoding='latin-1') as javafile:
         temp_javafile = javafile.read()
@@ -215,12 +311,13 @@ def validate_patch(patch, project, json_file, plausible_patches, all_single_func
         next_line_no = data['0']['next_line_no']
         rewrite_function_to_javafile(next_line_no, javafile_path, patch)
     # 执行 defect4j compile ; defects4j test 并返回feedback
-    feedback = construct_feedback_after_validate(project, no, patch, plausible_patches)
+    feedback = construct_feedback_after_validate(project, no, fb_list)
     # 返回空字符 则patch正确 
     if feedback == '':
         return ''
+    if feedback == 'Exception':
+        return feedback
     # 编译测试结束后恢复java文件的内容
-    # shutil.rmtree(os.path.join(BUGGY_PROJECT_FOLDER, project + no))
     with open(javafile_path, mode='w', encoding='latin-1') as javafile:
         javafile.write(temp_javafile)
         javafile.close()
@@ -256,10 +353,10 @@ def rewrite_function_to_javafile(next_line_no, javafile_path, patch):
     f2.close()
 
 
-def construct_feedback_after_validate(project, no, patch, plausible_patches):
+def construct_feedback_after_validate(project, no,fb_list):
     global previous_failure_test
     # 重新编译
-    flag, stdout, stderr = run_command(DEFECTS4J_COMPILE.split(' '),'latin-1', os.path.join(BUGGY_PROJECT_FOLDER, project + no),15)
+    flag, stdout, stderr = run_command(DEFECTS4J_COMPILE.split(' '),'latin-1', os.path.join(BUGGY_PROJECT_FOLDER, project + no),TEST_TIMEOUT_MAX_S)
     if not flag:
         print(stderr)    
     pattern = r"BUILD FAILED"
@@ -271,26 +368,41 @@ def construct_feedback_after_validate(project, no, patch, plausible_patches):
             if re.search(r":\serror:\s", errs[i]):
                 errmsg = 'error' + errs[i].split('error')[1]
                 feedback = FeedBack_0 + FeedBack_2 + errmsg
+                # 匹配的编译错误 添加状态2
+                fb_list.append(2)
                 break
         if feedback == '':
             feedback = FeedBack_0 + FeedBack_3
+            # 无法匹配的编译错误 添加状态3
+            fb_list.append(3)
     # 没有编译错误 运行defects4j test
     else:
-        flag, stdout, stderr = run_command(DEFECTS4J_TEST.split(' '),'latin-1', os.path.join(BUGGY_PROJECT_FOLDER, project + no),15)
+        temp_failingtests = ''
+        failingtests_path = os.path.join(BUGGY_PROJECT_FOLDER,project + no,FAILING_TEST_FILE)
+        with open(failingtests_path, mode='r', encoding='latin-1') as failingtests:
+            temp_failingtests = failingtests.read()
+            failingtests.close()
+        flag, stdout, stderr = run_command(DEFECTS4J_TEST.split(' '),'latin-1', os.path.join(BUGGY_PROJECT_FOLDER, project + no),TEST_TIMEOUT_MAX_S)
         if not flag and stderr.count('[ERROR]') != 0:
             feedback = FeedBack_0 + FeedBack_4
+            # 执行命令超时 添加状态4
+            fb_list.append(4)
         elif flag:    
             # pass全部test 添加plausible_patch
-            if is_file_empty_or_not_exists(os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)):
-                plausible_patches.append(patch)
+            if is_file_empty_or_not_exists(failingtests_path):   
+                # feedback为空 结束此次conversation 添加状态5
+                fb_list.append(5)
+                # 恢复failing_tests文件
+                with open(failingtests_path, mode='w', encoding='latin-1') as failingtests:
+                    failingtests.write(temp_failingtests)
+                    failingtests.close()
                 return ''
             # 未通过全部test 构造feedback
-            failure_test_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, FAILING_TEST_FILE)
-            failure_test, test_error, test_file, test_line_no = get_failure_test_info(failure_test_path)
+            failure_test, test_error, test_file, test_line_no = get_failure_test_info(failingtests_path)
             if test_file == '' or test_line_no == '':
-                print("Warning!!! Unable to handle file [" + failure_test_path + "]while validate the patch.")
+                print("Warning!!! Unable to handle file [" + failingtests_path + "]while validate the patch.")
                 with open(LOG_FILE, 'a') as file:
-                    file.write(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))+"\nWarning!!! Unable to handle file [" + failure_test_path + "] while validate the patch.")
+                    file.write(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))+"\nWarning!!! Unable to handle file [" + failingtests_path + "] while validate the patch.")
                     file.close()
                     return 'Exception'
             
@@ -299,8 +411,12 @@ def construct_feedback_after_validate(project, no, patch, plausible_patches):
                 file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_FILEPATH_PREFIX_1, test_file)
             if failure_test == previous_failure_test:
                 feedback = FeedBack_0 + FeedBack_1
+                # fail original failure，添加状态1
+                fb_list.append(1)
             else:
                 previous_failure_test = failure_test
+                # fail一个新的test，添加状态0
+                fb_list.append(0)
                 # get the test line
                 test_lines = []
                 with open(file, mode='r', encoding='latin-1') as test_file:
@@ -311,7 +427,48 @@ def construct_feedback_after_validate(project, no, patch, plausible_patches):
                             break
                 feedback = FeedBack_0 + Failure_Test + failure_test + Failure_Test_line + ''.join(
                     test_lines) + Failure_Test_error + test_error
+        # 恢复failing_tests文件
+        with open(failingtests_path, mode='w', encoding='latin-1') as failingtests:
+            failingtests.write(temp_failingtests)
+            failingtests.close()
     return feedback
+
+
+
+def process_fb_list(fb_list):
+    a = 0
+    # fb_list里有1到3个元素
+    for i in range(1, len(fb_list)):
+        # 这次feedback和上次feedback是一样的
+        if fb_list[i] == fb_list[i-1]:
+            a += 1
+    return a, len(fb_list)
+
+
+def proces_alter_list(alter_list):
+    num_ce_patches = 0
+    num_f_patches = 0
+    num_to_patches = 0
+    num_plausible_patches = 0
+    
+    for alter in alter_list:
+        if alter == 0 or alter == 1:
+            num_f_patches+=1
+        elif alter == 2 or alter == 3:
+            num_ce_patches+=1
+        elif alter == 4:
+            num_to_patches+=1
+        elif alter == 5:
+            num_plausible_patches+=1
+    return num_ce_patches, num_f_patches, num_to_patches, num_plausible_patches
+
+
+def not_exist(list, s):
+    for l in list:
+        if l.replace(' ','').replace('\n','') == s.replace(' ','').replace('\n',''):
+            return False
+    return True
+    
 
 
 # 从chat gpt文本中提取代码部分
@@ -365,12 +522,13 @@ def run_command(cmd, encoding='utf-8', cwd=None, timeout=None):
 
 
 # 打开文件 如果不存在则创建
-def open_file(path):
+def open_file(path, pattern):
     # 检查路径是否存在
     if not os.path.exists(path):
         os.makedirs(os.path.dirname(path), exist_ok=True)
-
-    file = open(path, 'w')
+    if pattern not in ['r', 'w', 'a']:
+        return ''
+    file = open(path, pattern)
     return file
 
 
@@ -421,8 +579,11 @@ def construct_initial_prompt(project, json_file):
                 buggy_function = get_buggy_function(source_file_path, next_line_no, next_line_no, PATCH_TYPE_INSERT)
                 initial_prompt += INITIAL_Single_function + buggy_function
 
-            initial_prompt += prompt_add_failure_test_info(project, json_file)
-
+            failure_info = prompt_add_failure_test_info(project, json_file)
+            if failure_info != '':
+                initial_prompt += failure_info
+            else:
+                return ''
             # 完整initial prompt的最后一句
             if patch_type == PATCH_TYPE_REPLACE or patch_type == PATCH_TYPE_INSERT:
                 if single_line:
