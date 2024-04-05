@@ -1,0 +1,21 @@
+{
+    "num_of_hunks": 2,
+    "0": {
+        "file_name": "src/java/org/apache/commons/lang/Entities.java",
+        "from_line_no": 828,
+        "to_line_no": 828,
+        "replaced_with": "            int c = Character.codePointAt(str, i); \n",
+        "replaced": "            char c = str.charAt(i);\n",
+        "patch_type": "replace",
+        "next_line_no": 829
+    },
+    "1": {
+        "file_name": "src/java/org/apache/commons/lang/Entities.java",
+        "from_line_no": 831,
+        "to_line_no": 831,
+        "replaced_with": "                if (c >= 0x010000 && i < len - 1) {\n                    writer.write(\"&#\");\n                    writer.write(Integer.toString(c, 10));\n                    writer.write(';');\n                    i++;\n                } else if (c > 0x7F) { \n",
+        "replaced": "                if (c > 0x7F) {\n",
+        "patch_type": "replace",
+        "next_line_no": 832
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/lang3/ClassUtils.java",
+        "from_line_no": 910,
+        "to_line_no": 910,
+        "replaced_with": "            classes[i] = array[i] == null ? null : array[i].getClass();\n",
+        "replaced": "            classes[i] = array[i].getClass();\n",
+        "patch_type": "replace",
+        "next_line_no": 911
+    }
+}

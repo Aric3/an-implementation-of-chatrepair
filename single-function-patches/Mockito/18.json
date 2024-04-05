@@ -1,0 +1,9 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/org/mockito/internal/stubbing/defaultanswers/ReturnsEmptyValues.java",
+        "replaced_with": "        } else if (type == Iterable.class) {\n            return new ArrayList<Object>(0);\n",
+        "patch_type": "insert",
+        "next_line_no": 87
+    }
+}

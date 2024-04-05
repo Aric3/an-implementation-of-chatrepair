@@ -1,0 +1,9 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/main/java/org/joda/time/field/FieldUtils.java",
+        "replaced_with": "                if (val1 == Long.MIN_VALUE) {\n                    throw new ArithmeticException(\"Multiplication overflows a long: \" + val1 + \" * \" + val2);\n                }\n",
+        "patch_type": "insert",
+        "next_line_no": 138
+    }
+}

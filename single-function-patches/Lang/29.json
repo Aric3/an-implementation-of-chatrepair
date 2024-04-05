@@ -1,0 +1,12 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/lang3/SystemUtils.java",
+        "from_line_no": 1672,
+        "to_line_no": 1672,
+        "replaced_with": "    static int toJavaVersionInt(String version) {\n",
+        "replaced": "    static float toJavaVersionInt(String version) {\n",
+        "patch_type": "replace",
+        "next_line_no": 1673
+    }
+}

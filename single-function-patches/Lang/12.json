@@ -1,0 +1,21 @@
+{
+    "num_of_hunks": 3,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/lang3/RandomStringUtils.java",
+        "replaced_with": "        if (chars != null && chars.length == 0) {\n            throw new IllegalArgumentException(\"The chars array must not be empty\");\n        }\n",
+        "patch_type": "insert",
+        "next_line_no": 230
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/lang3/RandomStringUtils.java",
+        "replaced_with": "            if (chars != null) {\n                end = chars.length;\n            } else {\n",
+        "patch_type": "insert",
+        "next_line_no": 232
+    },
+    "2": {
+        "file_name": "src/main/java/org/apache/commons/lang3/RandomStringUtils.java",
+        "replaced_with": "            }\n",
+        "patch_type": "insert",
+        "next_line_no": 238
+    }
+}

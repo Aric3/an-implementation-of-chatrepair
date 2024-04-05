@@ -1,0 +1,12 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/org/mockito/internal/invocation/InvocationMatcher.java",
+        "from_line_no": 106,
+        "to_line_no": 106,
+        "replaced_with": "            if (m instanceof CapturesArguments && i.getArguments().length > k) {\n",
+        "replaced": "            if (m instanceof CapturesArguments) {\n",
+        "patch_type": "replace",
+        "next_line_no": 107
+    }
+}

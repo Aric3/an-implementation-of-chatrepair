@@ -1,0 +1,15 @@
+{
+    "num_of_hunks": 2,
+    "0": {
+        "file_name": "src/com/google/javascript/jscomp/SourceFile.java",
+        "replaced_with": "      if (pos >= js.length()) {\n",
+        "patch_type": "insert",
+        "next_line_no": 242
+    },
+    "1": {
+        "file_name": "src/com/google/javascript/jscomp/SourceFile.java",
+        "replaced_with": "      } else {\n        return js.substring(pos, js.length());\n      }\n",
+        "patch_type": "insert",
+        "next_line_no": 243
+    }
+}

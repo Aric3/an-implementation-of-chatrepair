@@ -1,0 +1,15 @@
+{
+    "num_of_hunks": 2,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "replaced_with": "        if (cs1 instanceof String && cs2 instanceof String) {\n",
+        "patch_type": "insert",
+        "next_line_no": 788
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+        "replaced_with": "        }\n        return CharSequenceUtils.regionMatches(cs1, false, 0, cs2, 0, Math.max(cs1.length(), cs2.length()));\n",
+        "patch_type": "insert",
+        "next_line_no": 789
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/lang3/math/NumberUtils.java",
+        "from_line_no": 458,
+        "to_line_no": 458,
+        "replaced_with": "        if (str.startsWith(\"0x\") || str.startsWith(\"-0x\") || str.startsWith(\"0X\") || str.startsWith(\"-0X\")) {\n",
+        "replaced": "        if (str.startsWith(\"0x\") || str.startsWith(\"-0x\")) {\n",
+        "patch_type": "replace",
+        "next_line_no": 459
+    }
+}

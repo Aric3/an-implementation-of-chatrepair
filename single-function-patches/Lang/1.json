@@ -1,0 +1,27 @@
+{
+    "num_of_hunks": 3,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/lang3/math/NumberUtils.java",
+        "replaced_with": "            char firstSigDigit = 0; // strip leading zeroes\n            for(int i = pfxLen; i < str.length(); i++) {\n                firstSigDigit = str.charAt(i);\n                if (firstSigDigit == '0') { // count leading zeroes\n                    pfxLen++;\n                } else {\n                    break;\n                }\n            }\n",
+        "patch_type": "insert",
+        "next_line_no": 467
+    },
+    "1": {
+        "file_name": "src/main/java/org/apache/commons/lang3/math/NumberUtils.java",
+        "from_line_no": 468,
+        "to_line_no": 468,
+        "replaced_with": "            if (hexDigits > 16 || (hexDigits == 16 && firstSigDigit > '7')) { // too many for Long\n",
+        "replaced": "            if (hexDigits > 16) { // too many for Long\n",
+        "patch_type": "replace",
+        "next_line_no": 469
+    },
+    "2": {
+        "file_name": "src/main/java/org/apache/commons/lang3/math/NumberUtils.java",
+        "from_line_no": 471,
+        "to_line_no": 471,
+        "replaced_with": "            if (hexDigits > 8 || (hexDigits == 8 && firstSigDigit > '7')) { // too many for an int\n",
+        "replaced": "            if (hexDigits > 8) { // too many for an int\n",
+        "patch_type": "replace",
+        "next_line_no": 472
+    }
+}

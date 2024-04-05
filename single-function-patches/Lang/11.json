@@ -1,0 +1,9 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/lang3/RandomStringUtils.java",
+        "replaced_with": "        } else {\n            if (end <= start) {\n                throw new IllegalArgumentException(\"Parameter end (\" + end + \") must be greater than start (\" + start + \")\");\n            }\n",
+        "patch_type": "insert",
+        "next_line_no": 245
+    }
+}

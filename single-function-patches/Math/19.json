@@ -1,0 +1,9 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/main/java/org/apache/commons/math3/optimization/direct/CMAESOptimizer.java",
+        "replaced_with": "                for (int i = 0; i < lB.length; i++) {\n                    if (Double.isInfinite(boundaries[1][i] - boundaries[0][i])) {\n                        final double max = Double.MAX_VALUE + boundaries[0][i];\n                        final NumberIsTooLargeException e\n                            = new NumberIsTooLargeException(boundaries[1][i],\n                                                            max,\n                                                            true);\n                        e.getContext().addMessage(LocalizedFormats.OVERFLOW);\n                        e.getContext().addMessage(LocalizedFormats.INDEX, i);\n\n                        throw e;\n                    }\n                }\n",
+        "patch_type": "insert",
+        "next_line_no": 540
+    }
+}

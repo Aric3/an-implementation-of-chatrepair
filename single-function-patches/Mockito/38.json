@@ -1,0 +1,12 @@
+{
+    "num_of_hunks": 1,
+    "0": {
+        "file_name": "src/org/mockito/internal/verification/argumentmatching/ArgumentMatchingTool.java",
+        "from_line_no": 48,
+        "to_line_no": 48,
+        "replaced_with": "        return StringDescription.toString(m).equals(arg == null? \"null\" : arg.toString());\n",
+        "replaced": "        return StringDescription.toString(m).equals(arg.toString());\n",
+        "patch_type": "replace",
+        "next_line_no": 49
+    }
+}
