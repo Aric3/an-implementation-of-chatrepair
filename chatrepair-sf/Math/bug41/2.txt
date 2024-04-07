@@ -1,0 +1,106 @@
+The following code contains a bug:
+    public double evaluate(final double[] values, final double[] weights,
+                           final double mean, final int begin, final int length) {
+
+        double var = Double.NaN;
+
+        if (test(values, weights, begin, length)) {
+            if (length == 1) {
+                var = 0.0;
+            } else if (length > 1) {
+                double accum = 0.0;
+                double dev = 0.0;
+                double accum2 = 0.0;
+                for (int i = begin; i < begin + length; i++) {
+                    dev = values[i] - mean;
+                    accum += weights[i] * (dev * dev);
+                    accum2 += weights[i] * dev;
+                }
+
+                double sumWts = 0;
+                for (int i = 0; i < weights.length; i++) {
+                    sumWts += weights[i];
+                }
+
+                if (isBiasCorrected) {
+                    var = (accum - (accum2 * accum2 / sumWts)) / (sumWts - 1.0);
+                } else {
+                    var = (accum - (accum2 * accum2 / sumWts)) / sumWts;
+                }
+            }
+        }
+        return var;
+    }
+The code fails on this test:
+org.apache.commons.math.stat.descriptive.moment.VarianceTest::testEvaluateArraySegmentWeighted
+on this test line:
+        Assert.assertEquals(stat.evaluate(arrayZero, weightZero),
+                stat.evaluate(testArray, testWeightsArray, 0, 5), 0);
+with the following test error:
+junit.framework.AssertionFailedError: expected:<1.6644508338125354> but was:<0.31909161062727365>
+It can be fixed by these possible correct version:
+Correct version 1 :
+
+    public double evaluate(final double[] values, final double[] weights,
+                           final double mean, final int begin, final int length) {
+        double var = Double.NaN;
+
+        if (test(values, weights, begin, length)) {
+            if (length == 1) {
+                var = 0.0;
+            } else if (length > 1) {
+                double accum = 0.0;
+                double dev = 0.0;
+                double accum2 = 0.0;
+                double sumWts = 0.0;
+
+                for (int i = 0; i < length; i++) {
+                    dev = values[begin + i] - mean;
+                    accum += weights[begin + i] * (dev * dev);
+                    accum2 += weights[begin + i] * dev;
+                    sumWts += weights[begin + i];
+                }
+
+                if (isBiasCorrected) {
+                    var = (accum - (accum2 * accum2 / sumWts)) / (sumWts - 1.0);
+                } else {
+                    var = (accum - (accum2 * accum2 / sumWts)) / sumWts;
+                }
+            }
+        }
+
+        return var;
+    }
+
+Please generate an alternative correct version of the function in the form of Java Markdown code block.
+```java
+public double evaluate(final double[] values, final double[] weights,
+                       final double mean, final int begin, final int length) {
+    double var = Double.NaN;
+
+    if (test(values, weights, begin, length)) {
+        if (length == 1) {
+            var = 0.0;
+        } else if (length > 1) {
+            double accum = 0.0;
+            double dev = 0.0;
+            double accum2 = 0.0;
+            double sumWts = 0.0;
+
+            for (int i = begin; i < begin + length; i++) {
+                dev = values[i] - mean;
+                accum += weights[i-begin] * (dev * dev);
+                accum2 += weights[i-begin] * dev;
+                sumWts += weights[i-begin];
+            }
+
+            if (isBiasCorrected) {
+                var = (accum - (accum2 * accum2 / sumWts)) / (sumWts - 1.0);
+            } else {
+                var = (accum - (accum2 * accum2 / sumWts)) / sumWts;
+            }
+        }
+    }
+    return var;
+}
+```

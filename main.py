@@ -58,17 +58,18 @@ def chat_initial(project, all_single_function_flag):
                 feedback = validate_patch(patch, project, json_file, all_single_function_flag, result)
                 if feedback == 'Exception':
                     continue
+                
+                # 保存对话到各自的文件
+                context_path = os.path.join(INITIALCHAT_FOLDER, project, 'bug' + no,str(i+1)+'.txt')
+                file = open_file(context_path,'w')
+                for element in context:
+                    file.write(element['content'])
+                    file.write('\n\n')
                 if all_single_function_flag:
                     # 获得patch与buggy function的diff结果
                     diff_result = diff_buggy_and_new(project, json_file, patch)
-                    # 保存对话到各自的文件
-                    context_path = os.path.join(INITIALCHAT_FOLDER, project, 'bug' + no,str(i+1)+'.txt')
-                    file = open_file(context_path,'w')
-                    for element in context:
-                        file.write(element['content'])
-                        file.write('\n\n')
                     file.write(diff_result)
-                    file.close()
+                file.close()
                 i += 1
             else:
                 break
@@ -90,11 +91,29 @@ def diff_buggy_and_new(project, json_file, new_function):
     source_file_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, file_name)
     buggy_function = get_buggy_function(source_file_path, next_line_no, next_line_no, PATCH_TYPE_DELETE)
     diff = difflib.Differ()
-    buggy_squences = [line for line in buggy_function.splitlines(True) if line.strip()]
-    new_squences = [line for line in new_function.splitlines(True) if line.strip()]
-    return ''.join(diff.compare(buggy_squences,new_squences))
+    buggy_squences = [line.strip() for line in buggy_function.splitlines() if line.strip()]
+    new_squences = [line.strip() for line in new_function.splitlines() if line.strip()]
+    return '\n'.join(diff.compare(buggy_squences,new_squences))
      
-     
+
+def diff_buggy_and_newlist(project, json_file, new_function_list):
+    no = json_file.rstrip('.json')
+    with open(os.path.join(PATCH_JSON_FOLDER, project, json_file), 'r', encoding="latin-1") as f:
+        data = json.load(f)
+        f.close()
+    if not os.path.exists(os.path.join(BUGGY_PROJECT_FOLDER, project + no)):
+        os.system(DEFECTS4J_CHECKOUT % (project, no + 'b', os.path.join(BUGGY_PROJECT_FOLDER, project + no)))
+    next_line_no = data['0']['next_line_no']
+    file_name = data['0']['file_name']
+    source_file_path = os.path.join(BUGGY_PROJECT_FOLDER, project + no, file_name)
+    buggy_function = get_buggy_function(source_file_path, next_line_no, next_line_no, PATCH_TYPE_DELETE)
+    diff = difflib.Differ()
+    buggy_squences = [line.strip() for line in buggy_function.splitlines() if line.strip()]
+    diff_result = []
+    for new_function in new_function_list:
+        new_squences = [line.strip() for line in new_function.splitlines() if line.strip()]
+        diff_result.append('\n'.join(diff.compare(buggy_squences,new_squences)))
+    return diff_result
      
 def go_chat_repair(project, all_single_function_flag):
     openai.base_url = BASE_URL
@@ -119,6 +138,7 @@ def go_chat_repair(project, all_single_function_flag):
 def chat_repair(project, initial_prompt, json_file, all_single_function_flag):
     current_tries = 0
     plausible_patches = []
+
     openai.base_url = BASE_URL
     openai.api_key = API_KEY
     
@@ -132,10 +152,8 @@ def chat_repair(project, initial_prompt, json_file, all_single_function_flag):
         context = []
         current_length = 0
         prompt = initial_prompt
-        
         # 添加统计feedback 效果的数组
         feedback_list = []
-        
         while current_length < Max_Conv_len:
             context.append({'role': 'user', 'content': prompt})
             response = openai.chat.completions.create(model=MODEL, messages=context)
@@ -165,7 +183,7 @@ def chat_repair(project, initial_prompt, json_file, all_single_function_flag):
         fa += a
         fb += b
         # 保存结果到各自文件中
-        file = open_file(os.path.join(CHATREPAIR_FOLDER, project, json_file.rstrip('.json')),'a')
+        file = open_file(os.path.join(CHATREPAIR_FOLDER, project, json_file.rstrip('.json')+'.txt'),'a')
         file.write('current trys: '+str(current_tries)+', feedback list: '+str(feedback_list)+' Feedback statistics: '+ str(fa) + '/' + str(fb)+'\n')
         if feedback_list[len(feedback_list)-1] == 5:
             first_plausible_try = current_tries
@@ -183,9 +201,8 @@ def chat_repair(project, initial_prompt, json_file, all_single_function_flag):
         
     # 保存结果到整合表中
     file = open_file(os.path.join(CHATREPAIR_FOLDER, FEEDBACK_STATISTICS_FILE),'a')
-    file.write(project+', '+ json_file.rstrip('.json')+', '+str(fa)+', '+str(fb)+', '+str(first_plausible_try))
+    file.write(project+', '+ json_file.rstrip('.json')+', '+str(fa)+', '+str(fb)+', '+str(first_plausible_try)+'\n')
     file.close()
-        
         
     # 当有一个plausible patch时 generate更多的plausible patch
     if len(plausible_patches) != 0:
@@ -231,22 +248,29 @@ def chat_repair(project, initial_prompt, json_file, all_single_function_flag):
                 file.write(element['content'])
                 file.write('\n')
             file.close()
-    # 获得各类patch数量        
-    num_ce_patches, num_f_patches, num_to_patches, num_plausible_patches = proces_alter_list(alternatives_list)
-    # 加上the first plausible patch
-    num_plausible_patches+=1
-    # 保存结果到各自文件
-    file = open_file(os.path.join(CHATREPAIR_FOLDER, project, json_file.rstrip('.json'))+'.txt','a')
-    file.write('current trys: '+str(current_tries)+'. Below is statistics of all generation patches:\n')
-    file.write('\nCompilation Error patches number: '+str(num_ce_patches)+'\nFailure patches number: '
-               +str(num_f_patches)+'\nTime out patches number: '+str(num_to_patches)+'\nPlausible patches number: '
-               +str(num_plausible_patches)+'\nDuplicate plausible patches number: '+str(duplicates_num))
-    file.close()
-    # 保存结果到整合文件
-    file = open_file(os.path.join(CHATREPAIR_FOLDER, ALTERNATIVES_STATISTICS_FILE),'a')
-    file.write(project+', '+ json_file.rstrip('.json')+', '+str(num_ce_patches)+', '+str(num_f_patches)+', '
-               +str(num_to_patches)+', '+str(num_plausible_patches)+', '+str(duplicates_num)+', '+str(len(plausible_patches)))
-    file.close()
+        
+        # 获得各类patch数量        
+        num_ce_patches, num_f_patches, num_to_patches, num_plausible_patches = proces_alter_list(alternatives_list)
+        # 加上the first plausible patch
+        num_plausible_patches+=1
+        # 保存结果到各自文件
+        file = open_file(os.path.join(CHATREPAIR_FOLDER, project, json_file.rstrip('.json'))+'.txt','a')
+        file.write('current trys: '+str(current_tries)+'. Below is statistics of all generation patches:\n')
+        file.write('\nCompilation Error patches number: '+str(num_ce_patches)+'\nFailure patches number: '
+                +str(num_f_patches)+'\nTime out patches number: '+str(num_to_patches)+'\nPlausible patches number: '
+                +str(num_plausible_patches)+'\nDuplicate plausible patches number: '+str(duplicates_num))
+        file.close()
+        # 保存结果到整合文件
+        file = open_file(os.path.join(CHATREPAIR_FOLDER, ALTERNATIVES_STATISTICS_FILE),'a')
+        file.write(project+', '+ json_file.rstrip('.json')+', '+str(num_ce_patches)+', '+str(num_f_patches)+', '
+                +str(num_to_patches)+', '+str(num_plausible_patches)+', '+str(duplicates_num)+', '+str(len(plausible_patches))+'\n')
+        file.close()
+        # 保存diff结果到各自文件
+        file = open_file(os.path.join(CHATREPAIR_FOLDER, project, 'bug' +json_file.rstrip('.json'),'diffpatches.txt'),'w')
+        diff_result = diff_buggy_and_newlist(project, json_file, plausible_patches)
+        for result in diff_result:
+            file.write(result+'\n\n')
+        file.close()
     return plausible_patches
 
 
@@ -314,8 +338,16 @@ def validate_patch(patch, project, json_file, all_single_function_flag,fb_list):
     feedback = construct_feedback_after_validate(project, no, fb_list)
     # 返回空字符 则patch正确 
     if feedback == '':
+        # 编译测试结束后恢复java文件的内容
+        with open(javafile_path, mode='w', encoding='latin-1') as javafile:
+            javafile.write(temp_javafile)
+            javafile.close()
         return ''
     if feedback == 'Exception':
+        # 编译测试结束后恢复java文件的内容
+        with open(javafile_path, mode='w', encoding='latin-1') as javafile:
+            javafile.write(temp_javafile)
+            javafile.close()
         return feedback
     # 编译测试结束后恢复java文件的内容
     with open(javafile_path, mode='w', encoding='latin-1') as javafile:
@@ -404,7 +436,11 @@ def construct_feedback_after_validate(project, no,fb_list):
                 with open(LOG_FILE, 'a') as file:
                     file.write(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))+"\nWarning!!! Unable to handle file [" + failingtests_path + "] while validate the patch.")
                     file.close()
-                    return 'Exception'
+                # 恢复failing_tests文件
+                with open(failingtests_path, mode='w', encoding='latin-1') as failingtests:
+                    failingtests.write(temp_failingtests)
+                    failingtests.close()
+                return 'Exception'
             
             file = os.path.join(BUGGY_PROJECT_FOLDER, project + no, TEST_FILEPATH_PREFIX[project], test_file)
             if not os.path.exists(file):

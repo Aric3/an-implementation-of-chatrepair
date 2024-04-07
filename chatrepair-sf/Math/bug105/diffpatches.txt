@@ -1,0 +1,85 @@
+  public double getSumSquaredErrors() {
+- return sumYY - sumXY * sumXY / sumXX;
+?    ^^^
+
++ double result = sumYY - sumXY * sumXY / sumXX;
+? +++++++  +++ ^^
+
++ return Math.max(result, 0.0);
+  }
+
+  public double getSumSquaredErrors() {
+- return sumYY - sumXY * sumXY / sumXX;
+?    ^^^
+
++ double result = sumYY - sumXY * sumXY / sumXX;
+? +++++++  +++ ^^
+
++ return result < 0.0 ? 0.0 : result;
+  }
+
+  public double getSumSquaredErrors() {
+- return sumYY - sumXY * sumXY / sumXX;
+?    ^^^
+
++ double result = sumYY - sumXY * sumXY / sumXX;
+? +++++++  +++ ^^
+
++ if (result < 0.0) {
++ return 0.0;
++ } else {
++ return result;
+  }
++ }
+
+  public double getSumSquaredErrors() {
+- return sumYY - sumXY * sumXY / sumXX;
++ double result = Math.max(sumYY - sumXY * sumXY / sumXX, 0.0);
++ return result;
+  }
+
+  public double getSumSquaredErrors() {
+- return sumYY - sumXY * sumXY / sumXX;
+?    ^^^
+
++ double result = sumYY - sumXY * sumXY / sumXX;
+? +++++++  +++ ^^
+
++ if (result < 0.0) {
++ result = 0.0;
+  }
++ return result;
++ }
+
+  public double getSumSquaredErrors() {
+- return sumYY - sumXY * sumXY / sumXX;
+?    ^^^
+
++ double result = sumYY - (sumXY * sumXY / sumXX);
+? +++++++  +++ ^^         +                     +
+
++ return Math.max(result, 0.0);
+  }
+
+  public double getSumSquaredErrors() {
+- return sumYY - sumXY * sumXY / sumXX;
+?    ^^^
+
++ double result = sumYY - (sumXY * sumXY / sumXX);
+? +++++++  +++ ^^         +                     +
+
++ return result < 0.0 ? 0.0 : result;
+  }
+
+  public double getSumSquaredErrors() {
+- return sumYY - sumXY * sumXY / sumXX;
++ double result = Math.max(sumYY - (sumXY * sumXY / sumXX), 0.0);
++ return result;
+  }
+
+  public double getSumSquaredErrors() {
+- return sumYY - sumXY * sumXY / sumXX;
++ double result = Math.max(0.0, sumYY - sumXY * sumXY / sumXX);
++ return result;
+  }
+

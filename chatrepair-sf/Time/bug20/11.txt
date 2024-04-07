@@ -1,0 +1,125 @@
+The following code contains a bug:
+        public int parseInto(DateTimeParserBucket bucket, String text, int position) {
+            String str = text.substring(position);
+            for (String id : ALL_IDS) {
+                if (str.startsWith(id)) {
+                    bucket.setZone(DateTimeZone.forID(id));
+                    return position + id.length();
+                }
+            }
+            return ~position;
+        }
+The code fails on this test:
+org.joda.time.format.TestDateTimeFormatterBuilder::test_printParseZoneDawsonCreek
+on this test line:
+        assertEquals(dt, f.parseDateTime("2007-03-04 12:30 America/Dawson_Creek"));
+with the following test error:
+java.lang.IllegalArgumentException: Invalid format: "2007-03-04 12:30 America/Dawson_Creek" is malformed at "_Creek"
+It can be fixed by these possible correct version:
+Correct version 1 :
+
+public int parseInto(DateTimeParserBucket bucket, String text, int position) {
+    String str = text.substring(position);
+    for (String id : ALL_IDS) {
+        if (str.startsWith(id) && (str.length() == id.length() || str.charAt(id.length()) == ' ')) {
+            bucket.setZone(DateTimeZone.forID(id));
+            return position + id.length();
+        }
+    }
+    return ~position;
+}
+
+Correct version 2 :
+
+public int parseInto(DateTimeParserBucket bucket, String text, int position) {
+    String str = text.substring(position);
+    for (String id : ALL_IDS) {
+        if (str.startsWith(id)) {
+            int length = id.length();
+            if (str.length() == length || str.charAt(length) == ' ' || str.charAt(length) == '/') {
+                bucket.setZone(DateTimeZone.forID(id));
+                return position + length;
+            }
+        }
+    }
+    return ~position;
+}
+
+Correct version 3 :
+
+public int parseInto(DateTimeParserBucket bucket, String text, int position) {
+    String str = text.substring(position);
+    for (String id : ALL_IDS) {
+        int idLength = id.length();
+        if (str.startsWith(id)) {
+            if (str.length() == idLength || str.charAt(idLength) == ' ' || str.charAt(idLength) == '/') {
+                bucket.setZone(DateTimeZone.forID(id));
+                return position + idLength;
+            }
+        }
+    }
+    return ~position;
+}
+
+Correct version 4 :
+
+public int parseInto(DateTimeParserBucket bucket, String text, int position) {
+    String str = text.substring(position);
+    for (String id : ALL_IDS) {
+        if (str.startsWith(id) && (str.length() == id.length() || str.charAt(id.length()) == ' ' || str.charAt(id.length()) == '/')) {
+            bucket.setZone(DateTimeZone.forID(id));
+            return position + id.length();
+        }
+    }
+    return ~position;
+}
+
+Correct version 5 :
+
+public int parseInto(DateTimeParserBucket bucket, String text, int position) {
+    String str = text.substring(position);
+    for (String id : ALL_IDS) {
+        if (str.startsWith(id)) {
+            int length = id.length();
+            if (str.length() == length || Character.isWhitespace(str.charAt(length)) || str.charAt(length) == '/') {
+                bucket.setZone(DateTimeZone.forID(id));
+                return position + length;
+            }
+        }
+    }
+    return ~position;
+}
+
+Correct version 6 :
+
+public int parseInto(DateTimeParserBucket bucket, String text, int position) {
+    String str = text.substring(position);
+    for (String id : ALL_IDS) {
+        if (str.startsWith(id) && (str.length() == id.length() || Character.isWhitespace(str.charAt(id.length())) || str.charAt(id.length()) == '/')) {
+            bucket.setZone(DateTimeZone.forID(id));
+            return position + id.length();
+        }
+    }
+    return ~position;
+}
+
+Please generate an alternative correct version of the function in the form of Java Markdown code block.
+```java
+public int parseInto(DateTimeParserBucket bucket, String text, int position) {
+    String str = text.substring(position);
+    for (String id : ALL_IDS) {
+        if (str.startsWith(id)) {
+            int length = id.length();
+            if (str.length() == length || isWhitespaceOrSlash(str.charAt(length))) {
+                bucket.setZone(DateTimeZone.forID(id));
+                return position + length;
+            }
+        }
+    }
+    return ~position;
+}
+
+private boolean isWhitespaceOrSlash(char c) {
+    return Character.isWhitespace(c) || c == '/';
+}
+```

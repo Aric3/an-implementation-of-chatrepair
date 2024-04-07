@@ -1,0 +1,207 @@
+  public int parseInto(DateTimeParserBucket bucket, String text, int position) {
+  String str = text.substring(position);
+  for (String id : ALL_IDS) {
+- if (str.startsWith(id)) {
++ if (str.startsWith(id) && (str.length() == id.length() || str.charAt(id.length()) == ' ')) {
+  bucket.setZone(DateTimeZone.forID(id));
+  return position + id.length();
+  }
+  }
+  return ~position;
+  }
+
+  public int parseInto(DateTimeParserBucket bucket, String text, int position) {
+  String str = text.substring(position);
+  for (String id : ALL_IDS) {
+  if (str.startsWith(id)) {
++ int length = id.length();
++ if (str.length() == length || str.charAt(length) == ' ' || str.charAt(length) == '/') {
+  bucket.setZone(DateTimeZone.forID(id));
+- return position + id.length();
+?                   ---      --
+
++ return position + length;
++ }
+  }
+  }
+  return ~position;
+  }
+
+  public int parseInto(DateTimeParserBucket bucket, String text, int position) {
+  String str = text.substring(position);
+  for (String id : ALL_IDS) {
++ int idLength = id.length();
+  if (str.startsWith(id)) {
++ if (str.length() == idLength || str.charAt(idLength) == ' ' || str.charAt(idLength) == '/') {
+  bucket.setZone(DateTimeZone.forID(id));
+- return position + id.length();
+?                     ^^     --
+
++ return position + idLength;
+?                     ^
+
++ }
+  }
+  }
+  return ~position;
+  }
+
+  public int parseInto(DateTimeParserBucket bucket, String text, int position) {
+  String str = text.substring(position);
+  for (String id : ALL_IDS) {
+- if (str.startsWith(id)) {
++ if (str.startsWith(id) && (str.length() == id.length() || str.charAt(id.length()) == ' ' || str.charAt(id.length()) == '/')) {
+  bucket.setZone(DateTimeZone.forID(id));
+  return position + id.length();
+  }
+  }
+  return ~position;
+  }
+
+  public int parseInto(DateTimeParserBucket bucket, String text, int position) {
+  String str = text.substring(position);
+  for (String id : ALL_IDS) {
+  if (str.startsWith(id)) {
++ int length = id.length();
++ if (str.length() == length || Character.isWhitespace(str.charAt(length)) || str.charAt(length) == '/') {
+  bucket.setZone(DateTimeZone.forID(id));
+- return position + id.length();
+?                   ---      --
+
++ return position + length;
++ }
+  }
+  }
+  return ~position;
+  }
+
+  public int parseInto(DateTimeParserBucket bucket, String text, int position) {
+  String str = text.substring(position);
+  for (String id : ALL_IDS) {
+- if (str.startsWith(id)) {
++ if (str.startsWith(id) && (str.length() == id.length() || Character.isWhitespace(str.charAt(id.length())) || str.charAt(id.length()) == '/')) {
+  bucket.setZone(DateTimeZone.forID(id));
+  return position + id.length();
+  }
+  }
+  return ~position;
+  }
+
+  public int parseInto(DateTimeParserBucket bucket, String text, int position) {
+  String str = text.substring(position);
+  for (String id : ALL_IDS) {
+  if (str.startsWith(id)) {
++ int length = id.length();
++ if (str.length() == length || isWhitespaceOrSlash(str.charAt(length))) {
+  bucket.setZone(DateTimeZone.forID(id));
+- return position + id.length();
+?                   ---      --
+
++ return position + length;
++ }
+  }
+  }
+  return ~position;
+  }
++ private boolean isWhitespaceOrSlash(char c) {
++ return Character.isWhitespace(c) || c == '/';
++ }
+
+  public int parseInto(DateTimeParserBucket bucket, String text, int position) {
+  String str = text.substring(position);
+  for (String id : ALL_IDS) {
+- if (str.startsWith(id)) {
++ if (str.startsWith(id) && (str.length() == id.length() || isWhitespaceOrSlash(str.charAt(id.length())))) {
+  bucket.setZone(DateTimeZone.forID(id));
+  return position + id.length();
+  }
+  }
+  return ~position;
+  }
++ private boolean isWhitespaceOrSlash(char c) {
++ return Character.isWhitespace(c) || c == '/';
++ }
+
+  public int parseInto(DateTimeParserBucket bucket, String text, int position) {
+  String str = text.substring(position);
+  for (String id : ALL_IDS) {
+- if (str.startsWith(id)) {
++ if (str.startsWith(id) && isValidZoneSeparator(str, id.length())) {
+  bucket.setZone(DateTimeZone.forID(id));
+  return position + id.length();
+  }
+  }
+  return ~position;
+  }
++ private boolean isValidZoneSeparator(String str, int index) {
++ return str.length() == index || str.charAt(index) == ' ' || str.charAt(index) == '/';
++ }
+
+  public int parseInto(DateTimeParserBucket bucket, String text, int position) {
+  String str = text.substring(position);
+  for (String id : ALL_IDS) {
+- if (str.startsWith(id)) {
++ if (str.startsWith(id) && isValidZoneSeparator(str, id.length())) {
+  bucket.setZone(DateTimeZone.forID(id));
+  return position + id.length();
+  }
+  }
+  return ~position;
+  }
++ private boolean isValidZoneSeparator(String str, int index) {
++ return str.length() == index || Character.isWhitespace(str.charAt(index)) || str.charAt(index) == '/';
++ }
+
+  public int parseInto(DateTimeParserBucket bucket, String text, int position) {
+  String str = text.substring(position);
+  for (String id : ALL_IDS) {
+- if (str.startsWith(id)) {
++ if (str.startsWith(id) && validZoneSeparator(str, id.length())) {
+  bucket.setZone(DateTimeZone.forID(id));
+  return position + id.length();
+  }
+  }
+  return ~position;
+  }
++ private boolean validZoneSeparator(String str, int length) {
++ if (str.length() == length) {
++ return true;
++ }
++ char separator = str.charAt(length);
++ return separator == ' ' || separator == '/';
++ }
+
+  public int parseInto(DateTimeParserBucket bucket, String text, int position) {
+  String str = text.substring(position);
+  for (String id : ALL_IDS) {
+- if (str.startsWith(id)) {
++ if (str.startsWith(id) && (str.length() == id.length() || isZoneSeparator(str.charAt(id.length())))) {
+  bucket.setZone(DateTimeZone.forID(id));
+  return position + id.length();
+  }
+  }
+  return ~position;
+  }
++ private boolean isZoneSeparator(char c) {
++ return c == ' ' || c == '/';
++ }
+
+  public int parseInto(DateTimeParserBucket bucket, String text, int position) {
+  String str = text.substring(position);
+  for (String id : ALL_IDS) {
+- if (str.startsWith(id)) {
++ if (str.startsWith(id) && isValidZoneSeparator(str, id.length())) {
+  bucket.setZone(DateTimeZone.forID(id));
+  return position + id.length();
+  }
+  }
+  return ~position;
+  }
++ private boolean isValidZoneSeparator(String str, int index) {
++ if (str.length() == index) {
++ return true;
++ }
++ char separator = str.charAt(index);
++ return separator == ' ' || separator == '/';
++ }
+

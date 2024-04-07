@@ -1,0 +1,77 @@
+The following code contains a bug:
+    protected double getInitialDomain(double p) {
+        double ret;
+        double d = getDenominatorDegreesOfFreedom();
+            // use mean
+            ret = d / (d - 2.0);
+        return ret;
+    }
+The code fails on this test:
+org.apache.commons.math.distribution.FDistributionTest::testSmallDegreesOfFreedom
+on this test line:
+        double x = fd.inverseCumulativeProbability(p);
+with the following test error:
+java.lang.IllegalArgumentException: Invalid endpoint parameters:  lowerBound=0.0 initial=-1.0 upperBound=1.7976931348623157E308
+It can be fixed by these possible correct version:
+Correct version 1 :
+
+    protected double getInitialDomain(double p) {
+        double ret;
+        double d = getDenominatorDegreesOfFreedom();
+        // use correct formula for initial domain calculation
+        ret = (d + 2.0) / d;
+        return ret;
+    }
+
+Correct version 2 :
+
+protected double getInitialDomain(double p) {
+    double ret;
+    double d = getDenominatorDegreesOfFreedom();
+    // use mean
+    ret = d / (d + 2.0);
+    return ret;
+}
+
+Correct version 3 :
+
+protected double getInitialDomain(double p) {
+    double ret;
+    double d = getDenominatorDegreesOfFreedom();
+    // use correct formula for initial domain calculation
+    ret = 2.0 / (d + 2.0);
+    return ret;
+}
+
+Correct version 4 :
+
+protected double getInitialDomain(double p) {
+    double ret;
+    double d = getDenominatorDegreesOfFreedom();
+    // use correct formula for initial domain calculation
+    ret = (2.0 * d) / (d + 2.0);
+    return ret;
+}
+
+Correct version 5 :
+
+protected double getInitialDomain(double p) {
+    double ret;
+    double d = getDenominatorDegreesOfFreedom();
+    // use mean
+    ret = (d + 2.0) / d;
+    return ret;
+}
+
+Please generate an alternative correct version of the function in the form of Java Markdown code block.
+Correct version 6 :
+
+```java
+protected double getInitialDomain(double p) {
+    double ret;
+    double d = getDenominatorDegreesOfFreedom();
+    // use correct formula for initial domain calculation
+    ret = (d + 2.0) / (d - 2.0);
+    return ret;
+}
+```

@@ -1,0 +1,362 @@
+  public void escape(Writer writer, String str) throws IOException {
+  int len = str.length();
+  for (int i = 0; i < len; i++) {
++ int codePoint = str.codePointAt(i);
++ if (Character.isSupplementaryCodePoint(codePoint)) {
++ i++;
++ writer.write("&#");
++ writer.write(Integer.toString(codePoint, 10));
++ writer.write(';');
++ } else {
+  char c = str.charAt(i);
+  String entityName = this.entityName(c);
+  if (entityName == null) {
+  if (c > 0x7F) {
+  writer.write("&#");
+  writer.write(Integer.toString(c, 10));
+  writer.write(';');
+  } else {
+  writer.write(c);
+  }
+  } else {
+  writer.write('&');
+  writer.write(entityName);
+  writer.write(';');
+  }
+  }
+  }
++ }
+
+  public void escape(Writer writer, String str) throws IOException {
+  int len = str.length();
+  for (int i = 0; i < len; i++) {
+  char c = str.charAt(i);
++ if (Character.isHighSurrogate(c) && (i + 1) < len && Character.isLowSurrogate(str.charAt(i + 1))) {
++ int codePoint = Character.toCodePoint(c, str.charAt(i + 1));
++ i++;
++ writer.write("&#");
++ writer.write(Integer.toString(codePoint, 10));
++ writer.write(';');
++ } else {
+  String entityName = this.entityName(c);
+  if (entityName == null) {
+  if (c > 0x7F) {
+  writer.write("&#");
+  writer.write(Integer.toString(c, 10));
+  writer.write(';');
+  } else {
+  writer.write(c);
+  }
+  } else {
+  writer.write('&');
+  writer.write(entityName);
+  writer.write(';');
+  }
+  }
+  }
++ }
+
+  public void escape(Writer writer, String str) throws IOException {
+  int len = str.length();
+- for (int i = 0; i < len; i++) {
+?                          ---
+
++ for (int i = 0; i < len; ) {
++ int codePoint = str.codePointAt(i);
++ if (Character.isSupplementaryCodePoint(codePoint)) {
++ i += Character.charCount(codePoint);
++ writer.write("&#");
++ writer.write(Integer.toString(codePoint, 10));
++ writer.write(';');
++ } else {
+  char c = str.charAt(i);
+  String entityName = this.entityName(c);
+  if (entityName == null) {
+  if (c > 0x7F) {
+  writer.write("&#");
+  writer.write(Integer.toString(c, 10));
+  writer.write(';');
+  } else {
+  writer.write(c);
+  }
+  } else {
+  writer.write('&');
+  writer.write(entityName);
+  writer.write(';');
+  }
++ i++;
+  }
+  }
++ }
+
+  public void escape(Writer writer, String str) throws IOException {
+  int len = str.length();
+  for (int i = 0; i < len; i++) {
++ int codePoint = Character.codePointAt(str, i);
++ if (Character.charCount(codePoint) > 1) {
++ i++;
++ writer.write("&#");
++ writer.write(Integer.toString(codePoint, 10));
++ writer.write(';');
++ } else {
+  char c = str.charAt(i);
+  String entityName = this.entityName(c);
+  if (entityName == null) {
+  if (c > 0x7F) {
+  writer.write("&#");
+  writer.write(Integer.toString(c, 10));
+  writer.write(';');
+  } else {
+  writer.write(c);
+  }
+  } else {
+  writer.write('&');
+  writer.write(entityName);
+  writer.write(';');
+  }
+  }
+  }
++ }
+
+  public void escape(Writer writer, String str) throws IOException {
+  int len = str.length();
+  for (int i = 0; i < len; i++) {
++ int codePoint = str.codePointAt(i);
++ if (Character.isSupplementaryCodePoint(codePoint)) {
++ i += Character.charCount(codePoint) - 1; // adjust i to skip surrogate pair
+- char c = str.charAt(i);
+- String entityName = this.entityName(c);
+- if (entityName == null) {
+- if (c > 0x7F) {
+  writer.write("&#");
+- writer.write(Integer.toString(c, 10));
++ writer.write(Integer.toString(codePoint, 10));
+?                                ++++++++
+
+  writer.write(';');
+  } else {
++ String entityName = this.entityName(codePoint);
++ if (entityName == null) {
++ if (codePoint > 0x7F) {
++ writer.write("&#");
++ writer.write(Integer.toString(codePoint, 10));
+- writer.write(c);
+?              ^
+
++ writer.write(';');
+?              ^^^
+
++ } else {
++ writer.write(Character.toString((char) codePoint));
+  }
+  } else {
+  writer.write('&');
+  writer.write(entityName);
+  writer.write(';');
+  }
+  }
+  }
++ }
+
+  public void escape(Writer writer, String str) throws IOException {
+  int len = str.length();
+- for (int i = 0; i < len; i++) {
+?                          ---
+
++ for (int i = 0; i < len; ) {
++ int codePoint = str.codePointAt(i);
++ if (Character.isSupplementaryCodePoint(codePoint)) {
++ i += Character.charCount(codePoint);
+- char c = str.charAt(i);
+- String entityName = this.entityName(c);
+- if (entityName == null) {
+- if (c > 0x7F) {
+  writer.write("&#");
+- writer.write(Integer.toString(c, 10));
++ writer.write(Integer.toString(codePoint, 10));
+?                                ++++++++
+
+  writer.write(';');
+  } else {
++ String entityName = this.entityName(codePoint);
++ if (entityName == null) {
++ if (codePoint > 0x7F) {
++ writer.write("&#");
++ writer.write(Integer.toString(codePoint, 10));
+- writer.write(c);
+?              ^
+
++ writer.write(';');
+?              ^^^
+
++ } else {
++ writer.write(Character.toString((char) codePoint));
+  }
+  } else {
+  writer.write('&');
+  writer.write(entityName);
+  writer.write(';');
+  }
++ i += Character.charCount(codePoint);
+  }
+  }
++ }
+
+  public void escape(Writer writer, String str) throws IOException {
+  int len = str.length();
+- for (int i = 0; i < len; i++) {
+?                          ---
+
++ for (int i = 0; i < len; ) {
++ int codePoint = str.codePointAt(i);
++ if (Character.isSupplementaryCodePoint(codePoint)) {
++ i += Character.charCount(codePoint);
+- char c = str.charAt(i);
+- String entityName = this.entityName(c);
+- if (entityName == null) {
+- if (c > 0x7F) {
+  writer.write("&#");
+- writer.write(Integer.toString(c, 10));
++ writer.write(Integer.toString(codePoint, 10));
+?                                ++++++++
+
+  writer.write(';');
+  } else {
++ String entityName = this.entityName(codePoint);
++ if (entityName == null) {
++ if (codePoint > 0x7F) {
++ writer.write("&#");
++ writer.write(Integer.toString(codePoint, 10));
+- writer.write(c);
+?              ^
+
++ writer.write(';');
+?              ^^^
+
++ } else {
++ writer.write(Character.toString((char) codePoint));
+  }
+  } else {
+  writer.write('&');
+  writer.write(entityName);
+  writer.write(';');
+  }
++ i++;
+  }
+  }
++ }
+
+  public void escape(Writer writer, String str) throws IOException {
+  int len = str.length();
+  for (int i = 0; i < len; i++) {
+- char c = str.charAt(i);
++ int codePoint = str.codePointAt(i);
++ if (Character.isSupplementaryCodePoint(codePoint)) {
++ i += Character.charCount(codePoint) - 1; // skip the next index as well
++ }
+- String entityName = this.entityName(c);
++ String entityName = this.entityName(codePoint);
+?                                      ++++++++
+
+  if (entityName == null) {
+- if (c > 0x7F) {
++ if (codePoint > 0x7F) {
+?      ++++++++
+
+  writer.write("&#");
+- writer.write(Integer.toString(c, 10));
++ writer.write(Integer.toString(codePoint, 10));
+?                                ++++++++
+
+  writer.write(';');
+  } else {
+- writer.write(c);
++ writer.write(Character.toString((char) codePoint));
+  }
+  } else {
+  writer.write('&');
+  writer.write(entityName);
+  writer.write(';');
+  }
+  }
+  }
+
+  public void escape(Writer writer, String str) throws IOException {
+  int len = str.length();
+  for (int i = 0; i < len; i++) {
+- char c = str.charAt(i);
++ int codePoint = str.codePointAt(i);
++ if (Character.isSupplementaryCodePoint(codePoint)) {
++ i += Character.charCount(codePoint) - 1; // adjust i to skip the next index as well
++ }
+- String entityName = this.entityName(c);
++ String entityName = this.entityName(codePoint);
+?                                      ++++++++
+
+  if (entityName == null) {
+- if (c > 0x7F) {
++ if (codePoint > 0x7F) {
+?      ++++++++
+
+  writer.write("&#");
+- writer.write(Integer.toString(c, 10));
++ writer.write(Integer.toString(codePoint, 10));
+?                                ++++++++
+
+  writer.write(';');
+  } else {
+- writer.write(c);
++ writer.write(Character.toString((char) codePoint));
+  }
+  } else {
+  writer.write('&');
+  writer.write(entityName);
+  writer.write(';');
+  }
+  }
+  }
+
+  public void escape(Writer writer, String str) throws IOException {
+  int len = str.length();
+- for (int i = 0; i < len; i++) {
+?                          ---
+
++ for (int i = 0; i < len; ) {
++ int codePoint = str.codePointAt(i);
++ if (Character.isSupplementaryCodePoint(codePoint)) {
++ i += Character.charCount(codePoint); // move i to the next code point
+- char c = str.charAt(i);
+- String entityName = this.entityName(c);
+- if (entityName == null) {
+- if (c > 0x7F) {
+  writer.write("&#");
+- writer.write(Integer.toString(c, 10));
++ writer.write(Integer.toString(codePoint, 10));
+?                                ++++++++
+
+  writer.write(';');
+  } else {
++ String entityName = this.entityName(codePoint);
++ if (entityName == null) {
++ if (codePoint > 0x7F) {
++ writer.write("&#");
++ writer.write(Integer.toString(codePoint, 10));
+- writer.write(c);
+?              ^
+
++ writer.write(';');
+?              ^^^
+
++ } else {
++ writer.write(Character.toString((char) codePoint));
+  }
+  } else {
+  writer.write('&');
+  writer.write(entityName);
+  writer.write(';');
+  }
++ i += Character.charCount(codePoint); // move i to the next code point
+  }
+  }
++ }
+

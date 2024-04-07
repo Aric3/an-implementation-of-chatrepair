@@ -1,0 +1,65 @@
+The following code contains a bug:
+    public static boolean equals(CharSequence cs1, CharSequence cs2) {
+        if (cs1 == cs2) {
+            return true;
+        }
+        if (cs1 == null || cs2 == null) {
+            return false;
+        }
+            return cs1.equals(cs2);
+    }
+The code fails on this test:
+org.apache.commons.lang3.StringUtilsEqualsIndexOfTest::testEquals
+on this test line:
+        assertTrue(StringUtils.equals(fooCs, (CharSequence) new StringBuilder(FOO)));
+with the following test error:
+junit.framework.AssertionFailedError
+It can be fixed by these possible correct version:
+Correct version 1 :
+
+public static boolean equals(CharSequence cs1, CharSequence cs2) {
+    if (cs1 == cs2) {
+        return true;
+    }
+    if (cs1 == null || cs2 == null) {
+        return false;
+    }
+    return cs1.toString().equals(cs2.toString());
+}
+
+Correct version 2 :
+
+public static boolean equals(CharSequence cs1, CharSequence cs2) {
+    if (cs1 == cs2) {
+        return true;
+    }
+    if (cs1 == null || cs2 == null) {
+        return false;
+    }
+    return cs1.toString().contentEquals(cs2);
+}
+
+Correct version 3 :
+
+public static boolean equals(CharSequence cs1, CharSequence cs2) {
+    if (cs1 == cs2) {
+        return true;
+    }
+    if (cs1 == null || cs2 == null) {
+        return false;
+    }
+    return cs1.toString().contentEquals(cs2.toString());
+}
+
+Please generate an alternative correct version of the function in the form of Java Markdown code block.
+```java
+public static boolean equals(CharSequence cs1, CharSequence cs2) {
+    if (cs1 == cs2) {
+        return true;
+    }
+    if (cs1 == null || cs2 == null) {
+        return false;
+    }
+    return cs1.toString().contentEquals(cs2.toString());
+}
+```

@@ -1,0 +1,9 @@
+current trys: 1, feedback list: [5] Feedback statistics: 0/1
+current trys: 1, feedback list: [5] First plausible patch at 1 tries!
+current trys: 24. Below is statistics of all generation patches:
+
+Compilation Error patches number: 0
+Failure patches number: 0
+Time out patches number: 0
+Plausible patches number: 24
+Duplicate plausible patches number: 23

@@ -1,0 +1,133 @@
+The following code contains a bug:
+    public int getOffsetFromLocal(long instantLocal) {
+        // get the offset at instantLocal (first estimate)
+        final int offsetLocal = getOffset(instantLocal);
+        // adjust instantLocal using the estimate and recalc the offset
+        final long instantAdjusted = instantLocal - offsetLocal;
+        final int offsetAdjusted = getOffset(instantAdjusted);
+        // if the offsets differ, we must be near a DST boundary
+        if (offsetLocal != offsetAdjusted) {
+            // we need to ensure that time is always after the DST gap
+            // this happens naturally for positive offsets, but not for negative
+            if ((offsetLocal - offsetAdjusted) < 0) {
+                // if we just return offsetAdjusted then the time is pushed
+                // back before the transition, whereas it should be
+                // on or after the transition
+                long nextLocal = nextTransition(instantAdjusted);
+                long nextAdjusted = nextTransition(instantLocal - offsetAdjusted);
+                if (nextLocal != nextAdjusted) {
+                    return offsetLocal;
+                }
+            }
+        } else if (offsetLocal > 0) {
+            long prev = previousTransition(instantAdjusted);
+            if (prev < instantAdjusted) {
+                int offsetPrev = getOffset(prev);
+                int diff = offsetPrev - offsetLocal;
+                if (instantAdjusted - prev <= diff) {
+                    return offsetPrev;
+                }
+            }
+        }
+        return offsetAdjusted;
+    }
+The code fails on this test:
+org.joda.time.TestDateTimeZoneCutover::testDateTimeCreation_london
+on this test line:
+        assertEquals("2011-10-30T01:15:00.000+01:00", base.toString());
+with the following test error:
+junit.framework.ComparisonFailure: expected:<...1-10-30T01:15:00.000[+01:00]> but was:<...1-10-30T01:15:00.000[Z]>
+It can be fixed by these possible correct version:
+Correct version 1 :
+
+public int getOffsetFromLocal(long instantLocal) {
+    // get the offset at instantLocal (first estimate)
+    final int offsetLocal = getOffset(instantLocal);
+    // adjust instantLocal using the estimate and recalc the offset
+    final long instantAdjusted = instantLocal - offsetLocal;
+    final int offsetAdjusted = getOffset(instantAdjusted);
+    // if the offsets differ, we must be near a DST boundary
+    if (offsetLocal != offsetAdjusted) {
+        // we need to ensure that time is always after the DST gap
+        // this happens naturally for positive offsets, but not for negative
+        if ((offsetLocal - offsetAdjusted) < 0) {
+            // if we just return offsetAdjusted then the time is pushed
+            // back before the transition, whereas it should be
+            // on or after the transition
+            long nextLocal = nextTransition(instantAdjusted);
+            long nextAdjusted = nextTransition(instantLocal - offsetAdjusted);
+            if (nextLocal != nextAdjusted) {
+                return offsetLocal;
+            }
+        }
+    } else {
+        long prev = previousTransition(instantAdjusted);
+        if (prev < instantAdjusted) {
+            int offsetPrev = getOffset(prev);
+            int diff = offsetPrev - offsetLocal;
+            if (instantAdjusted - prev <= diff) {
+                return offsetPrev;
+            }
+        }
+    }
+    return offsetAdjusted;
+}
+
+Correct version 2 :
+
+public int getOffsetFromLocal(long instantLocal) {
+    final int offsetLocal = getOffset(instantLocal);
+    final long instantAdjusted = instantLocal - offsetLocal;
+    final int offsetAdjusted = getOffset(instantAdjusted);
+    
+    if (offsetLocal != offsetAdjusted) {
+        if ((offsetLocal - offsetAdjusted) < 0) {
+            long nextLocal = nextTransition(instantAdjusted);
+            long nextAdjusted = nextTransition(instantLocal - offsetAdjusted);
+            if (nextLocal != nextAdjusted) {
+                return offsetLocal;
+            }
+        }
+    } else {
+        long prev = previousTransition(instantAdjusted);
+        if (prev < instantAdjusted) {
+            int offsetPrev = getOffset(prev);
+            int diff = offsetPrev - offsetLocal;
+            if (instantAdjusted - prev <= diff) {
+                return offsetPrev;
+            }
+        }
+    }
+    
+    return offsetAdjusted;
+}
+
+Please generate an alternative correct version of the function in the form of Java Markdown code block.
+```java
+public int getOffsetFromLocal(long instantLocal) {
+    final int offsetLocal = getOffset(instantLocal);
+    final long instantAdjusted = instantLocal - offsetLocal;
+    final int offsetAdjusted = getOffset(instantAdjusted);
+    
+    if (offsetLocal != offsetAdjusted) {
+        if ((offsetLocal - offsetAdjusted) < 0) {
+            long nextLocal = nextTransition(instantAdjusted);
+            long nextAdjusted = nextTransition(instantLocal - offsetAdjusted);
+            if (nextLocal != nextAdjusted) {
+                return offsetLocal;
+            }
+        }
+    } else {
+        long prev = previousTransition(instantAdjusted);
+        if (prev < instantAdjusted) {
+            int offsetPrev = getOffset(prev);
+            int diff = offsetPrev - offsetLocal;
+            if (instantAdjusted - prev <= diff) {
+                return offsetPrev;
+            }
+        }
+    }
+    
+    return offsetAdjusted;
+}
+```

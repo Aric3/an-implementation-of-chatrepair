@@ -1,0 +1,275 @@
+You are an Automated Program Repair Tool.
+Here is an example of a repair job:
+<Example start>
+Example buggy function and request:
+The following code contains a buggy :
+    public static boolean isSameLocalTime(Calendar cal1, Calendar cal2) {
+        if (cal1 == null || cal2 == null) {
+            throw new IllegalArgumentException("The date must not be null");
+        }
+        return (cal1.get(Calendar.MILLISECOND) == cal2.get(Calendar.MILLISECOND) &&
+                cal1.get(Calendar.SECOND) == cal2.get(Calendar.SECOND) &&
+                cal1.get(Calendar.MINUTE) == cal2.get(Calendar.MINUTE) &&
+                cal1.get(Calendar.HOUR) == cal2.get(Calendar.HOUR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&
+                cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) &&
+                cal1.getClass() == cal2.getClass());
+    }
+the code fails on this test: org.apache.commons.lang3.time.DateUtilsTest::testIsSameLocalTime_Cal
+on this test line:
+assertFalse("LANG-677", DateUtils.isSameLocalTime(cal3, cal4));
+with the following test error:
+junit.framework.AssertionFailedError: LANG-677
+Please provide an analysis of the problem and the expected behaviour of the correct fix, and the correct version of the function in the form of Java Markdown code block.
+Example response:
+
+1. Analysis of the problem:
+The problem seems to arise from the comparison of hours using `Calendar.HOUR`. However, `Calendar.HOUR` represents the 12-hour clock hour whereas `Calendar.HOUR_OF_DAY` represents the 24-hour clock hour. Since the code is aiming to compare the hour component in a manner consistent with the other fields (such as minute, second, millisecond), it should use `Calendar.HOUR_OF_DAY` instead.
+
+2. Expected Behavior of Correct Fix:
+The correct fix should ensure that the comparison is done using the 24-hour clock hour (Calendar.HOUR_OF_DAY) to maintain consistency with the other fields.
+
+3. Correct function:
+This is the correct version of the function in the form of Java Markdown code block:
+```java
+    public static boolean isSameLocalTime(Calendar cal1, Calendar cal2) {
+        if (cal1 == null || cal2 == null) {
+            throw new IllegalArgumentException("The date must not be null");
+        }
+        return (cal1.get(Calendar.MILLISECOND) == cal2.get(Calendar.MILLISECOND) &&
+                cal1.get(Calendar.SECOND) == cal2.get(Calendar.SECOND) &&
+                cal1.get(Calendar.MINUTE) == cal2.get(Calendar.MINUTE) &&
+                cal1.get(Calendar.HOUR_OF_DAY) == cal2.get(Calendar.HOUR_OF_DAY) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&
+                cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) &&
+                cal1.getClass() == cal2.getClass());
+    }
+```
+Changes made:
+Replaced Calendar.HOUR with Calendar.HOUR_OF_DAY to use 24-hour time format.
+
+<Example end>
+The following code contains a bug:
+    public XYDataItem addOrUpdate(Number x, Number y) {
+        if (x == null) {
+            throw new IllegalArgumentException("Null 'x' argument.");
+        }
+
+        // if we get to here, we know that duplicate X values are not permitted
+        XYDataItem overwritten = null;
+        int index = indexOf(x);
+        if (index >= 0 && !this.allowDuplicateXValues) {
+            XYDataItem existing = (XYDataItem) this.data.get(index);
+            try {
+                overwritten = (XYDataItem) existing.clone();
+            }
+            catch (CloneNotSupportedException e) {
+                throw new SeriesException("Couldn't clone XYDataItem!");
+            }
+            existing.setY(y);
+        }
+        else {
+            // if the series is sorted, the negative index is a result from
+            // Collections.binarySearch() and tells us where to insert the
+            // new item...otherwise it will be just -1 and we should just
+            // append the value to the list...
+            if (this.autoSort) {
+                this.data.add(-index - 1, new XYDataItem(x, y));
+            }
+            else {
+                this.data.add(new XYDataItem(x, y));
+            }
+            // check if this addition will exceed the maximum item count...
+            if (getItemCount() > this.maximumItemCount) {
+                this.data.remove(0);
+            }
+        }
+        fireSeriesChanged();
+        return overwritten;
+    }
+The code fails on this test:
+org.jfree.data.xy.junit.XYSeriesTests::testBug1955483
+on this test line:
+        series.addOrUpdate(1.0, 2.0);
+with the following test error:
+java.lang.IndexOutOfBoundsException: Index: -1, Size: 1
+Please provide an analysis of the problem and the expected behaviour of the correct fix, and the correct version of the function in the form of Java Markdown code block.
+
+
+1. Analysis of the problem:
+The problem seems to arise from the use of negative index -1 in the code when adding a new XYDataItem to the list. The negative index is a result of Collections.binarySearch() and indicates the position where the new item should be inserted in a sorted list. However, in this case, the negative index should be adjusted to insert the item correctly in the list.
+
+2. Expected Behavior of Correct Fix:
+The correct fix should ensure that the negative index is adjusted properly before adding the new XYDataItem to the list.
+
+3. Correct function:
+This is the correct version of the function in the form of Java Markdown code block:
+```java
+    public XYDataItem addOrUpdate(Number x, Number y) {
+        if (x == null) {
+            throw new IllegalArgumentException("Null 'x' argument.");
+        }
+
+        // if we get to here, we know that duplicate X values are not permitted
+        XYDataItem overwritten = null;
+        int index = indexOf(x);
+        if (index >= 0 && !this.allowDuplicateXValues) {
+            XYDataItem existing = (XYDataItem) this.data.get(index);
+            try {
+                overwritten = (XYDataItem) existing.clone();
+            }
+            catch (CloneNotSupportedException e) {
+                throw new SeriesException("Couldn't clone XYDataItem!");
+            }
+            existing.setY(y);
+        }
+        else {
+            // if the series is sorted, adjust the negative index to insert the new item
+            int adjustedIndex = (this.autoSort) ? -index - 1 : index;
+            this.data.add(adjustedIndex, new XYDataItem(x, y));
+            
+            // check if this addition will exceed the maximum item count...
+            if (getItemCount() > this.maximumItemCount) {
+                this.data.remove(0);
+            }
+        }
+        fireSeriesChanged();
+        return overwritten;
+    }
+```
+Changes made:
+Adjusted the negative index variable before adding the new XYDataItem to the list.
+
+The fixed version is still not correct.The code fails on this test:
+org.jfree.data.xy.junit.XYSeriesTests::testAddOrUpdate3
+on this test line:
+        series.addOrUpdate(1.0, 1.0);
+with the following test error:
+java.lang.IndexOutOfBoundsException: Index: -1, Size: 0
+Please provide an analysis of the problem and the expected behaviour of the correct fix, and the correct version of the function in the form of Java Markdown code block.
+
+
+1. Analysis of the problem:
+The problem still seems to be related to the adjustment of the negative index when adding a new XYDataItem to the list. The current implementation is not handling the case where the index is -1 and the list is empty, resulting in an IndexOutOfBoundsException. The code needs to be updated to properly handle this scenario.
+
+2. Expected Behavior of Correct Fix:
+The correct fix should ensure that the negative index is adjusted correctly, taking into consideration the case where the list is empty and the index is -1. In this case, the new item should simply be added to the empty list.
+
+3. Correct function:
+This is the correct version of the function in the form of Java Markdown code block:
+```java
+    public XYDataItem addOrUpdate(Number x, Number y) {
+        if (x == null) {
+            throw new IllegalArgumentException("Null 'x' argument.");
+        }
+
+        // if we get to here, we know that duplicate X values are not permitted
+        XYDataItem overwritten = null;
+        int index = indexOf(x);
+        if (index >= 0 && !this.allowDuplicateXValues) {
+            XYDataItem existing = (XYDataItem) this.data.get(index);
+            try {
+                overwritten = (XYDataItem) existing.clone();
+            }
+            catch (CloneNotSupportedException e) {
+                throw new SeriesException("Couldn't clone XYDataItem!");
+            }
+            existing.setY(y);
+        }
+        else {
+            // if the series is sorted, adjust the negative index to insert the new item
+            int adjustedIndex = (this.autoSort) ? -index - 1 : index;
+            if (adjustedIndex == -1 && this.data.isEmpty()) {
+                this.data.add(new XYDataItem(x, y));
+            } else {
+                this.data.add(Math.max(0, adjustedIndex), new XYDataItem(x, y));
+            }
+
+            // check if this addition will exceed the maximum item count...
+            if (getItemCount() > this.maximumItemCount) {
+                this.data.remove(0);
+            }
+        }
+        fireSeriesChanged();
+        return overwritten;
+    }
+```
+Changes made:
+Handled the case where the index is -1 and the list is empty by directly adding the new XYDataItem to the list.
+
+The fixed version is still not correct.It still does not fix the original test failure.
+Please provide an analysis of the problem and the expected behaviour of the correct fix, and the correct version of the function in the form of Java Markdown code block.
+
+
+1. Analysis of the problem:
+The root cause of the issue seems to be related to how the adjusted index is calculated and used when adding a new XYDataItem to the list. The current implementation is not handling all scenarios correctly, leading to IndexOutOfBoundsException errors in certain cases. The calculation of the adjusted index needs to consider various conditions to ensure the correct insertion of the new item.
+
+2. Expected Behavior of Correct Fix:
+The correct fix should accurately calculate the adjusted index based on whether the series is sorted, whether the list is empty, and whether duplicate X values are allowed. It should handle all edge cases properly to prevent IndexOutOfBoundsException errors.
+
+3. Correct function:
+This is the correct version of the function in the form of Java Markdown code block:
+```java
+    public XYDataItem addOrUpdate(Number x, Number y) {
+        if (x == null) {
+            throw new IllegalArgumentException("Null 'x' argument.");
+        }
+
+        // if we get to here, we know that duplicate X values are not permitted
+        XYDataItem overwritten = null;
+        
+        int index = indexOf(x);
+        if (index >= 0 && !this.allowDuplicateXValues) {
+            XYDataItem existing = (XYDataItem) this.data.get(index);
+            try {
+                overwritten = (XYDataItem) existing.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new SeriesException("Couldn't clone XYDataItem!");
+            }
+            existing.setY(y);
+        } else {
+            // if the series is sorted, find the correct index to insert
+            if (this.autoSort) {
+                if (index >= 0) {
+                    this.data.get(index).setY(y);
+                } else {
+                    index = -index - 1;
+                    this.data.add(index, new XYDataItem(x, y));
+                }
+            } else {
+                // for unsorted series
+                if (index >= 0) {
+                    this.data.get(index).setY(y);
+                } else {
+                    if (this.data.isEmpty()) {
+                        // add the first item to an empty series
+                        this.data.add(new XYDataItem(x, y));
+                    } else {
+                        index = -index - 1;
+                        if (index == this.data.size()) {
+                            // append to the end of the list
+                            this.data.add(new XYDataItem(x, y));
+                        } else {
+                            this.data.add(index, new XYDataItem(x, y));
+                        }
+                    }
+                }
+            }
+
+            // check if this addition will exceed the maximum item count...
+            if (getItemCount() > this.maximumItemCount) {
+                this.data.remove(0);
+            }
+        }
+        
+        fireSeriesChanged();
+        return overwritten;
+    }
+```
+
+Changes made:
+- Improved the logic for handling the adjusted index based on whether the series is sorted and whether the list is empty.
+- Correctly handles the case where the index is calculated as -1 in different scenarios to avoid IndexOutOfBoundsException errors.
+

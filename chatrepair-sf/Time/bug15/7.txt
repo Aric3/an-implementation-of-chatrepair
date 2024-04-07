@@ -1,0 +1,109 @@
+The following code contains a bug:
+    public static long safeMultiply(long val1, int val2) {
+        switch (val2) {
+            case -1:
+                return -val1;
+            case 0:
+                return 0L;
+            case 1:
+                return val1;
+        }
+        long total = val1 * val2;
+        if (total / val2 != val1) {
+          throw new ArithmeticException("Multiplication overflows a long: " + val1 + " * " + val2);
+        }
+        return total;
+    }
+The code fails on this test:
+org.joda.time.field.TestFieldUtils::testSafeMultiplyLongInt
+on this test line:
+            fail();
+with the following test error:
+junit.framework.AssertionFailedError
+It can be fixed by these possible correct version:
+Correct version 1 :
+
+public static long safeMultiply(long val1, int val2) {
+    if (val1 == 0 || val2 == 0) {
+        return 0L;
+    }
+
+    if (val1 > 0) {
+        if (val2 > 0) {
+            if (val1 > Long.MAX_VALUE / val2) {
+                throw new ArithmeticException("Multiplication overflows a long: " + val1 + " * " + val2);
+            }
+        } else {
+            if (val2 < Long.MIN_VALUE / val1) {
+                throw new ArithmeticException("Multiplication overflows a long: " + val1 + " * " + val2);
+            }
+        }
+    } else {
+        if (val2 > 0) {
+            if (val1 < Long.MIN_VALUE / val2) {
+                throw new ArithmeticException("Multiplication overflows a long: " + val1 + " * " + val2);
+            }
+        } else {
+            if (val1 != -1 || val2 != Integer.MIN_VALUE) {
+                if (val2 < Long.MAX_VALUE / val1) {
+                    throw new ArithmeticException("Multiplication overflows a long: " + val1 + " * " + val2);
+                }
+            }
+        }
+    }
+
+    return val1 * val2;
+}
+
+Correct version 2 :
+
+public static long safeMultiply(long val1, int val2) {
+    if (val1 == 0 || val2 == 0) {
+        return 0L;
+    }
+
+    if (val1 > 0 && val2 > 0 && val1 > Long.MAX_VALUE / val2) {
+        throw new ArithmeticException("Multiplication overflows a long: " + val1 + " * " + val2);
+    }
+
+    if (val1 > 0 && val2 < 0 && val2 < Long.MIN_VALUE / val1) {
+        throw new ArithmeticException("Multiplication overflows a long: " + val1 + " * " + val2);
+    }
+
+    if (val1 < 0 && val2 > 0 && val1 < Long.MIN_VALUE / val2) {
+        throw new ArithmeticException("Multiplication overflows a long: " + val1 + " * " + val2);
+    }
+
+    if (val1 < 0 && val2 < 0 && (val1 != -1 || val2 != Integer.MIN_VALUE) && val2 < Long.MAX_VALUE / val1) {
+        throw new ArithmeticException("Multiplication overflows a long: " + val1 + " * " + val2);
+    }
+
+    return val1 * val2;
+}
+
+Please generate an alternative correct version of the function in the form of Java Markdown code block.
+```java
+public static long safeMultiply(long val1, int val2) {
+    if (val1 == 0 || val2 == 0) {
+        return 0L;
+    }
+
+    if (val1 > 0 && val2 > 0 && val1 > Long.MAX_VALUE / val2) {
+        throw new ArithmeticException("Multiplication overflows a long: " + val1 + " * " + val2);
+    }
+
+    if (val1 > 0 && val2 < 0 && val2 < Long.MIN_VALUE / val1) {
+        throw new ArithmeticException("Multiplication overflows a long: " + val1 + " * " + val2);
+    }
+
+    if (val1 < 0 && val2 > 0 && val1 < Long.MIN_VALUE / val2) {
+        throw new ArithmeticException("Multiplication overflows a long: " + val1 + " * " + val2);
+    }
+
+    if (val1 < 0 && val2 < 0 && (val1 != -1 || val2 != Integer.MIN_VALUE) && val2 < Long.MAX_VALUE / val1) {
+        throw new ArithmeticException("Multiplication overflows a long: " + val1 + " * " + val2);
+    }
+
+    return val1 * val2;
+}
+```

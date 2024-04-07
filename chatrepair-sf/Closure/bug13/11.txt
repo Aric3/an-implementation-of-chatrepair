@@ -1,0 +1,92 @@
+The following code contains a bug:
+  private void traverse(Node node) {
+    // The goal here is to avoid retraversing
+    // the entire AST to catch newly created opportunities.
+    // So we track whether a "unit of code" has changed,
+    // and revisit immediately.
+    if (!shouldVisit(node)) {
+      return;
+    }
+
+    int visits = 0;
+    do {
+      Node c = node.getFirstChild();
+      while(c != null) {
+        traverse(c);
+        Node next = c.getNext();
+        c = next;
+      }
+
+      visit(node);
+      visits++;
+
+      Preconditions.checkState(visits < 10000, "too many interations");
+    } while (shouldRetraverse(node));
+
+    exitNode(node);
+  }
+The code fails on this test:
+com.google.javascript.jscomp.IntegrationTest::testIssue787
+on this test line:
+    test(options, code, result);
+with the following test error:
+junit.framework.AssertionFailedError:
+It can be fixed by these possible correct version:
+Correct version 1 :
+
+private void traverse(Node node) {
+    // The goal here is to avoid retraversing
+    // the entire AST to catch newly created opportunities.
+    // So we track whether a "unit of code" has changed,
+    // and revisit immediately.
+    if (!shouldVisit(node)) {
+        return;
+    }
+
+    int visits = 0;
+    do {
+        Node c = node.getFirstChild();
+        while (c != null) {
+            Node next = c.getNext(); // Update next node before traversing
+            traverse(c);
+            c = next; // Update current node to next node
+        }
+
+        visit(node);
+        visits++;
+
+        Preconditions.checkState(visits < 10000, "too many iterations");
+    } while (shouldRetraverse(node));
+
+    exitNode(node);
+}
+
+Please generate an alternative correct version of the function in the form of Java Markdown code block.
+```java
+private void traverse(Node node) {
+    // The goal here is to avoid retraversing
+    // the entire AST to catch newly created opportunities.
+    // So we track whether a "unit of code" has changed,
+    // and revisit immediately.
+    if (!shouldVisit(node)) {
+        return;
+    }
+
+    int visits = 0;
+    do {
+        Node c = node.getFirstChild();
+        while (c != null) {
+            Node next = c.getNext(); // Update next node before traversing
+            traverse(c);
+            c = next; // Update current node to next node
+        }
+
+        visit(node);
+        visits++;
+
+        Preconditions.checkState(visits < 10000, "too many iterations");
+    } while (shouldRetraverse(node));
+
+    exitNode(node);
+}
+```

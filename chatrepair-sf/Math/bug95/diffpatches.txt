@@ -1,0 +1,68 @@
+  protected double getInitialDomain(double p) {
+  double ret;
+  double d = getDenominatorDegreesOfFreedom();
+- // use mean
++ // use correct formula for initial domain calculation
+- ret = d / (d - 2.0);
+?       ----   ^
+
++ ret = (d + 2.0) / d;
+?          ^     ++++
+
+  return ret;
+  }
+
+  protected double getInitialDomain(double p) {
+  double ret;
+  double d = getDenominatorDegreesOfFreedom();
+  // use mean
+- ret = d / (d - 2.0);
+?              ^
+
++ ret = d / (d + 2.0);
+?              ^
+
+  return ret;
+  }
+
+  protected double getInitialDomain(double p) {
+  double ret;
+  double d = getDenominatorDegreesOfFreedom();
+- // use mean
++ // use correct formula for initial domain calculation
+- ret = d / (d - 2.0);
+?       ^      ^
+
++ ret = 2.0 / (d + 2.0);
+?       ^^^      ^
+
+  return ret;
+  }
+
+  protected double getInitialDomain(double p) {
+  double ret;
+  double d = getDenominatorDegreesOfFreedom();
+- // use mean
++ // use correct formula for initial domain calculation
+- ret = d / (d - 2.0);
+?              ^
+
++ ret = (2.0 * d) / (d + 2.0);
+?       +++++++ +      ^
+
+  return ret;
+  }
+
+  protected double getInitialDomain(double p) {
+  double ret;
+  double d = getDenominatorDegreesOfFreedom();
+  // use mean
+- ret = d / (d - 2.0);
+?       ----   ^
+
++ ret = (d + 2.0) / d;
+?          ^     ++++
+
+  return ret;
+  }
+

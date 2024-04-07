@@ -1,0 +1,8 @@
+current trys: 3, feedback list: [1, 0, 1] Feedback statistics: 0/3
+current trys: 6, feedback list: [0, 0, 0] Feedback statistics: 2/6
+current trys: 9, feedback list: [0, 0, 2] Feedback statistics: 3/9
+current trys: 12, feedback list: [2, 2, 2] Feedback statistics: 5/12
+current trys: 15, feedback list: [0, 0, 0] Feedback statistics: 7/15
+current trys: 18, feedback list: [0, 0, 1] Feedback statistics: 8/18
+current trys: 21, feedback list: [2, 2, 2] Feedback statistics: 10/21
+current trys: 24, feedback list: [0, 2, 2] Feedback statistics: 11/24

@@ -1,5 +1,3 @@
-conversations/
 bugs/
-chatrepair/
-initialchat/
-initial/
+__pycache__/
+.vscode/ 

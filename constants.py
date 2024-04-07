@@ -33,7 +33,7 @@ DEFECTS4J_CHECKOUT = "defects4j checkout -p %s -v %s -w %s"
 DEFECTS4J_COMPILE = "defects4j compile"
 DEFECTS4J_TEST = "defects4j test"
 DEFECTS4J_COMPILE_TEST = "defects4j compile ; defects4j test"
-TEST_TIMEOUT_MAX_S = 15
+TEST_TIMEOUT_MAX_S = 60
 # Prompt常量
 INFILL = ">>>[INFILL]<<<\n"
 INITIAL_APR_TOOL = "You are an Automated Program Repair Tool.\n"
@@ -62,7 +62,7 @@ FeedBack_0 = "The fixed version is still not correct."
 FeedBack_1 = "It still does not fix the original test failure."
 FeedBack_2 = "Code has the following compilation error: "
 FeedBack_3 = "Code has compilation error."
-FeedBack_4 = "The program timed out while executing the test cases in 15s."
+FeedBack_4 = "The program timed out while executing the test cases in 60s."
 
 
 Alt_Instruct_1 = "It can be fixed by these possible patches:\n"

@@ -1,0 +1,220 @@
+  private void traverse(Node node) {
+  // The goal here is to avoid retraversing
+  // the entire AST to catch newly created opportunities.
+  // So we track whether a "unit of code" has changed,
+  // and revisit immediately.
+  if (!shouldVisit(node)) {
+  return;
+  }
+  int visits = 0;
+  do {
+  Node c = node.getFirstChild();
+- while(c != null) {
++ while (c != null) {
+?      +
+
++ Node next = c.getNext(); // Update next node before traversing
+  traverse(c);
++ c = next; // Update current node to next node
+- Node next = c.getNext();
+- c = next;
+  }
+  visit(node);
+  visits++;
+- Preconditions.checkState(visits < 10000, "too many interations");
+?                                                     -
+
++ Preconditions.checkState(visits < 10000, "too many iterations");
+  } while (shouldRetraverse(node));
+  exitNode(node);
+  }
+
+  private void traverse(Node node) {
+  // The goal here is to avoid retraversing
+  // the entire AST to catch newly created opportunities.
+  // So we track whether a "unit of code" has changed,
+  // and revisit immediately.
+  if (!shouldVisit(node)) {
+  return;
+  }
+  int visits = 0;
++ Node c = node.getFirstChild(); // Initialize c outside of the do-while loop
+  do {
+- Node c = node.getFirstChild();
+- while(c != null) {
++ while (c != null) {
+?      +
+
++ Node next = c.getNext(); // Update next node before traversing
+  traverse(c);
++ c = next; // Update current node to next node
+- Node next = c.getNext();
+- c = next;
+  }
+  visit(node);
+  visits++;
+- Preconditions.checkState(visits < 10000, "too many interations");
+?                                                     -
+
++ Preconditions.checkState(visits < 10000, "too many iterations");
+  } while (shouldRetraverse(node));
+  exitNode(node);
+  }
+
+  private void traverse(Node node) {
+  // The goal here is to avoid retraversing
+  // the entire AST to catch newly created opportunities.
+  // So we track whether a "unit of code" has changed,
+  // and revisit immediately.
+  if (!shouldVisit(node)) {
+  return;
+  }
+  int visits = 0;
++ Node c;
+  do {
+- Node c = node.getFirstChild();
++ c = node.getFirstChild(); // Initializing c within the do-while loop
+- while(c != null) {
++ while (c != null) {
+?      +
+
++ Node next = c.getNext(); // Update next node before traversing
+  traverse(c);
++ c = next; // Update current node to next node
+- Node next = c.getNext();
+- c = next;
+  }
+  visit(node);
+  visits++;
+- Preconditions.checkState(visits < 10000, "too many interations");
+?                                                     -
+
++ Preconditions.checkState(visits < 10000, "too many iterations");
+  } while (shouldRetraverse(node));
+  exitNode(node);
+  }
+
+  private void traverse(Node node) {
+- // The goal here is to avoid retraversing
+- // the entire AST to catch newly created opportunities.
+- // So we track whether a "unit of code" has changed,
+- // and revisit immediately.
+  if (!shouldVisit(node)) {
+  return;
+  }
+  int visits = 0;
++ Node c = node.getFirstChild();
+  do {
+- Node c = node.getFirstChild();
+- while(c != null) {
++ while (c != null) {
+?      +
+
++ Node next = c.getNext();
+  traverse(c);
+- Node next = c.getNext();
+  c = next;
+  }
+  visit(node);
+  visits++;
+  Preconditions.checkState(visits < 10000, "too many interations");
+  } while (shouldRetraverse(node));
+  exitNode(node);
+  }
+
+  private void traverse(Node node) {
+- // The goal here is to avoid retraversing
+- // the entire AST to catch newly created opportunities.
+- // So we track whether a "unit of code" has changed,
+- // and revisit immediately.
+  if (!shouldVisit(node)) {
+  return;
+  }
+  int visits = 0;
++ Node c = node.getFirstChild();
+  do {
+- Node c = node.getFirstChild();
+- while(c != null) {
++ while (c != null) {
+?      +
+
++ Node next = c.getNext();
+  traverse(c);
+- Node next = c.getNext();
+  c = next;
+  }
+  visit(node);
+  visits++;
+- Preconditions.checkState(visits < 10000, "too many interations");
+?                                                     -
+
++ Preconditions.checkState(visits < 10000, "too many iterations");
+  } while (shouldRetraverse(node));
+  exitNode(node);
+  }
+
+  private void traverse(Node node) {
+- // The goal here is to avoid retraversing
+- // the entire AST to catch newly created opportunities.
+- // So we track whether a "unit of code" has changed,
+- // and revisit immediately.
+  if (!shouldVisit(node)) {
+  return;
+  }
+  int visits = 0;
++ Node c;
+  do {
+- Node c = node.getFirstChild();
+? -----
+
++ c = node.getFirstChild();
+- while(c != null) {
++ while (c != null) {
+?      +
+
++ Node next = c.getNext();
+  traverse(c);
+- Node next = c.getNext();
+  c = next;
+  }
+  visit(node);
+  visits++;
+- Preconditions.checkState(visits < 10000, "too many interations");
+?                                                     -
+
++ Preconditions.checkState(visits < 10000, "too many iterations");
+  } while (shouldRetraverse(node));
+  exitNode(node);
+  }
+
+  private void traverse(Node node) {
+  // The goal here is to avoid retraversing
+  // the entire AST to catch newly created opportunities.
+  // So we track whether a "unit of code" has changed,
+  // and revisit immediately.
+  if (!shouldVisit(node)) {
+  return;
+  }
+  int visits = 0;
++ Node c = node.getFirstChild();
+  do {
+- Node c = node.getFirstChild();
+- while(c != null) {
++ while (c != null) {
+?      +
+
++ Node next = c.getNext();
+  traverse(c);
+- Node next = c.getNext();
+  c = next;
+  }
+  visit(node);
+  visits++;
+- Preconditions.checkState(visits < 10000, "too many interations");
+?                                                     -
+
++ Preconditions.checkState(visits < 10000, "too many iterations");
+  } while (shouldRetraverse(node));
+  exitNode(node);
+  }
+

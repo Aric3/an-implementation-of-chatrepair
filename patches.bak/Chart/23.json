@@ -1,9 +1,0 @@
-{
-    "num_of_hunks": 1,
-    "0": {
-        "file_name": "source/org/jfree/chart/renderer/category/MinMaxCategoryRenderer.java",
-        "replaced_with": "    public boolean equals(Object obj) {\n        if (obj == this) {\n            return true;\n        }\n        if (!(obj instanceof MinMaxCategoryRenderer)) {\n            return false;\n        }\n        MinMaxCategoryRenderer that = (MinMaxCategoryRenderer) obj;\n        if (this.plotLines != that.plotLines) {\n            return false;\n        }\n        if (!PaintUtilities.equal(this.groupPaint, that.groupPaint)) {\n            return false;\n        }\n        if (!this.groupStroke.equals(that.groupStroke)) {\n            return false;\n        }\n        return super.equals(obj);\n    }\n",
-        "patch_type": "insert",
-        "next_line_no": 435
-    }
-}

@@ -1,0 +1,84 @@
+The following code contains a bug:
+  private static String extractClassNameIfGoog(Node node, Node parent,
+      String functionName){
+    String className = null;
+    if (NodeUtil.isExprCall(parent)) {
+      Node callee = node.getFirstChild();
+      if (callee != null && callee.getType() == Token.GETPROP) {
+        String qualifiedName = callee.getQualifiedName();
+        if (functionName.equals(qualifiedName)) {
+          Node target = callee.getNext();
+          if (target != null) {
+            className = target.getString();
+          }
+        }
+      }
+    }
+    return className;
+  }
+The code fails on this test:
+com.google.javascript.jscomp.ClosureCodingConventionTest::testRequire
+on this test line:
+    assertNotRequire("goog.require(foo)");
+with the following test error:
+junit.framework.AssertionFailedError: Expected: <null> but was: foo
+It can be fixed by these possible correct version:
+Correct version 1 :
+
+private static String extractClassNameIfGoog(Node node, Node parent, String functionName) {
+    String className = null;
+    if (NodeUtil.isExprCall(parent)) {
+        Node callee = node.getFirstChild();
+        if (callee != null && callee.getType() == Token.GETPROP) {
+            String qualifiedName = callee.getQualifiedName();
+            if (functionName.equals(qualifiedName)) {
+                Node target = callee.getNext();
+                if (target != null && target.getType() == Token.STRING) {
+                    className = target.getString();
+                }
+            }
+        }
+    }
+    return className;
+}
+
+Correct version 2 :
+
+private static String extractClassNameIfGoog(Node node, Node parent, String functionName) {
+    String className = null;
+    if (NodeUtil.isExprCall(parent)) {
+        Node callee = node.getFirstChild();
+        if (callee != null && callee.getType() == Token.GETPROP) {
+            String qualifiedName = callee.getQualifiedName();
+            if (functionName.equals(qualifiedName)) {
+                Node target = callee.getNext();
+                if (target != null) {
+                    if (target.getType() == Token.STRING) {
+                        className = target.getString();
+                    }
+                }
+            }
+        }
+    }
+    return className;
+}
+
+Please generate an alternative correct version of the function in the form of Java Markdown code block.
+```java
+private static String extractClassNameIfGoog(Node node, Node parent, String functionName) {
+    String className = null;
+    if (NodeUtil.isExprCall(parent)) {
+        Node callee = node.getFirstChild();
+        if (callee != null && callee.getType() == Token.GETPROP) {
+            String qualifiedName = callee.getQualifiedName();
+            if (functionName.equals(qualifiedName)) {
+                Node target = callee.getNext();
+                if (target != null && target.isString()) {
+                    className = target.getString();
+                }
+            }
+        }
+    }
+    return className;
+}
+```

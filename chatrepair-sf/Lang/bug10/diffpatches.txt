@@ -1,0 +1,253 @@
+  private static StringBuilder escapeRegex(StringBuilder regex, String value, boolean unquote) {
+- boolean wasWhite= false;
+- for(int i= 0; i<value.length(); ++i) {
+?                                   -
+
++ for (int i = 0; i < value.length(); i++) {
+?    +      +      + +                +
+
+- char c= value.charAt(i);
++ char c = value.charAt(i);
+?       +
+
+- if(Character.isWhitespace(c)) {
+- if(!wasWhite) {
+- wasWhite= true;
+- regex.append("\\s*+");
+- }
+- continue;
+- }
+- wasWhite= false;
+- switch(c) {
++ switch (c) {
+?       +
+
+- case '\'':
+- if(unquote) {
+- if(++i==value.length()) {
+- return regex;
+- }
+- c= value.charAt(i);
+- }
+- break;
+  case '?':
+  case '[':
+  case ']':
+  case '(':
+  case ')':
+  case '{':
+  case '}':
+  case '\\':
+  case '|':
+  case '*':
+  case '+':
+  case '^':
+  case '$':
+  case '.':
+- regex.append('\\');
++ regex.append('\\').append(c);
+?                   ++++++++++
+
++ break;
++ case '\'':
++ if (unquote) {
++ if (i + 1 < value.length()) {
++ regex.append(value.charAt(++i));
+  }
++ } else {
+  regex.append(c);
++ }
++ break;
++ default:
++ regex.append(c);
++ break;
++ }
+  }
+  return regex;
+  }
+
+  private static StringBuilder escapeRegex(StringBuilder regex, String value, boolean unquote) {
+- boolean wasWhite= false;
+  for(int i= 0; i<value.length(); ++i) {
+  char c= value.charAt(i);
+- if(Character.isWhitespace(c)) {
+- if(!wasWhite) {
+- wasWhite= true;
+- regex.append("\\s*+");
+- }
+- continue;
+- }
+- wasWhite= false;
+  switch(c) {
+  case '\'':
++ if(unquote && i + 1 < value.length()) {
++ regex.append(value.charAt(++i));
++ } else {
++ regex.append(c);
+- if(unquote) {
+- if(++i==value.length()) {
+- return regex;
+- }
+- c= value.charAt(i);
+  }
+  break;
+  case '?':
+  case '[':
+  case ']':
+  case '(':
+  case ')':
+  case '{':
+  case '}':
+  case '\\':
+  case '|':
+  case '*':
+  case '+':
+  case '^':
+  case '$':
+  case '.':
++ regex.append('\\').append(c);
++ break;
++ default:
+- regex.append('\\');
+?              ^^^^
+
++ regex.append(c);
+?              ^
+
+  }
+- regex.append(c);
+  }
+  return regex;
+  }
+
+  private static StringBuilder escapeRegex(StringBuilder regex, String value, boolean unquote) {
+- boolean wasWhite= false;
+- for(int i= 0; i<value.length(); ++i) {
+?                                   -
+
++ for (int i = 0; i < value.length(); i++) {
+?    +      +      + +                +
+
+- char c= value.charAt(i);
++ char c = value.charAt(i);
+?       +
+
+- if(Character.isWhitespace(c)) {
+- if(!wasWhite) {
+- wasWhite= true;
+- regex.append("\\s*+");
+- }
+- continue;
+- }
+- wasWhite= false;
+- switch(c) {
++ switch (c) {
+?       +
+
+  case '\'':
++ if (unquote && i + 1 < value.length()) {
++ regex.append(value.charAt(++i));
++ } else {
++ regex.append(c);
+- if(unquote) {
+- if(++i==value.length()) {
+- return regex;
+- }
+- c= value.charAt(i);
+  }
+  break;
+  case '?':
+  case '[':
+  case ']':
+  case '(':
+  case ')':
+  case '{':
+  case '}':
+  case '\\':
+  case '|':
+  case '*':
+  case '+':
+  case '^':
+  case '$':
+  case '.':
++ regex.append('\\').append(c);
++ break;
++ default:
+- regex.append('\\');
+?              ^^^^
+
++ regex.append(c);
+?              ^
+
+  }
+- regex.append(c);
+  }
+  return regex;
+  }
+
+  private static StringBuilder escapeRegex(StringBuilder regex, String value, boolean unquote) {
+- boolean wasWhite= false;
+- for(int i= 0; i<value.length(); ++i) {
+?                                   -
+
++ for (int i = 0; i < value.length(); i++) {
+?    +      +      + +                +
+
+- char c= value.charAt(i);
++ char c = value.charAt(i);
+?       +
+
+- if(Character.isWhitespace(c)) {
+- if(!wasWhite) {
+- wasWhite= true;
+- regex.append("\\s*+");
+- }
+- continue;
+- }
+- wasWhite= false;
+- switch(c) {
++ switch (c) {
+?       +
+
+  case '\'':
++ if (unquote && i + 1 < value.length()) {
++ regex.append(value.charAt(++i));
++ } else {
++ regex.append(c);
+- if(unquote) {
+- if(++i==value.length()) {
+- return regex;
+- }
+- c= value.charAt(i);
+  }
+  break;
+  case '?':
+  case '[':
+  case ']':
+  case '(':
+  case ')':
+  case '{':
+  case '}':
+  case '\\':
+  case '|':
+  case '*':
+  case '+':
+  case '^':
+  case '$':
+  case '.':
++ regex.append('\\').append(c);
++ break;
++ default:
+- regex.append('\\');
+?              ^^^^
+
++ regex.append(c);
+?              ^
+
++ break;
+  }
+- regex.append(c);
+  }
+  return regex;
+  }
+

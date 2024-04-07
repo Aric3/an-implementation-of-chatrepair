@@ -1,0 +1,380 @@
+The following code contains a bug:
+    public Complex parse(String source, ParsePosition pos) {
+        int initialIndex = pos.getIndex();
+
+        // parse whitespace
+        parseAndIgnoreWhitespace(source, pos);
+
+        // parse real
+        Number re = parseNumber(source, getRealFormat(), pos);
+        if (re == null) {
+            // invalid real number
+            // set index back to initial, error index should already be set
+            // character examined.
+            pos.setIndex(initialIndex);
+            return null;
+        }
+
+        // parse sign
+        int startIndex = pos.getIndex();
+        char c = parseNextCharacter(source, pos);
+        int sign = 0;
+        switch (c) {
+        case 0 :
+            // no sign
+            // return real only complex number
+            return new Complex(re.doubleValue(), 0.0);
+        case '-' :
+            sign = -1;
+            break;
+        case '+' :
+            sign = 1;
+            break;
+        default :
+            // invalid sign
+            // set index back to initial, error index should be the last
+            // character examined.
+            pos.setIndex(initialIndex);
+            pos.setErrorIndex(startIndex);
+            return null;
+        }
+
+        // parse whitespace
+        parseAndIgnoreWhitespace(source, pos);
+
+        // parse imaginary
+        Number im = parseNumber(source, getRealFormat(), pos);
+        if (im == null) {
+            // invalid imaginary number
+            // set index back to initial, error index should already be set
+            // character examined.
+            pos.setIndex(initialIndex);
+            return null;
+        }
+
+        // parse imaginary character
+        int n = getImaginaryCharacter().length();
+        startIndex = pos.getIndex();
+        int endIndex = startIndex + n;
+        if (
+            source.substring(startIndex, endIndex).compareTo(
+            getImaginaryCharacter()) != 0) {
+            // set index back to initial, error index should be the start index
+            // character examined.
+            pos.setIndex(initialIndex);
+            pos.setErrorIndex(startIndex);
+            return null;
+        }
+        pos.setIndex(endIndex);
+
+        return new Complex(re.doubleValue(), im.doubleValue() * sign);
+    }
+The code fails on this test:
+org.apache.commons.math.complex.ComplexFormatTest::testForgottenImaginaryCharacter
+on this test line:
+        assertNull(new ComplexFormat().parse("1 + 1", pos));
+with the following test error:
+java.lang.StringIndexOutOfBoundsException: String index out of range: 6
+It can be fixed by these possible correct version:
+Correct version 1 :
+
+public Complex parse(String source, ParsePosition pos) {
+    int initialIndex = pos.getIndex();
+
+    // parse whitespace
+    parseAndIgnoreWhitespace(source, pos);
+
+    // parse real
+    Number re = parseNumber(source, getRealFormat(), pos);
+    if (re == null) {
+        // invalid real number
+        // set index back to initial, error index should already be set
+        // character examined.
+        pos.setIndex(initialIndex);
+        return null;
+    }
+
+    // parse sign
+    int startIndex = pos.getIndex();
+    char c = parseNextCharacter(source, pos);
+    int sign = 0;
+    switch (c) {
+        case 0 :
+            // no sign
+            // return real only complex number
+            return new Complex(re.doubleValue(), 0.0);
+        case '-' :
+            sign = -1;
+            break;
+        case '+' :
+            sign = 1;
+            break;
+        default :
+            // invalid sign
+            // set index back to initial, error index should be the last
+            // character examined.
+            pos.setIndex(initialIndex);
+            pos.setErrorIndex(startIndex);
+            return null;
+    }
+
+    // parse whitespace
+    parseAndIgnoreWhitespace(source, pos);
+
+    // check if there are enough characters left for imaginary part
+    if (pos.getIndex() >= source.length()) {
+        pos.setIndex(initialIndex);
+        return null;
+    }
+
+    // parse imaginary
+    Number im = parseNumber(source, getRealFormat(), pos);
+    if (im == null) {
+        // invalid imaginary number
+        // set index back to initial, error index should already be set
+        // character examined.
+        pos.setIndex(initialIndex);
+        return null;
+    }
+
+    // parse imaginary character
+    int n = getImaginaryCharacter().length();
+    startIndex = pos.getIndex();
+    int endIndex = startIndex + n;
+    if (endIndex > source.length() || !source.substring(startIndex, endIndex).equals(getImaginaryCharacter())) {
+        // set index back to initial, error index should be the start index
+        // character examined.
+        pos.setIndex(initialIndex);
+        pos.setErrorIndex(startIndex);
+        return null;
+    }
+    pos.setIndex(endIndex);
+
+    return new Complex(re.doubleValue(), im.doubleValue() * sign);
+}
+
+Correct version 2 :
+
+public Complex parse(String source, ParsePosition pos) {
+    int initialIndex = pos.getIndex();
+
+    // parse whitespace
+    parseAndIgnoreWhitespace(source, pos);
+
+    // parse real
+    Number re = parseNumber(source, getRealFormat(), pos);
+    if (re == null) {
+        // invalid real number
+        // set index back to initial, error index should already be set
+        // character examined.
+        pos.setIndex(initialIndex);
+        return null;
+    }
+
+    // parse sign
+    int startIndex = pos.getIndex();
+    char c = parseNextCharacter(source, pos);
+    int sign = 0;
+    switch (c) {
+        case 0 :
+            // no sign
+            // return real only complex number
+            return new Complex(re.doubleValue(), 0.0);
+        case '-' :
+            sign = -1;
+            break;
+        case '+' :
+            sign = 1;
+            break;
+        default :
+            // invalid sign
+            // set index back to initial, error index should be the last
+            // character examined.
+            pos.setIndex(initialIndex);
+            pos.setErrorIndex(startIndex);
+            return null;
+    }
+
+    // parse whitespace
+    parseAndIgnoreWhitespace(source, pos);
+
+    // parse imaginary
+    Number im = parseNumber(source, getRealFormat(), pos);
+    if (im == null) {
+        // invalid imaginary number
+        // set index back to initial, error index should already be set
+        // character examined.
+        pos.setIndex(initialIndex);
+        return null;
+    }
+
+    // parse imaginary character
+    int n = getImaginaryCharacter().length();
+    startIndex = pos.getIndex();
+    int endIndex = startIndex + n;
+    if (endIndex > source.length() || !source.substring(startIndex, endIndex).equals(getImaginaryCharacter())) {
+        // set index back to initial, error index should be the start index
+        // character examined.
+        pos.setIndex(initialIndex);
+        pos.setErrorIndex(startIndex);
+        return null;
+    }
+    pos.setIndex(endIndex);
+
+    return new Complex(re.doubleValue(), im.doubleValue() * sign);
+}
+
+Correct version 3 :
+
+public Complex parse(String source, ParsePosition pos) {
+    int initialIndex = pos.getIndex();
+
+    // parse whitespace
+    parseAndIgnoreWhitespace(source, pos);
+
+    // parse real
+    Number re = parseNumber(source, getRealFormat(), pos);
+    if (re == null) {
+        // invalid real number
+        // set index back to initial, error index should already be set
+        // character examined.
+        pos.setIndex(initialIndex);
+        return null;
+    }
+
+    // parse sign
+    int startIndex = pos.getIndex();
+    char c = parseNextCharacter(source, pos);
+    int sign = 0;
+    switch (c) {
+        case 0 :
+            // no sign
+            // return real only complex number
+            return new Complex(re.doubleValue(), 0.0);
+        case '-' :
+            sign = -1;
+            break;
+        case '+' :
+            sign = 1;
+            break;
+        default :
+            // invalid sign
+            // set index back to initial, error index should be the last
+            // character examined.
+            pos.setIndex(initialIndex);
+            pos.setErrorIndex(startIndex);
+            return null;
+    }
+
+    // parse whitespace
+    parseAndIgnoreWhitespace(source, pos);
+
+    // check if there are enough characters left for imaginary part
+    if (pos.getIndex() >= source.length()) {
+        pos.setIndex(initialIndex);
+        return null;
+    }
+
+    // parse imaginary
+    Number im = parseNumber(source, getRealFormat(), pos);
+    if (im == null) {
+        // invalid imaginary number
+        // set index back to initial, error index should already be set
+        // character examined.
+        pos.setIndex(initialIndex);
+        return null;
+    }
+
+    // parse imaginary character
+    int n = getImaginaryCharacter().length();
+    startIndex = pos.getIndex();
+    int endIndex = startIndex + n;
+    if (source.length() - startIndex < n || !source.substring(startIndex, endIndex).equals(getImaginaryCharacter())) {
+        // set index back to initial, error index should be the start index
+        // character examined.
+        pos.setIndex(initialIndex);
+        pos.setErrorIndex(startIndex);
+        return null;
+    }
+    pos.setIndex(endIndex);
+
+    return new Complex(re.doubleValue(), im.doubleValue() * sign);
+}
+
+Please generate an alternative correct version of the function in the form of Java Markdown code block.
+```java
+public Complex parse(String source, ParsePosition pos) {
+    int initialIndex = pos.getIndex();
+
+    // parse whitespace
+    parseAndIgnoreWhitespace(source, pos);
+
+    // parse real
+    Number re = parseNumber(source, getRealFormat(), pos);
+    if (re == null) {
+        // invalid real number
+        // set index back to initial, error index should already be set
+        // character examined.
+        pos.setIndex(initialIndex);
+        return null;
+    }
+
+    // parse sign
+    int startIndex = pos.getIndex();
+    char c = parseNextCharacter(source, pos);
+    int sign = 0;
+    switch (c) {
+        case 0 :
+            // no sign
+            // return real only complex number
+            return new Complex(re.doubleValue(), 0.0);
+        case '-' :
+            sign = -1;
+            break;
+        case '+' :
+            sign = 1;
+            break;
+        default :
+            // invalid sign
+            // set index back to initial, error index should be the last
+            // character examined.
+            pos.setIndex(initialIndex);
+            pos.setErrorIndex(startIndex);
+            return null;
+    }
+
+    // parse whitespace
+    parseAndIgnoreWhitespace(source, pos);
+
+    // check if there are enough characters left for imaginary part
+    if (pos.getIndex() >= source.length()) {
+        pos.setIndex(initialIndex);
+        return null;
+    }
+
+    // parse imaginary
+    Number im = parseNumber(source, getRealFormat(), pos);
+    if (im == null) {
+        // invalid imaginary number
+        // set index back to initial, error index should already be set
+        // character examined.
+        pos.setIndex(initialIndex);
+        return null;
+    }
+
+    // parse imaginary character
+    int n = getImaginaryCharacter().length();
+    startIndex = pos.getIndex();
+    int endIndex = startIndex + n;
+    if (endIndex > source.length() || !source.substring(startIndex, endIndex).equals(getImaginaryCharacter())) {
+        // set index back to initial, error index should be the start index
+        // character examined.
+        pos.setIndex(initialIndex);
+        pos.setErrorIndex(startIndex);
+        return null;
+    }
+    pos.setIndex(endIndex);
+
+    return new Complex(re.doubleValue(), im.doubleValue() * sign);
+}
+```

@@ -1,0 +1,81 @@
+The following code contains a bug:
+    public double getSumSquaredErrors() {
+        return sumYY - sumXY * sumXY / sumXX;
+    }
+The code fails on this test:
+org.apache.commons.math.stat.regression.SimpleRegressionTest::testSSENonNegative
+on this test line:
+        assertTrue(reg.getSumSquaredErrors() >= 0.0);
+with the following test error:
+junit.framework.AssertionFailedError
+It can be fixed by these possible correct version:
+Correct version 1 :
+
+public double getSumSquaredErrors() {
+    double result = sumYY - sumXY * sumXY / sumXX;
+    return Math.max(result, 0.0);
+}
+
+Correct version 2 :
+
+public double getSumSquaredErrors() {
+    double result = sumYY - sumXY * sumXY / sumXX;
+    return result < 0.0 ? 0.0 : result;
+}
+
+Correct version 3 :
+
+public double getSumSquaredErrors() {
+    double result = sumYY - sumXY * sumXY / sumXX;
+    if (result < 0.0) {
+        return 0.0;
+    } else {
+        return result;
+    }
+}
+
+Correct version 4 :
+
+public double getSumSquaredErrors() {
+    double result = Math.max(sumYY - sumXY * sumXY / sumXX, 0.0);
+    return result;
+}
+
+Correct version 5 :
+
+public double getSumSquaredErrors() {
+    double result = sumYY - sumXY * sumXY / sumXX;
+    if (result < 0.0) {
+        result = 0.0;
+    }
+    return result;
+}
+
+Correct version 6 :
+
+public double getSumSquaredErrors() {
+    double result = sumYY - (sumXY * sumXY / sumXX);
+    return Math.max(result, 0.0);
+}
+
+Correct version 7 :
+
+public double getSumSquaredErrors() {
+    double result = sumYY - (sumXY * sumXY / sumXX);
+    return result < 0.0 ? 0.0 : result;
+}
+
+Correct version 8 :
+
+public double getSumSquaredErrors() {
+    double result = Math.max(sumYY - (sumXY * sumXY / sumXX), 0.0);
+    return result;
+}
+
+Please generate an alternative correct version of the function in the form of Java Markdown code block.
+```java
+public double getSumSquaredErrors() {
+    double result = sumYY - (sumXY * sumXY / sumXX);
+    return result < 0.0 ? 0.0 : result;
+}
+```
