@@ -1,0 +1,58 @@
+The following code contains a buggy line that has been removed:
+    public int getOffsetFromLocal(long instantLocal) {
+        // get the offset at instantLocal (first estimate)
+        final int offsetLocal = getOffset(instantLocal);
+        // adjust instantLocal using the estimate and recalc the offset
+        final long instantAdjusted = instantLocal - offsetLocal;
+        final int offsetAdjusted = getOffset(instantAdjusted);
+        // if the offsets differ, we must be near a DST boundary
+        if (offsetLocal != offsetAdjusted) {
+            // we need to ensure that time is always after the DST gap
+            // this happens naturally for positive offsets, but not for negative
+            if ((offsetLocal - offsetAdjusted) < 0) {
+                // if we just return offsetAdjusted then the time is pushed
+                // back before the transition, whereas it should be
+                // on or after the transition
+                long nextLocal = nextTransition(instantAdjusted);
+                long nextAdjusted = nextTransition(instantLocal - offsetAdjusted);
+                if (nextLocal != nextAdjusted) {
+                    return offsetLocal;
+                }
+            }
+>>>[INFILL]<<<
+            long prev = previousTransition(instantAdjusted);
+            if (prev < instantAdjusted) {
+                int offsetPrev = getOffset(prev);
+                int diff = offsetPrev - offsetLocal;
+                if (instantAdjusted - prev <= diff) {
+                    return offsetPrev;
+                }
+            }
+        }
+        return offsetAdjusted;
+    }
+This was the original buggy line which was removed by the infill location
+        } else if (offsetLocal > 0) {
+The code fails on this test:
+org.joda.time.TestDateTimeZoneCutover::testDateTimeCreation_london
+on this test line:
+        assertEquals("2011-10-30T01:15:00.000+01:00", base.toString());
+with the following test error:
+junit.framework.ComparisonFailure: expected:<...1-10-30T01:15:00.000[+01:00]> but was:<...1-10-30T01:15:00.000[Z]>
+It can be fixed by these possible patches:
+plausible patch 1 :
+
+        } else {
+
+plausible patch 2 :
+
+        } else if (offsetLocal >= 0) {
+
+plausible patch 3 :
+
+        } else if (offsetLocal >= -1) {
+
+Please generate an alternative patch in the form of Java Markdown code block.
+```java
+        } else {
+```

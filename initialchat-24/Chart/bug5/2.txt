@@ -1,0 +1,187 @@
+You are an Automated Program Repair Tool.
+Here is an example of a repair job:
+<Example start>
+Example buggy function and request:
+The following code contains a buggy :
+    public static boolean isSameLocalTime(Calendar cal1, Calendar cal2) {
+        if (cal1 == null || cal2 == null) {
+            throw new IllegalArgumentException("The date must not be null");
+        }
+        return (cal1.get(Calendar.MILLISECOND) == cal2.get(Calendar.MILLISECOND) &&
+                cal1.get(Calendar.SECOND) == cal2.get(Calendar.SECOND) &&
+                cal1.get(Calendar.MINUTE) == cal2.get(Calendar.MINUTE) &&
+                cal1.get(Calendar.HOUR) == cal2.get(Calendar.HOUR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&
+                cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) &&
+                cal1.getClass() == cal2.getClass());
+    }
+the code fails on this test: org.apache.commons.lang3.time.DateUtilsTest::testIsSameLocalTime_Cal
+on this test line:
+assertFalse("LANG-677", DateUtils.isSameLocalTime(cal3, cal4));
+with the following test error:
+junit.framework.AssertionFailedError: LANG-677
+Please provide an analysis of the problem and the expected behaviour of the correct fix, and the correct version of the function in the form of Java Markdown code block.
+Example response:
+
+1. Analysis of the problem:
+The problem seems to arise from the comparison of hours using `Calendar.HOUR`. However, `Calendar.HOUR` represents the 12-hour clock hour whereas `Calendar.HOUR_OF_DAY` represents the 24-hour clock hour. Since the code is aiming to compare the hour component in a manner consistent with the other fields (such as minute, second, millisecond), it should use `Calendar.HOUR_OF_DAY` instead.
+
+2. Expected Behavior of Correct Fix:
+The correct fix should ensure that the comparison is done using the 24-hour clock hour (Calendar.HOUR_OF_DAY) to maintain consistency with the other fields.
+
+3. Correct function:
+This is the correct version of the function in the form of Java Markdown code block:
+```java
+    public static boolean isSameLocalTime(Calendar cal1, Calendar cal2) {
+        if (cal1 == null || cal2 == null) {
+            throw new IllegalArgumentException("The date must not be null");
+        }
+        return (cal1.get(Calendar.MILLISECOND) == cal2.get(Calendar.MILLISECOND) &&
+                cal1.get(Calendar.SECOND) == cal2.get(Calendar.SECOND) &&
+                cal1.get(Calendar.MINUTE) == cal2.get(Calendar.MINUTE) &&
+                cal1.get(Calendar.HOUR_OF_DAY) == cal2.get(Calendar.HOUR_OF_DAY) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&
+                cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) &&
+                cal1.getClass() == cal2.getClass());
+    }
+```
+Changes made:
+Replaced Calendar.HOUR with Calendar.HOUR_OF_DAY to use 24-hour time format.
+
+<Example end>
+The following code contains a bug:
+    public XYDataItem addOrUpdate(Number x, Number y) {
+        if (x == null) {
+            throw new IllegalArgumentException("Null 'x' argument.");
+        }
+
+        // if we get to here, we know that duplicate X values are not permitted
+        XYDataItem overwritten = null;
+        int index = indexOf(x);
+        if (index >= 0 && !this.allowDuplicateXValues) {
+            XYDataItem existing = (XYDataItem) this.data.get(index);
+            try {
+                overwritten = (XYDataItem) existing.clone();
+            }
+            catch (CloneNotSupportedException e) {
+                throw new SeriesException("Couldn't clone XYDataItem!");
+            }
+            existing.setY(y);
+        }
+        else {
+            // if the series is sorted, the negative index is a result from
+            // Collections.binarySearch() and tells us where to insert the
+            // new item...otherwise it will be just -1 and we should just
+            // append the value to the list...
+            if (this.autoSort) {
+                this.data.add(-index - 1, new XYDataItem(x, y));
+            }
+            else {
+                this.data.add(new XYDataItem(x, y));
+            }
+            // check if this addition will exceed the maximum item count...
+            if (getItemCount() > this.maximumItemCount) {
+                this.data.remove(0);
+            }
+        }
+        fireSeriesChanged();
+        return overwritten;
+    }
+The code fails on this test:
+org.jfree.data.xy.junit.XYSeriesTests::testBug1955483
+on this test line:
+        series.addOrUpdate(1.0, 2.0);
+with the following test error:
+java.lang.IndexOutOfBoundsException: Index: -1, Size: 1
+Please provide an analysis of the problem and the expected behaviour of the correct fix, and the correct version of the function in the form of Java Markdown code block.
+
+
+1. Analysis of the problem:
+The problem seems to arise from the calculation of the index when adding a new XYDataItem to the series. The logic used to calculate the index when the series is sorted is causing the IndexOutOfBoundsException. The negative index calculation (-index - 1) is leading to an incorrect index value.
+
+2. Expected Behavior of Correct Fix:
+The correct fix should ensure that the index calculation when adding a new XYDataItem is done correctly to prevent the IndexOutOfBoundsException and properly insert the new item in the series.
+
+3. Correct function:
+This is the correct version of the function in the form of Java Markdown code block:
+```java
+    public XYDataItem addOrUpdate(Number x, Number y) {
+        if (x == null) {
+            throw new IllegalArgumentException("Null 'x' argument.");
+        }
+
+        // if we get to here, we know that duplicate X values are not permitted
+        XYDataItem overwritten = null;
+        int index = indexOf(x);
+        if (index >= 0 && !this.allowDuplicateXValues) {
+            XYDataItem existing = (XYDataItem) this.data.get(index);
+            try {
+                overwritten = (XYDataItem) existing.clone();
+            }
+            catch (CloneNotSupportedException e) {
+                throw new SeriesException("Couldn't clone XYDataItem!");
+            }
+            existing.setY(y);
+        }
+        else {
+            // if the series is sorted, calculate the insertion index
+            int insertIndex = index >= 0 ? index : -index - 1;
+            this.data.add(insertIndex, new XYDataItem(x, y));
+
+            // check if this addition will exceed the maximum item count...
+            if (getItemCount() > this.maximumItemCount) {
+                this.data.remove(0);
+            }
+        }
+        fireSeriesChanged();
+        return overwritten;
+    }
+```
+Changes made:
+Corrected the index calculation for inserting a new XYDataItem when the series is sorted to prevent IndexOutOfBoundsException.
+
+  public XYDataItem addOrUpdate(Number x, Number y) {
+  if (x == null) {
+  throw new IllegalArgumentException("Null 'x' argument.");
+  }
+  // if we get to here, we know that duplicate X values are not permitted
+  XYDataItem overwritten = null;
+  int index = indexOf(x);
+  if (index >= 0 && !this.allowDuplicateXValues) {
+  XYDataItem existing = (XYDataItem) this.data.get(index);
+  try {
+  overwritten = (XYDataItem) existing.clone();
+  }
+  catch (CloneNotSupportedException e) {
+  throw new SeriesException("Couldn't clone XYDataItem!");
+  }
+  existing.setY(y);
+  }
+  else {
++ // if the series is sorted, calculate the insertion index
++ int insertIndex = index >= 0 ? index : -index - 1;
+- // if the series is sorted, the negative index is a result from
+- // Collections.binarySearch() and tells us where to insert the
+- // new item...otherwise it will be just -1 and we should just
+- // append the value to the list...
+- if (this.autoSort) {
+- this.data.add(-index - 1, new XYDataItem(x, y));
+?               -     ----
+
++ this.data.add(insertIndex, new XYDataItem(x, y));
+?                ++++++
+
+- }
+- else {
+- this.data.add(new XYDataItem(x, y));
+- }
+  // check if this addition will exceed the maximum item count...
+  if (getItemCount() > this.maximumItemCount) {
+  this.data.remove(0);
+  }
+  }
+  fireSeriesChanged();
+  return overwritten;
+  }

@@ -1,0 +1,73 @@
+The following code contains a bug:
+    private StringBuffer appendQuotedString(String pattern, ParsePosition pos,
+            StringBuffer appendTo, boolean escapingOn) {
+        int start = pos.getIndex();
+        char[] c = pattern.toCharArray();
+        if (escapingOn && c[start] == QUOTE) {
+>>>[INFILL]<<<
+            return appendTo == null ? null : appendTo.append(QUOTE);
+        }
+        int lastHold = start;
+        for (int i = pos.getIndex(); i < pattern.length(); i++) {
+            if (escapingOn && pattern.substring(i).startsWith(ESCAPED_QUOTE)) {
+                appendTo.append(c, lastHold, pos.getIndex() - lastHold).append(
+                        QUOTE);
+                pos.setIndex(i + ESCAPED_QUOTE.length());
+                lastHold = pos.getIndex();
+                continue;
+            }
+            switch (c[pos.getIndex()]) {
+            case QUOTE:
+                next(pos);
+                return appendTo == null ? null : appendTo.append(c, lastHold,
+                        pos.getIndex() - lastHold);
+            default:
+                next(pos);
+            }
+        }
+        throw new IllegalArgumentException(
+                "Unterminated quoted string at position " + start);
+    }
+The code fails on this test:
+org.apache.commons.lang.text.ExtendedMessageFormatTest::testEscapedQuote_LANG_477
+on this test line:
+        ExtendedMessageFormat emf = new ExtendedMessageFormat(pattern, registry);
+with the following test error:
+java.lang.OutOfMemoryError: Requested array size exceeds VM limit
+It can be fixed by these possible patches:
+plausible patch 1 :
+
+if (escapingOn && c[pos.getIndex()] == QUOTE) {
+    pos.setIndex(pos.getIndex() + 1);
+    return appendTo == null ? null : appendTo.append(QUOTE);
+}
+
+plausible patch 2 :
+
+if (escapingOn && c[pos.getIndex()] == QUOTE) {
+    appendTo.append(QUOTE);
+    pos.setIndex(pos.getIndex() + 1);
+    return appendTo;
+}
+
+plausible patch 3 :
+
+if (escapingOn && c[pos.getIndex()] == QUOTE) {
+    pos.setIndex(pos.getIndex() + 1);
+    if (appendTo != null) {
+        appendTo.append(QUOTE);
+    }
+    return appendTo;
+}
+
+Please generate an alternative patch in the form of Java Markdown code block.
+```java
+if (escapingOn && c[pos.getIndex()] == QUOTE) {
+    if (appendTo != null) {
+        return appendTo.append(QUOTE);
+    } else {
+        StringBuffer newBuffer = new StringBuffer();
+        return newBuffer.append(QUOTE);
+    }
+}
+```

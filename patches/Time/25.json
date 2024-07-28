@@ -1,9 +1,0 @@
-{
-    "num_of_hunks": 1,
-    "0": {
-        "file_name": "src/main/java/org/joda/time/DateTimeZone.java",
-        "replaced_with": "        } else if (offsetLocal > 0) {\n            long prev = previousTransition(instantAdjusted);\n            if (prev < instantAdjusted) {\n                int offsetPrev = getOffset(prev);\n                int diff = offsetPrev - offsetLocal;\n                if (instantAdjusted - prev <= diff) {\n                    return offsetPrev;\n                }\n            }\n",
-        "patch_type": "insert",
-        "next_line_no": 899
-    }
-}

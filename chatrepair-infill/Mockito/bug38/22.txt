@@ -1,0 +1,64 @@
+The following code contains a buggy line that has been removed:
+    private boolean toStringEquals(Matcher m, Object arg) {
+>>>[INFILL]<<<
+    }
+This was the original buggy line which was removed by the infill location
+        return StringDescription.toString(m).equals(arg.toString());
+The code fails on this test:
+org.mockito.internal.verification.argumentmatching.ArgumentMatchingToolTest::shouldWorkFineWhenGivenArgIsNull
+on this test line:
+        Integer[] suspicious = tool.getSuspiciouslyNotMatchingArgsIndexes((List) Arrays.asList(new Equals(20)), new Object[] {null});
+with the following test error:
+java.lang.NullPointerException
+It can be fixed by these possible patches:
+plausible patch 1 :
+
+if(arg == null) {
+    return false;
+} else {
+    // Add the correct comparison logic here
+    return StringDescription.toString(m).equals(arg.toString());
+}
+
+plausible patch 2 :
+
+if (arg == null) {
+    return false;
+} else {
+    return StringDescription.toString(m).equals(arg.toString());
+}
+
+plausible patch 3 :
+
+// Check if both arg and m are not null before performing comparison
+if (arg == null || m == null) {
+    return false;
+} else {
+    return StringDescription.toString(m).equals(arg.toString());
+}
+
+plausible patch 4 :
+
+if (arg == null || m == null) {
+    return false;
+} else {
+    return StringDescription.toString(m).equals(arg.toString());
+}
+
+plausible patch 5 :
+
+if (arg == null) {
+    return false;
+}
+if (m == null) {
+    return false;
+}
+return StringDescription.toString(m).equals(arg.toString());
+
+Please generate an alternative patch in the form of Java Markdown code block.
+```java
+if (arg == null || m == null) {
+    return false;
+}
+return StringDescription.toString(m).equals(arg.toString());
+```

@@ -1,0 +1,365 @@
+- private StringBuffer appendQuotedString(String pattern, ParsePosition pos,
+- StringBuffer appendTo, boolean escapingOn) {
+- int start = pos.getIndex();
+- char[] c = pattern.toCharArray();
+- if (escapingOn && c[start] == QUOTE) {
+?                       ^^^
+
++ if (escapingOn && c[pos.getIndex()] == QUOTE) {
+?                     ++ +++ ^^^^^^^
+
++ pos.setIndex(pos.getIndex() + 1);
+  return appendTo == null ? null : appendTo.append(QUOTE);
+  }
+- int lastHold = start;
+- for (int i = pos.getIndex(); i < pattern.length(); i++) {
+- if (escapingOn && pattern.substring(i).startsWith(ESCAPED_QUOTE)) {
+- appendTo.append(c, lastHold, pos.getIndex() - lastHold).append(
+- QUOTE);
+- pos.setIndex(i + ESCAPED_QUOTE.length());
+- lastHold = pos.getIndex();
+- continue;
+- }
+- switch (c[pos.getIndex()]) {
+- case QUOTE:
+- next(pos);
+- return appendTo == null ? null : appendTo.append(c, lastHold,
+- pos.getIndex() - lastHold);
+- default:
+- next(pos);
+- }
+- }
+- throw new IllegalArgumentException(
+- "Unterminated quoted string at position " + start);
+- }
+
+- private StringBuffer appendQuotedString(String pattern, ParsePosition pos,
+- StringBuffer appendTo, boolean escapingOn) {
+- int start = pos.getIndex();
+- char[] c = pattern.toCharArray();
+- if (escapingOn && c[start] == QUOTE) {
+?                       ^^^
+
++ if (escapingOn && c[pos.getIndex()] == QUOTE) {
+?                     ++ +++ ^^^^^^^
+
+- return appendTo == null ? null : appendTo.append(QUOTE);
++ appendTo.append(QUOTE);
++ pos.setIndex(pos.getIndex() + 1);
++ return appendTo;
+  }
+- int lastHold = start;
+- for (int i = pos.getIndex(); i < pattern.length(); i++) {
+- if (escapingOn && pattern.substring(i).startsWith(ESCAPED_QUOTE)) {
+- appendTo.append(c, lastHold, pos.getIndex() - lastHold).append(
+- QUOTE);
+- pos.setIndex(i + ESCAPED_QUOTE.length());
+- lastHold = pos.getIndex();
+- continue;
+- }
+- switch (c[pos.getIndex()]) {
+- case QUOTE:
+- next(pos);
+- return appendTo == null ? null : appendTo.append(c, lastHold,
+- pos.getIndex() - lastHold);
+- default:
+- next(pos);
+- }
+- }
+- throw new IllegalArgumentException(
+- "Unterminated quoted string at position " + start);
+- }
+
+- private StringBuffer appendQuotedString(String pattern, ParsePosition pos,
+- StringBuffer appendTo, boolean escapingOn) {
+- int start = pos.getIndex();
+- char[] c = pattern.toCharArray();
+- if (escapingOn && c[start] == QUOTE) {
+?                       ^^^
+
++ if (escapingOn && c[pos.getIndex()] == QUOTE) {
+?                     ++ +++ ^^^^^^^
+
+- return appendTo == null ? null : appendTo.append(QUOTE);
++ pos.setIndex(pos.getIndex() + 1);
++ if (appendTo != null) {
++ appendTo.append(QUOTE);
+  }
++ return appendTo;
+- int lastHold = start;
+- for (int i = pos.getIndex(); i < pattern.length(); i++) {
+- if (escapingOn && pattern.substring(i).startsWith(ESCAPED_QUOTE)) {
+- appendTo.append(c, lastHold, pos.getIndex() - lastHold).append(
+- QUOTE);
+- pos.setIndex(i + ESCAPED_QUOTE.length());
+- lastHold = pos.getIndex();
+- continue;
+  }
+- switch (c[pos.getIndex()]) {
+- case QUOTE:
+- next(pos);
+- return appendTo == null ? null : appendTo.append(c, lastHold,
+- pos.getIndex() - lastHold);
+- default:
+- next(pos);
+- }
+- }
+- throw new IllegalArgumentException(
+- "Unterminated quoted string at position " + start);
+- }
+
++ // Alternative patch:
+- private StringBuffer appendQuotedString(String pattern, ParsePosition pos,
+- StringBuffer appendTo, boolean escapingOn) {
+- int start = pos.getIndex();
+- char[] c = pattern.toCharArray();
+  if (escapingOn && c[start] == QUOTE) {
+- return appendTo == null ? null : appendTo.append(QUOTE);
++ pos.setIndex(start + 1);
++ if (appendTo != null) {
++ appendTo.append(QUOTE);
+  }
++ return appendTo;
+- int lastHold = start;
+- for (int i = pos.getIndex(); i < pattern.length(); i++) {
+- if (escapingOn && pattern.substring(i).startsWith(ESCAPED_QUOTE)) {
+- appendTo.append(c, lastHold, pos.getIndex() - lastHold).append(
+- QUOTE);
+- pos.setIndex(i + ESCAPED_QUOTE.length());
+- lastHold = pos.getIndex();
+- continue;
+  }
+- switch (c[pos.getIndex()]) {
+- case QUOTE:
+- next(pos);
+- return appendTo == null ? null : appendTo.append(c, lastHold,
+- pos.getIndex() - lastHold);
+- default:
+- next(pos);
+- }
+- }
+- throw new IllegalArgumentException(
+- "Unterminated quoted string at position " + start);
+- }
+
+- private StringBuffer appendQuotedString(String pattern, ParsePosition pos,
+- StringBuffer appendTo, boolean escapingOn) {
+- int start = pos.getIndex();
+- char[] c = pattern.toCharArray();
+  if (escapingOn && c[start] == QUOTE) {
+- return appendTo == null ? null : appendTo.append(QUOTE);
++ pos.setIndex(start + 1);
++ if (appendTo != null) {
++ appendTo.append(QUOTE);
+  }
++ return appendTo;
+- int lastHold = start;
+- for (int i = pos.getIndex(); i < pattern.length(); i++) {
+- if (escapingOn && pattern.substring(i).startsWith(ESCAPED_QUOTE)) {
+- appendTo.append(c, lastHold, pos.getIndex() - lastHold).append(
+- QUOTE);
+- pos.setIndex(i + ESCAPED_QUOTE.length());
+- lastHold = pos.getIndex();
+- continue;
+  }
+- switch (c[pos.getIndex()]) {
+- case QUOTE:
+- next(pos);
+- return appendTo == null ? null : appendTo.append(c, lastHold,
+- pos.getIndex() - lastHold);
+- default:
+- next(pos);
+- }
+- }
+- throw new IllegalArgumentException(
+- "Unterminated quoted string at position " + start);
+- }
+
+- private StringBuffer appendQuotedString(String pattern, ParsePosition pos,
+- StringBuffer appendTo, boolean escapingOn) {
+- int start = pos.getIndex();
+- char[] c = pattern.toCharArray();
+- if (escapingOn && c[start] == QUOTE) {
+?                       ^^^
+
++ if (escapingOn && c[pos.getIndex()] == QUOTE) {
+?                     ++ +++ ^^^^^^^
+
+- return appendTo == null ? null : appendTo.append(QUOTE);
++ if (appendTo != null) {
++ appendTo.append(QUOTE);
+  }
++ pos.setIndex(pos.getIndex() + 1);
++ return appendTo;
+- int lastHold = start;
+- for (int i = pos.getIndex(); i < pattern.length(); i++) {
+- if (escapingOn && pattern.substring(i).startsWith(ESCAPED_QUOTE)) {
+- appendTo.append(c, lastHold, pos.getIndex() - lastHold).append(
+- QUOTE);
+- pos.setIndex(i + ESCAPED_QUOTE.length());
+- lastHold = pos.getIndex();
+- continue;
+  }
+- switch (c[pos.getIndex()]) {
+- case QUOTE:
+- next(pos);
+- return appendTo == null ? null : appendTo.append(c, lastHold,
+- pos.getIndex() - lastHold);
+- default:
+- next(pos);
+- }
+- }
+- throw new IllegalArgumentException(
+- "Unterminated quoted string at position " + start);
+- }
+
++ // Alternative patch:
+- private StringBuffer appendQuotedString(String pattern, ParsePosition pos,
+- StringBuffer appendTo, boolean escapingOn) {
+- int start = pos.getIndex();
+- char[] c = pattern.toCharArray();
+- if (escapingOn && c[start] == QUOTE) {
+?                       ^^^
+
++ if (escapingOn && c[pos.getIndex()] == QUOTE) {
+?                     ++ +++ ^^^^^^^
+
+- return appendTo == null ? null : appendTo.append(QUOTE);
++ if (appendTo != null) {
++ appendTo.append(QUOTE);
+  }
++ pos.setIndex(pos.getIndex() + 1);
++ return appendTo;
+- int lastHold = start;
+- for (int i = pos.getIndex(); i < pattern.length(); i++) {
+- if (escapingOn && pattern.substring(i).startsWith(ESCAPED_QUOTE)) {
+- appendTo.append(c, lastHold, pos.getIndex() - lastHold).append(
+- QUOTE);
+- pos.setIndex(i + ESCAPED_QUOTE.length());
+- lastHold = pos.getIndex();
+- continue;
+  }
+- switch (c[pos.getIndex()]) {
+- case QUOTE:
+- next(pos);
+- return appendTo == null ? null : appendTo.append(c, lastHold,
+- pos.getIndex() - lastHold);
+- default:
+- next(pos);
+- }
+- }
+- throw new IllegalArgumentException(
+- "Unterminated quoted string at position " + start);
+- }
+
++ // Alternative patch 2:
+- private StringBuffer appendQuotedString(String pattern, ParsePosition pos,
+- StringBuffer appendTo, boolean escapingOn) {
+- int start = pos.getIndex();
+- char[] c = pattern.toCharArray();
+- if (escapingOn && c[start] == QUOTE) {
+?                       ^^^
+
++ if (escapingOn && c[pos.getIndex()] == QUOTE) {
+?                     ++ +++ ^^^^^^^
+
+- return appendTo == null ? null : appendTo.append(QUOTE);
++ pos.setIndex(pos.getIndex() + 1);
++ if (appendTo != null) {
++ appendTo.append(QUOTE);
+  }
++ return appendTo;
+- int lastHold = start;
+- for (int i = pos.getIndex(); i < pattern.length(); i++) {
+- if (escapingOn && pattern.substring(i).startsWith(ESCAPED_QUOTE)) {
+- appendTo.append(c, lastHold, pos.getIndex() - lastHold).append(
+- QUOTE);
+- pos.setIndex(i + ESCAPED_QUOTE.length());
+- lastHold = pos.getIndex();
+- continue;
+  }
+- switch (c[pos.getIndex()]) {
+- case QUOTE:
+- next(pos);
+- return appendTo == null ? null : appendTo.append(c, lastHold,
+- pos.getIndex() - lastHold);
+- default:
+- next(pos);
+- }
+- }
+- throw new IllegalArgumentException(
+- "Unterminated quoted string at position " + start);
+- }
+
++ // Alternative Patch 3:
+- private StringBuffer appendQuotedString(String pattern, ParsePosition pos,
+- StringBuffer appendTo, boolean escapingOn) {
+- int start = pos.getIndex();
+- char[] c = pattern.toCharArray();
+- if (escapingOn && c[start] == QUOTE) {
+?                       ^^^
+
++ if (escapingOn && c[pos.getIndex()] == QUOTE) {
+?                     ++ +++ ^^^^^^^
+
+- return appendTo == null ? null : appendTo.append(QUOTE);
++ if (appendTo != null) {
++ appendTo.append(QUOTE);
+  }
++ pos.setIndex(pos.getIndex() + 1);
++ return appendTo;
+- int lastHold = start;
+- for (int i = pos.getIndex(); i < pattern.length(); i++) {
+- if (escapingOn && pattern.substring(i).startsWith(ESCAPED_QUOTE)) {
+- appendTo.append(c, lastHold, pos.getIndex() - lastHold).append(
+- QUOTE);
+- pos.setIndex(i + ESCAPED_QUOTE.length());
+- lastHold = pos.getIndex();
+- continue;
+  }
+- switch (c[pos.getIndex()]) {
+- case QUOTE:
+- next(pos);
+- return appendTo == null ? null : appendTo.append(c, lastHold,
+- pos.getIndex() - lastHold);
+- default:
+- next(pos);
+- }
+- }
+- throw new IllegalArgumentException(
+- "Unterminated quoted string at position " + start);
+- }
+
+- private StringBuffer appendQuotedString(String pattern, ParsePosition pos,
+- StringBuffer appendTo, boolean escapingOn) {
+- int start = pos.getIndex();
+- char[] c = pattern.toCharArray();
+  if (escapingOn && c[start] == QUOTE) {
+- return appendTo == null ? null : appendTo.append(QUOTE);
++ if (appendTo != null) {
++ appendTo.append(QUOTE);
+  }
++ pos.setIndex(start + 1);
++ return appendTo;
+- int lastHold = start;
+- for (int i = pos.getIndex(); i < pattern.length(); i++) {
+- if (escapingOn && pattern.substring(i).startsWith(ESCAPED_QUOTE)) {
+- appendTo.append(c, lastHold, pos.getIndex() - lastHold).append(
+- QUOTE);
+- pos.setIndex(i + ESCAPED_QUOTE.length());
+- lastHold = pos.getIndex();
+- continue;
+  }
+- switch (c[pos.getIndex()]) {
+- case QUOTE:
+- next(pos);
+- return appendTo == null ? null : appendTo.append(c, lastHold,
+- pos.getIndex() - lastHold);
+- default:
+- next(pos);
+- }
+- }
+- throw new IllegalArgumentException(
+- "Unterminated quoted string at position " + start);
+- }
+

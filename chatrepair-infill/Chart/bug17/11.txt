@@ -1,0 +1,22 @@
+The following code contains a buggy line that has been removed:
+    public Object clone() throws CloneNotSupportedException {
+>>>[INFILL]<<<
+        return clone;
+    }
+This was the original buggy line which was removed by the infill location
+        Object clone = createCopy(0, getItemCount() - 1);
+The code fails on this test:
+org.jfree.data.time.junit.TimeSeriesTests::testBug1832432
+on this test line:
+            s2 = (TimeSeries) s1.clone();
+with the following test error:
+java.lang.IllegalArgumentException: Requires start <= end.
+It can be fixed by these possible patches:
+plausible patch 1 :
+
+Object clone = createCopy(0, Math.max(0, getItemCount() - 1));
+
+Please generate an alternative patch in the form of Java Markdown code block.
+```java
+Object clone = createCopy(0, getItemCount() > 0 ? getItemCount() - 1 : 0);
+```

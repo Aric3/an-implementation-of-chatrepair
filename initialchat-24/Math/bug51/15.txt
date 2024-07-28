@@ -1,0 +1,436 @@
+You are an Automated Program Repair Tool.
+Here is an example of a repair job:
+<Example start>
+Example buggy function and request:
+The following code contains a buggy :
+    public static boolean isSameLocalTime(Calendar cal1, Calendar cal2) {
+        if (cal1 == null || cal2 == null) {
+            throw new IllegalArgumentException("The date must not be null");
+        }
+        return (cal1.get(Calendar.MILLISECOND) == cal2.get(Calendar.MILLISECOND) &&
+                cal1.get(Calendar.SECOND) == cal2.get(Calendar.SECOND) &&
+                cal1.get(Calendar.MINUTE) == cal2.get(Calendar.MINUTE) &&
+                cal1.get(Calendar.HOUR) == cal2.get(Calendar.HOUR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&
+                cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) &&
+                cal1.getClass() == cal2.getClass());
+    }
+the code fails on this test: org.apache.commons.lang3.time.DateUtilsTest::testIsSameLocalTime_Cal
+on this test line:
+assertFalse("LANG-677", DateUtils.isSameLocalTime(cal3, cal4));
+with the following test error:
+junit.framework.AssertionFailedError: LANG-677
+Please provide an analysis of the problem and the expected behaviour of the correct fix, and the correct version of the function in the form of Java Markdown code block.
+Example response:
+
+1. Analysis of the problem:
+The problem seems to arise from the comparison of hours using `Calendar.HOUR`. However, `Calendar.HOUR` represents the 12-hour clock hour whereas `Calendar.HOUR_OF_DAY` represents the 24-hour clock hour. Since the code is aiming to compare the hour component in a manner consistent with the other fields (such as minute, second, millisecond), it should use `Calendar.HOUR_OF_DAY` instead.
+
+2. Expected Behavior of Correct Fix:
+The correct fix should ensure that the comparison is done using the 24-hour clock hour (Calendar.HOUR_OF_DAY) to maintain consistency with the other fields.
+
+3. Correct function:
+This is the correct version of the function in the form of Java Markdown code block:
+```java
+    public static boolean isSameLocalTime(Calendar cal1, Calendar cal2) {
+        if (cal1 == null || cal2 == null) {
+            throw new IllegalArgumentException("The date must not be null");
+        }
+        return (cal1.get(Calendar.MILLISECOND) == cal2.get(Calendar.MILLISECOND) &&
+                cal1.get(Calendar.SECOND) == cal2.get(Calendar.SECOND) &&
+                cal1.get(Calendar.MINUTE) == cal2.get(Calendar.MINUTE) &&
+                cal1.get(Calendar.HOUR_OF_DAY) == cal2.get(Calendar.HOUR_OF_DAY) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&
+                cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) &&
+                cal1.getClass() == cal2.getClass());
+    }
+```
+Changes made:
+Replaced Calendar.HOUR with Calendar.HOUR_OF_DAY to use 24-hour time format.
+
+<Example end>
+The following code contains a bug:
+    protected final double doSolve() {
+        // Get initial solution
+        double x0 = getMin();
+        double x1 = getMax();
+        double f0 = computeObjectiveValue(x0);
+        double f1 = computeObjectiveValue(x1);
+
+        // If one of the bounds is the exact root, return it. Since these are
+        // not under-approximations or over-approximations, we can return them
+        // regardless of the allowed solutions.
+        if (f0 == 0.0) {
+            return x0;
+        }
+        if (f1 == 0.0) {
+            return x1;
+        }
+
+        // Verify bracketing of initial solution.
+        verifyBracketing(x0, x1);
+
+        // Get accuracies.
+        final double ftol = getFunctionValueAccuracy();
+        final double atol = getAbsoluteAccuracy();
+        final double rtol = getRelativeAccuracy();
+
+        // Keep track of inverted intervals, meaning that the left bound is
+        // larger than the right bound.
+        boolean inverted = false;
+
+        // Keep finding better approximations.
+        while (true) {
+            // Calculate the next approximation.
+            final double x = x1 - ((f1 * (x1 - x0)) / (f1 - f0));
+            final double fx = computeObjectiveValue(x);
+
+            // If the new approximation is the exact root, return it. Since
+            // this is not an under-approximation or an over-approximation,
+            // we can return it regardless of the allowed solutions.
+            if (fx == 0.0) {
+                return x;
+            }
+
+            // Update the bounds with the new approximation.
+            if (f1 * fx < 0) {
+                // The value of x1 has switched to the other bound, thus inverting
+                // the interval.
+                x0 = x1;
+                f0 = f1;
+                inverted = !inverted;
+            } else {
+                switch (method) {
+                case ILLINOIS:
+                    f0 *= 0.5;
+                    break;
+                case PEGASUS:
+                    f0 *= f1 / (f1 + fx);
+                    break;
+                        // Update formula cannot make any progress: Update the
+                        // search interval.
+                default:
+                    // Should never happen.
+                }
+            }
+            // Update from [x0, x1] to [x0, x].
+            x1 = x;
+            f1 = fx;
+
+            // If the function value of the last approximation is too small,
+            // given the function value accuracy, then we can't get closer to
+            // the root than we already are.
+            if (FastMath.abs(f1) <= ftol) {
+                switch (allowed) {
+                case ANY_SIDE:
+                    return x1;
+                case LEFT_SIDE:
+                    if (inverted) {
+                        return x1;
+                    }
+                    break;
+                case RIGHT_SIDE:
+                    if (!inverted) {
+                        return x1;
+                    }
+                    break;
+                case BELOW_SIDE:
+                    if (f1 <= 0) {
+                        return x1;
+                    }
+                    break;
+                case ABOVE_SIDE:
+                    if (f1 >= 0) {
+                        return x1;
+                    }
+                    break;
+                default:
+                    throw new MathInternalError();
+                }
+            }
+
+            // If the current interval is within the given accuracies, we
+            // are satisfied with the current approximation.
+            if (FastMath.abs(x1 - x0) < FastMath.max(rtol * FastMath.abs(x1),
+                                                     atol)) {
+                switch (allowed) {
+                case ANY_SIDE:
+                    return x1;
+                case LEFT_SIDE:
+                    return inverted ? x1 : x0;
+                case RIGHT_SIDE:
+                    return inverted ? x0 : x1;
+                case BELOW_SIDE:
+                    return (f1 <= 0) ? x1 : x0;
+                case ABOVE_SIDE:
+                    return (f1 >= 0) ? x1 : x0;
+                default:
+                    throw new MathInternalError();
+                }
+            }
+        }
+    }
+The code fails on this test:
+org.apache.commons.math.analysis.solvers.RegulaFalsiSolverTest::testIssue631
+on this test line:
+        final double root = solver.solve(3624, f, 1, 10);
+with the following test error:
+org.apache.commons.math.exception.TooManyEvaluationsException: illegal state: maximal count (3,624) exceeded: evaluations
+Please provide an analysis of the problem and the expected behaviour of the correct fix, and the correct version of the function in the form of Java Markdown code block.
+
+
+1. Analysis of the problem:
+The problem seems to be related to the termination condition of the while loop in the `doSolve` function. The loop seems to run indefinitely or for too many iterations, causing the `TooManyEvaluationsException` to be thrown. This could be due to the termination conditions not being properly met, leading to an infinite loop.
+
+2. Expected Behavior of Correct Fix:
+The correct fix should ensure that the loop terminates when the desired accuracy or maximum number of iterations is reached. This will prevent the function from running indefinitely and throwing the `TooManyEvaluationsException`.
+
+3. Correct function:
+This is the correct version of the function in the form of Java Markdown code block:
+
+```java
+protected final double doSolve() {
+        // Get initial solution
+        double x0 = getMin();
+        double x1 = getMax();
+        double f0 = computeObjectiveValue(x0);
+        double f1 = computeObjectiveValue(x1);
+
+        // If one of the bounds is the exact root, return it. Since these are
+        // not under-approximations or over-approximations, we can return them
+        // regardless of the allowed solutions.
+        if (f0 == 0.0) {
+            return x0;
+        }
+        if (f1 == 0.0) {
+            return x1;
+        }
+
+        // Verify bracketing of initial solution.
+        verifyBracketing(x0, x1);
+
+        // Get accuracies.
+        final double ftol = getFunctionValueAccuracy();
+        final double atol = getAbsoluteAccuracy();
+        final double rtol = getRelativeAccuracy();
+
+        // Keep track of inverted intervals, meaning that the left bound is
+        // larger than the right bound.
+        boolean inverted = false;
+        
+        int maxIterations = getMaxEvaluations(); // Get the maximum number of iterations allowed
+
+        // Keep finding better approximations.
+        for (int i = 0; i < maxIterations; i++) {
+            // Calculate the next approximation.
+            final double x = x1 - ((f1 * (x1 - x0)) / (f1 - f0));
+            final double fx = computeObjectiveValue(x);
+
+            // If the new approximation is the exact root, return it. Since
+            // this is not an under-approximation or an over-approximation,
+            // we can return it regardless of the allowed solutions.
+            if (fx == 0.0) {
+                return x;
+            }
+
+            // Update the bounds with the new approximation.
+            if (f1 * fx < 0) {
+                // The value of x1 has switched to the other bound, thus inverting
+                // the interval.
+                x0 = x1;
+                f0 = f1;
+                inverted = !inverted;
+            } else {
+                switch (method) {
+                case ILLINOIS:
+                    f0 *= 0.5;
+                    break;
+                case PEGASUS:
+                    f0 *= f1 / (f1 + fx);
+                    break;
+                        // Update formula cannot make any progress: Update the
+                        // search interval.
+                default:
+                    // Should never happen.
+                }
+            }
+            // Update from [x0, x1] to [x0, x].
+            x1 = x;
+            f1 = fx;
+
+            // If the function value of the last approximation is too small,
+            // given the function value accuracy, then we can't get closer to
+            // the root than we already are.
+            if (FastMath.abs(f1) <= ftol) {
+                switch (allowed) {
+                case ANY_SIDE:
+                    return x1;
+                case LEFT_SIDE:
+                    if (inverted) {
+                        return x1;
+                    }
+                    break;
+                case RIGHT_SIDE:
+                    if (!inverted) {
+                        return x1;
+                    }
+                    break;
+                case BELOW_SIDE:
+                    if (f1 <= 0) {
+                        return x1;
+                    }
+                    break;
+                case ABOVE_SIDE:
+                    if (f1 >= 0) {
+                        return x1;
+                    }
+                    break;
+                default:
+                    throw new MathInternalError();
+                }
+            }
+
+            // If the current interval is within the given accuracies, we
+            // are satisfied with the current approximation.
+            if (FastMath.abs(x1 - x0) < FastMath.max(rtol * FastMath.abs(x1),
+                                                     atol)) {
+                switch (allowed) {
+                case ANY_SIDE:
+                    return x1;
+                case LEFT_SIDE:
+                    return inverted ? x1 : x0;
+                case RIGHT_SIDE:
+                    return inverted ? x0 : x1;
+                case BELOW_SIDE:
+                    return (f1 <= 0) ? x1 : x0;
+                case ABOVE_SIDE:
+                    return (f1 >= 0) ? x1 : x0;
+                default:
+                    throw new MathInternalError();
+                }
+            }
+        }
+        throw new TooManyEvaluationsException(maxIterations); // Throw exception if maximum iterations are exceeded
+    }
+```
+
+Changes made:
+- Added a maximum iterations limit to prevent an infinite loop and ensure termination with `getMaxEvaluations()`.
+- Added a check to throw `TooManyEvaluationsException` if the maximum iterations limit is exceeded.
+
+  protected final double doSolve() {
+  // Get initial solution
+  double x0 = getMin();
+  double x1 = getMax();
+  double f0 = computeObjectiveValue(x0);
+  double f1 = computeObjectiveValue(x1);
+  // If one of the bounds is the exact root, return it. Since these are
+  // not under-approximations or over-approximations, we can return them
+  // regardless of the allowed solutions.
+  if (f0 == 0.0) {
+  return x0;
+  }
+  if (f1 == 0.0) {
+  return x1;
+  }
+  // Verify bracketing of initial solution.
+  verifyBracketing(x0, x1);
+  // Get accuracies.
+  final double ftol = getFunctionValueAccuracy();
+  final double atol = getAbsoluteAccuracy();
+  final double rtol = getRelativeAccuracy();
+  // Keep track of inverted intervals, meaning that the left bound is
+  // larger than the right bound.
+  boolean inverted = false;
++ int maxIterations = getMaxEvaluations(); // Get the maximum number of iterations allowed
+  // Keep finding better approximations.
+- while (true) {
++ for (int i = 0; i < maxIterations; i++) {
+  // Calculate the next approximation.
+  final double x = x1 - ((f1 * (x1 - x0)) / (f1 - f0));
+  final double fx = computeObjectiveValue(x);
+  // If the new approximation is the exact root, return it. Since
+  // this is not an under-approximation or an over-approximation,
+  // we can return it regardless of the allowed solutions.
+  if (fx == 0.0) {
+  return x;
+  }
+  // Update the bounds with the new approximation.
+  if (f1 * fx < 0) {
+  // The value of x1 has switched to the other bound, thus inverting
+  // the interval.
+  x0 = x1;
+  f0 = f1;
+  inverted = !inverted;
+  } else {
+  switch (method) {
+  case ILLINOIS:
+  f0 *= 0.5;
+  break;
+  case PEGASUS:
+  f0 *= f1 / (f1 + fx);
+  break;
+  // Update formula cannot make any progress: Update the
+  // search interval.
+  default:
+  // Should never happen.
+  }
+  }
+  // Update from [x0, x1] to [x0, x].
+  x1 = x;
+  f1 = fx;
+  // If the function value of the last approximation is too small,
+  // given the function value accuracy, then we can't get closer to
+  // the root than we already are.
+  if (FastMath.abs(f1) <= ftol) {
+  switch (allowed) {
+  case ANY_SIDE:
+  return x1;
+  case LEFT_SIDE:
+  if (inverted) {
+  return x1;
+  }
+  break;
+  case RIGHT_SIDE:
+  if (!inverted) {
+  return x1;
+  }
+  break;
+  case BELOW_SIDE:
+  if (f1 <= 0) {
+  return x1;
+  }
+  break;
+  case ABOVE_SIDE:
+  if (f1 >= 0) {
+  return x1;
+  }
+  break;
+  default:
+  throw new MathInternalError();
+  }
+  }
+  // If the current interval is within the given accuracies, we
+  // are satisfied with the current approximation.
+  if (FastMath.abs(x1 - x0) < FastMath.max(rtol * FastMath.abs(x1),
+  atol)) {
+  switch (allowed) {
+  case ANY_SIDE:
+  return x1;
+  case LEFT_SIDE:
+  return inverted ? x1 : x0;
+  case RIGHT_SIDE:
+  return inverted ? x0 : x1;
+  case BELOW_SIDE:
+  return (f1 <= 0) ? x1 : x0;
+  case ABOVE_SIDE:
+  return (f1 >= 0) ? x1 : x0;
+  default:
+  throw new MathInternalError();
+  }
+  }
+  }
++ throw new TooManyEvaluationsException(maxIterations); // Throw exception if maximum iterations are exceeded
+  }

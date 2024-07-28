@@ -76,7 +76,7 @@ ALTERNATIVES_STATISTICS_FILE = 'alternatives_statistics.csv'
 INITIALCHAT_STATISTIFCS_FILE = 'initialchat_statistics.csv'
 
 # initialchat常量配置
-NUMOFREPEAT_PER_BUG = 3
+NUMOFREPEAT_PER_BUG = 24
 PATCH_FAILURE_CATEGORY = ['FNT','FOT','CE','CE','TOUT','P']
 
 

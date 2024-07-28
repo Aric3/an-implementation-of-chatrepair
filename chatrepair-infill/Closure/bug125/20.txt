@@ -1,0 +1,49 @@
+The following code contains a buggy line that has been removed:
+  private void visitNew(NodeTraversal t, Node n) {
+    Node constructor = n.getFirstChild();
+    JSType type = getJSType(constructor).restrictByNotNullOrUndefined();
+    if (type.isConstructor() || type.isEmptyType() || type.isUnknownType()) {
+      FunctionType fnType = type.toMaybeFunctionType();
+>>>[INFILL]<<<
+        visitParameterList(t, n, fnType);
+        ensureTyped(t, n, fnType.getInstanceType());
+      } else {
+        ensureTyped(t, n);
+      }
+    } else {
+      report(t, n, NOT_A_CONSTRUCTOR);
+      ensureTyped(t, n);
+    }
+  }
+This was the original buggy line which was removed by the infill location
+      if (fnType != null) {
+The code fails on this test:
+com.google.javascript.jscomp.TypeCheckTest::testIssue1002
+on this test line:
+    testTypes(
+        "/** @interface */" +
+        "var I = function() {};" +
+        "/** @constructor @implements {I} */" +
+        "var A = function() {};" +
+        "/** @constructor @implements {I} */" +
+        "var B = function() {};" +
+        "var f = function() {" +
+        "  if (A === B) {" +
+        "    new B();" +
+        "  }" +
+        "};");
+with the following test error:
+java.lang.IllegalStateException
+It can be fixed by these possible patches:
+plausible patch 1 :
+
+if (fnType != null && fnType.isConstructor()) {
+
+plausible patch 2 :
+
+if (fnType != null && fnType.isConstructor() && !fnType.isEmptyType() && !fnType.isUnknownType()) {
+
+Please generate an alternative patch in the form of Java Markdown code block.
+```java
+if (fnType != null && (fnType.isConstructor() || fnType.isEmptyType() || fnType.isUnknownType())) {
+```

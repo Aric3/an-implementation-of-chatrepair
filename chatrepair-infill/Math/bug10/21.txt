@@ -1,0 +1,76 @@
+The following code contains a bug:
+public void atan2(final double[] y, final int yOffset,
+                  final double[] x, final int xOffset,
+                  final double[] result, final int resultOffset) {
+
+    // compute r = sqrt(x^2+y^2)
+    double[] tmp1 = new double[getSize()];
+    multiply(x, xOffset, x, xOffset, tmp1, 0);      // x^2
+    double[] tmp2 = new double[getSize()];
+    multiply(y, yOffset, y, yOffset, tmp2, 0);      // y^2
+    add(tmp1, 0, tmp2, 0, tmp2, 0);                 // x^2 + y^2
+    rootN(tmp2, 0, 2, tmp1, 0);                     // r = sqrt(x^2 + y^2)
+
+    if (x[xOffset] >= 0) {
+
+        // compute atan2(y, x) = 2 atan(y / (r + x))
+        add(tmp1, 0, x, xOffset, tmp2, 0);          // r + x
+        divide(y, yOffset, tmp2, 0, tmp1, 0);       // y /(r + x)
+        atan(tmp1, 0, tmp2, 0);                     // atan(y / (r + x))
+        for (int i = 0; i < tmp2.length; ++i) {
+            result[resultOffset + i] = 2 * tmp2[i]; // 2 * atan(y / (r + x))
+        }
+
+    } else {
+
+        // compute atan2(y, x) = +/- pi - 2 atan(y / (r - x))
+        subtract(tmp1, 0, x, xOffset, tmp2, 0);     // r - x
+        divide(y, yOffset, tmp2, 0, tmp1, 0);       // y /(r - x)
+        atan(tmp1, 0, tmp2, 0);                     // atan(y / (r - x))
+        result[resultOffset] =
+                ((tmp2[0] <= 0) ? -FastMath.PI : FastMath.PI) - 2 * tmp2[0]; // +/-pi - 2 * atan(y / (r - x))
+        for (int i = 1; i < tmp2.length; ++i) {
+            result[resultOffset + i] = -2 * tmp2[i]; // +/-pi - 2 * atan(y / (r - x))
+        }
+
+    }
+
+    // Fix value to take special cases (+0/+0, +0/-0, -0/+0, -0/-0, +/-infinity) correctly
+>>>[INFILL]<<<
+    fixSpecialCases(result, resultOffset);
+}
+The code fails on this test:
+org.apache.commons.math3.analysis.differentiation.DerivativeStructureTest::testAtan2SpecialCases
+on this test line:
+        Assert.assertEquals(0, pp.getValue(), 1.0e-15);
+with the following test error:
+junit.framework.AssertionFailedError: expected:<0.0> but was:<NaN>
+It can be fixed by these possible patches:
+plausible patch 1 :
+
+if (Double.isNaN(result[resultOffset]) || Double.isInfinite(result[resultOffset])) {
+    result[resultOffset] = Math.atan2(y[yOffset], x[xOffset]); // Correcting result for NaN or Infinite value
+}
+
+plausible patch 2 :
+
+if (Double.isNaN(result[resultOffset]) || Double.isInfinite(result[resultOffset])) {
+    result[resultOffset] = Math.atan2(y[yOffset], x[xOffset]); // Correcting result for NaN or Infinite value
+} else if (result[resultOffset] == 0.0 && Math.copySign(1.0, y[yOffset]) == -1.0) {
+    result[resultOffset] = Math.copySign(0.0, y[yOffset]); // Correcting result for special case of negative zero
+}
+
+Please generate an alternative patch in the form of Java Markdown code block.
+```java
+plausible patch 3 :
+
+if (Double.isNaN(result[resultOffset]) || Double.isInfinite(result[resultOffset])) {
+    result[resultOffset] = Math.atan2(y[yOffset], x[xOffset]); // Correcting result for NaN or Infinite value
+} else if (result[resultOffset] == 0.0 && Math.copySign(1.0, y[yOffset]) == -1.0) {
+    result[resultOffset] = Math.copySign(0.0, y[yOffset]); // Correcting result for special case of negative zero
+} else if (Double.isNaN(result[resultOffset + 1]) || Double.isInfinite(result[resultOffset + 1])) {
+    result[resultOffset + 1] = Math.atan2(y[yOffset], x[xOffset]); // Correcting result for NaN or Infinite value in the second element
+} else if (result[resultOffset + 1] == 0.0 && Math.copySign(1.0, y[yOffset]) == -1.0) {
+    result[resultOffset + 1] = Math.copySign(0.0, y[yOffset]); // Correcting result for special case of negative zero in the second element
+}
+```

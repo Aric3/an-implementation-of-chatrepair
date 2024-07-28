@@ -1,0 +1,265 @@
+The following code contains a bug:
+    public static boolean toBoolean(String str) {
+        // Previously used equalsIgnoreCase, which was fast for interned 'true'.
+        // Non interned 'true' matched 15 times slower.
+        // 
+        // Optimisation provides same performance as before for interned 'true'.
+        // Similar performance for null, 'false', and other strings not length 2/3/4.
+        // 'true'/'TRUE' match 4 times slower, 'tRUE'/'True' 7 times slower.
+        if (str == "true") {
+            return true;
+        }
+        if (str == null) {
+            return false;
+        }
+        switch (str.length()) {
+            case 2: {
+                char ch0 = str.charAt(0);
+                char ch1 = str.charAt(1);
+                return 
+                    (ch0 == 'o' || ch0 == 'O') &&
+                    (ch1 == 'n' || ch1 == 'N');
+            }
+            case 3: {
+                char ch = str.charAt(0);
+                if (ch == 'y') {
+                    return 
+                        (str.charAt(1) == 'e' || str.charAt(1) == 'E') &&
+                        (str.charAt(2) == 's' || str.charAt(2) == 'S');
+                }
+                if (ch == 'Y') {
+                    return 
+                        (str.charAt(1) == 'E' || str.charAt(1) == 'e') &&
+                        (str.charAt(2) == 'S' || str.charAt(2) == 's');
+                }
+>>>[INFILL]<<<
+            }
+            case 4: {
+                char ch = str.charAt(0);
+                if (ch == 't') {
+                    return 
+                        (str.charAt(1) == 'r' || str.charAt(1) == 'R') &&
+                        (str.charAt(2) == 'u' || str.charAt(2) == 'U') &&
+                        (str.charAt(3) == 'e' || str.charAt(3) == 'E');
+                }
+                if (ch == 'T') {
+                    return 
+                        (str.charAt(1) == 'R' || str.charAt(1) == 'r') &&
+                        (str.charAt(2) == 'U' || str.charAt(2) == 'u') &&
+                        (str.charAt(3) == 'E' || str.charAt(3) == 'e');
+                }
+            }
+        }
+        return false;
+    }
+The code fails on this test:
+org.apache.commons.lang.BooleanUtilsTest::test_toBoolean_String
+on this test line:
+        assertEquals(false, BooleanUtils.toBoolean("tru"));
+with the following test error:
+java.lang.StringIndexOutOfBoundsException: String index out of range: 3
+It can be fixed by these possible patches:
+plausible patch 1 :
+
+switch (str.length()) {
+    case 1:
+    case 2:
+        return false;
+    case 3: {
+        char ch3 = str.charAt(0);
+        if (ch3 == 'y' || ch3 == 'Y') {
+            return 
+                (str.charAt(1) == 'e' || str.charAt(1) == 'E') &&
+                (str.charAt(2) == 's' || str.charAt(2) == 'S');
+        }
+        return false;
+    }
+    case 4: {
+        char ch4 = str.charAt(0);
+        if (ch4 == 't' || ch4 == 'T') {
+            return 
+                (str.charAt(1) == 'r' || str.charAt(1) == 'R') &&
+                (str.charAt(2) == 'u' || str.charAt(2) == 'U') &&
+                (str.charAt(3) == 'e' || str.charAt(3) == 'E');
+        }
+        return false;
+    }
+}
+
+plausible patch 2 :
+
+switch (str.length()) {
+    case 1:
+    case 2:
+        return false;
+    case 3: {
+        char ch3 = Character.toUpperCase(str.charAt(0));
+        if (ch3 == 'Y') {
+            return 
+                (Character.toUpperCase(str.charAt(1)) == 'E') &&
+                (Character.toUpperCase(str.charAt(2)) == 'S');
+        }
+        return false;
+    }
+    case 4: {
+        char ch4 = Character.toUpperCase(str.charAt(0));
+        if (ch4 == 'T') {
+            return 
+                (Character.toUpperCase(str.charAt(1)) == 'R') &&
+                (Character.toUpperCase(str.charAt(2)) == 'U') &&
+                (Character.toUpperCase(str.charAt(3)) == 'E');
+        }
+        return false;
+    }
+}
+
+plausible patch 3 :
+
+switch (str.length()) {
+    case 1:
+    case 2:
+        return false;
+    case 3: {
+        if (str.equalsIgnoreCase("yes")) {
+            return true;
+        }
+        return false;
+    }
+    case 4: {
+        if (str.equalsIgnoreCase("true")) {
+            return true;
+        }
+        return false;
+    }
+}
+
+plausible patch 4 :
+
+switch (str.length()) {
+    case 1:
+    case 2:
+        return false;
+    case 3: {
+        String lowercaseStr = str.toLowerCase();
+        if (lowercaseStr.equals("yes")) {
+            return true;
+        }
+        return false;
+    }
+    case 4: {
+        String lowercaseStr = str.toLowerCase();
+        if (lowercaseStr.equals("true")) {
+            return true;
+        }
+        return false;
+    }
+}
+
+plausible patch 5 :
+
+// Alternative patch
+switch (str.length()) {
+    case 1:
+    case 2:
+        return false;
+    case 3: {
+        if (str.equalsIgnoreCase("yes")) {
+            return true;
+        }
+        return false;
+    }
+    case 4: {
+        if (str.equalsIgnoreCase("true")) {
+            return true;
+        }
+        return false;
+    }
+}
+
+plausible patch 6 :
+
+switch (str.length()) {
+    case 1:
+    case 2:
+        return false;
+    case 3: {
+        if (str.equalsIgnoreCase("yes") || str.equalsIgnoreCase("yEs") || str.equalsIgnoreCase("YeS") || str.equalsIgnoreCase("YES")) {
+            return true;
+        }
+        return false;
+    }
+    case 4: {
+        if (str.equalsIgnoreCase("true") || str.equalsIgnoreCase("tRue") || str.equalsIgnoreCase("TruE") || str.equalsIgnoreCase("TRUE")) {
+            return true;
+        }
+        return false;
+    }
+}
+
+plausible patch 7 :
+
+switch (str.length()) {
+    case 1:
+    case 2:
+        return false;
+    case 3: {
+        String lowerCaseStr = str.toLowerCase();
+        if (lowerCaseStr.equals("yes")) {
+            return true;
+        }
+        return false;
+    }
+    case 4: {
+        String lowerCaseStr = str.toLowerCase();
+        if (lowerCaseStr.equals("true")) {
+            return true;
+        }
+        return false;
+    }
+}
+
+plausible patch 8 :
+
+// Alternative patch
+switch (str.length()) {
+    case 1:
+    case 2:
+        return false;
+    case 3: {
+        String lowerCaseStr = str.toLowerCase();
+        if (lowerCaseStr.equals("yes")) {
+            return true;
+        }
+        return false;
+    }
+    case 4: {
+        String lowerCaseStr = str.toLowerCase();
+        if (lowerCaseStr.equals("true")) {
+            return true;
+        }
+        return false;
+    }
+}
+
+Please generate an alternative patch in the form of Java Markdown code block.
+```java
+switch (str.length()) {
+    case 1:
+    case 2:
+        return false;
+    case 3: {
+        String lowerCaseStr = str.toLowerCase();
+        if (lowerCaseStr.equals("yes")) {
+            return true;
+        }
+        return false;
+    }
+    case 4: {
+        String lowerCaseStr = str.toLowerCase();
+        if (lowerCaseStr.equals("true")) {
+            return true;
+        }
+        return false;
+    }
+}
+```

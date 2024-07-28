@@ -1,0 +1,48 @@
+- public Object clone() throws CloneNotSupportedException {
+- Object clone = createCopy(0, getItemCount() - 1);
++ Object clone = createCopy(0, Math.max(0, getItemCount() - 1));
+?                              ++++++++++++                   +
+
+- return clone;
+- }
+
+- public Object clone() throws CloneNotSupportedException {
+- Object clone = createCopy(0, getItemCount() - 1);
++ Object clone = createCopy(0, getItemCount() > 0 ? getItemCount() - 1 : 0);
+?                                             +++++++++++++++++++++   ++++
+
+- return clone;
+- }
+
+- public Object clone() throws CloneNotSupportedException {
+- Object clone = createCopy(0, getItemCount() - 1);
++ Object clone = createCopy(0, getItemCount() <= 1 ? 0 : getItemCount() - 1);
+?                                             ++++++++++++++++++++++++++
+
+- return clone;
+- }
+
+- public Object clone() throws CloneNotSupportedException {
+- Object clone = createCopy(0, getItemCount() - 1);
++ Object clone = createCopy(0, getItemCount() <= 0 ? 0 : getItemCount() - 1);
+?                                             ++++++++++++++++++++++++++
+
+- return clone;
+- }
+
+- public Object clone() throws CloneNotSupportedException {
+- Object clone = createCopy(0, getItemCount() - 1);
++ Object clone = createCopy(0, getItemCount() > 1 ? getItemCount() - 1 : 0);
+?                                             +++++++++++++++++++++   ++++
+
+- return clone;
+- }
+
+- public Object clone() throws CloneNotSupportedException {
+- Object clone = createCopy(0, getItemCount() - 1);
++ Object clone = createCopy(0, Math.max(getItemCount() - 1, 0));
+?                              +++++++++                  ++++
+
+- return clone;
+- }
+
