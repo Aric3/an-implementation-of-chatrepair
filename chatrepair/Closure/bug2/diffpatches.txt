@@ -1,0 +1,262 @@
+  private void checkInterfaceConflictProperties(NodeTraversal t, Node n,
+  String functionName, HashMap<String, ObjectType> properties,
+  HashMap<String, ObjectType> currentProperties,
+  ObjectType interfaceType) {
+  ObjectType implicitProto = interfaceType.getImplicitPrototype();
+- Set<String> currentPropertyNames;
+- // This can be the case if interfaceType is proxy to a non-existent
+- // object (which is a bad type annotation, but shouldn't crash).
++ if (implicitProto == null) {
++ // Handle the case when implicitProto is null
++ return;
++ }
+- currentPropertyNames = implicitProto.getOwnPropertyNames();
++ Set<String> currentPropertyNames = implicitProto.getOwnPropertyNames();
+? ++++++++++++
+
+  for (String name : currentPropertyNames) {
+  ObjectType oType = properties.get(name);
+  if (oType != null) {
+  if (!interfaceType.getPropertyType(name).isEquivalentTo(
+  oType.getPropertyType(name))) {
+  compiler.report(
+  t.makeError(n, INCOMPATIBLE_EXTENDED_PROPERTY_TYPE,
+  functionName, name, oType.toString(),
+  interfaceType.toString()));
+  }
+  }
+  currentProperties.put(name, interfaceType);
+  }
+  for (ObjectType iType : interfaceType.getCtorExtendedInterfaces()) {
+  checkInterfaceConflictProperties(t, n, functionName, properties,
+  currentProperties, iType);
+  }
+  }
+
+  private void checkInterfaceConflictProperties(NodeTraversal t, Node n,
+  String functionName, HashMap<String, ObjectType> properties,
+  HashMap<String, ObjectType> currentProperties,
+  ObjectType interfaceType) {
+  ObjectType implicitProto = interfaceType.getImplicitPrototype();
+- Set<String> currentPropertyNames;
+- // This can be the case if interfaceType is proxy to a non-existent
+- // object (which is a bad type annotation, but shouldn't crash).
++ if (implicitProto == null) {
++ return;
++ }
+- currentPropertyNames = implicitProto.getOwnPropertyNames();
++ Set<String> currentPropertyNames = implicitProto.getOwnPropertyNames();
+? ++++++++++++
+
++ if (currentPropertyNames == null) {
++ return;
++ }
+  for (String name : currentPropertyNames) {
+  ObjectType oType = properties.get(name);
+  if (oType != null) {
+- if (!interfaceType.getPropertyType(name).isEquivalentTo(
+- oType.getPropertyType(name))) {
++ if (interfaceType.hasProperty(name) && oType.hasProperty(name) &&
++ !interfaceType.getPropertyType(name).isEquivalentTo(oType.getPropertyType(name))) {
+  compiler.report(
+  t.makeError(n, INCOMPATIBLE_EXTENDED_PROPERTY_TYPE,
+  functionName, name, oType.toString(),
+  interfaceType.toString()));
+  }
+  }
+  currentProperties.put(name, interfaceType);
+  }
+  for (ObjectType iType : interfaceType.getCtorExtendedInterfaces()) {
+  checkInterfaceConflictProperties(t, n, functionName, properties,
+  currentProperties, iType);
+  }
+  }
+
+  private void checkInterfaceConflictProperties(NodeTraversal t, Node n,
+  String functionName, HashMap<String, ObjectType> properties,
+  HashMap<String, ObjectType> currentProperties,
+  ObjectType interfaceType) {
+  ObjectType implicitProto = interfaceType.getImplicitPrototype();
++ if (implicitProto != null) {
+- Set<String> currentPropertyNames;
+- // This can be the case if interfaceType is proxy to a non-existent
+- // object (which is a bad type annotation, but shouldn't crash).
+- currentPropertyNames = implicitProto.getOwnPropertyNames();
++ Set<String> currentPropertyNames = implicitProto.getOwnPropertyNames();
+? ++++++++++++
+
++ if (currentPropertyNames != null) {
+  for (String name : currentPropertyNames) {
+  ObjectType oType = properties.get(name);
+  if (oType != null) {
+- if (!interfaceType.getPropertyType(name).isEquivalentTo(
+- oType.getPropertyType(name))) {
++ if (interfaceType.hasProperty(name) && oType.hasProperty(name) &&
++ !interfaceType.getPropertyType(name).isEquivalentTo(oType.getPropertyType(name))) {
+  compiler.report(
+  t.makeError(n, INCOMPATIBLE_EXTENDED_PROPERTY_TYPE,
+  functionName, name, oType.toString(),
+  interfaceType.toString()));
+  }
+  }
+  currentProperties.put(name, interfaceType);
+  }
++ }
++ }
+  for (ObjectType iType : interfaceType.getCtorExtendedInterfaces()) {
+  checkInterfaceConflictProperties(t, n, functionName, properties,
+  currentProperties, iType);
+  }
+  }
+
+  private void checkInterfaceConflictProperties(NodeTraversal t, Node n,
+  String functionName, HashMap<String, ObjectType> properties,
+  HashMap<String, ObjectType> currentProperties,
+  ObjectType interfaceType) {
+  ObjectType implicitProto = interfaceType.getImplicitPrototype();
+- Set<String> currentPropertyNames;
+- // This can be the case if interfaceType is proxy to a non-existent
+- // object (which is a bad type annotation, but shouldn't crash).
++ if (implicitProto == null || implicitProto.getOwnPropertyNames() == null) {
++ return;
++ }
+- currentPropertyNames = implicitProto.getOwnPropertyNames();
++ Set<String> currentPropertyNames = implicitProto.getOwnPropertyNames();
+? ++++++++++++
+
+  for (String name : currentPropertyNames) {
+  ObjectType oType = properties.get(name);
+  if (oType != null) {
+- if (!interfaceType.getPropertyType(name).isEquivalentTo(
+- oType.getPropertyType(name))) {
++ if (interfaceType.hasProperty(name) && oType.hasProperty(name) &&
++ !interfaceType.getPropertyType(name).isEquivalentTo(oType.getPropertyType(name))) {
+  compiler.report(
+  t.makeError(n, INCOMPATIBLE_EXTENDED_PROPERTY_TYPE,
+  functionName, name, oType.toString(),
+  interfaceType.toString()));
+  }
+  }
+  currentProperties.put(name, interfaceType);
+  }
+  for (ObjectType iType : interfaceType.getCtorExtendedInterfaces()) {
+  checkInterfaceConflictProperties(t, n, functionName, properties,
+  currentProperties, iType);
+  }
+  }
+
+  private void checkInterfaceConflictProperties(NodeTraversal t, Node n,
+  String functionName, HashMap<String, ObjectType> properties,
+  HashMap<String, ObjectType> currentProperties,
+  ObjectType interfaceType) {
+  ObjectType implicitProto = interfaceType.getImplicitPrototype();
++ if (implicitProto != null) {
+- Set<String> currentPropertyNames;
+- // This can be the case if interfaceType is proxy to a non-existent
+- // object (which is a bad type annotation, but shouldn't crash).
+- currentPropertyNames = implicitProto.getOwnPropertyNames();
++ Set<String> currentPropertyNames = implicitProto.getOwnPropertyNames();
+? ++++++++++++
+
++ if (currentPropertyNames != null) {
+  for (String name : currentPropertyNames) {
+  ObjectType oType = properties.get(name);
+  if (oType != null) {
+- if (!interfaceType.getPropertyType(name).isEquivalentTo(
+- oType.getPropertyType(name))) {
++ if (interfaceType.hasProperty(name) && oType.hasProperty(name) &&
++ !interfaceType.getPropertyType(name).isEquivalentTo(oType.getPropertyType(name))) {
+  compiler.report(
+  t.makeError(n, INCOMPATIBLE_EXTENDED_PROPERTY_TYPE,
+  functionName, name, oType.toString(),
+  interfaceType.toString()));
+  }
+  }
+  currentProperties.put(name, interfaceType);
+  }
++ }
+  for (ObjectType iType : interfaceType.getCtorExtendedInterfaces()) {
+  checkInterfaceConflictProperties(t, n, functionName, properties,
+  currentProperties, iType);
+  }
+  }
++ }
+
+  private void checkInterfaceConflictProperties(NodeTraversal t, Node n,
+  String functionName, HashMap<String, ObjectType> properties,
+  HashMap<String, ObjectType> currentProperties,
+  ObjectType interfaceType) {
+  ObjectType implicitProto = interfaceType.getImplicitPrototype();
+- Set<String> currentPropertyNames;
+- // This can be the case if interfaceType is proxy to a non-existent
+- // object (which is a bad type annotation, but shouldn't crash).
++ if (implicitProto == null || implicitProto.getOwnPropertyNames() == null) {
++ return;
++ }
+- currentPropertyNames = implicitProto.getOwnPropertyNames();
++ Set<String> currentPropertyNames = implicitProto.getOwnPropertyNames();
+? ++++++++++++
+
+  for (String name : currentPropertyNames) {
+  ObjectType oType = properties.get(name);
+- if (oType != null) {
++ if (oType != null && interfaceType.hasProperty(name) && oType.hasProperty(name)) {
+- if (!interfaceType.getPropertyType(name).isEquivalentTo(
++ if (!interfaceType.getPropertyType(name).isEquivalentTo(oType.getPropertyType(name))) {
+?                                                         +++++++++++++++++++++++++++++++
+
+- oType.getPropertyType(name))) {
+  compiler.report(
+  t.makeError(n, INCOMPATIBLE_EXTENDED_PROPERTY_TYPE,
+  functionName, name, oType.toString(),
+  interfaceType.toString()));
+  }
+  }
+  currentProperties.put(name, interfaceType);
+  }
+  for (ObjectType iType : interfaceType.getCtorExtendedInterfaces()) {
+  checkInterfaceConflictProperties(t, n, functionName, properties,
+  currentProperties, iType);
+  }
+  }
+
+  private void checkInterfaceConflictProperties(NodeTraversal t, Node n,
+  String functionName, HashMap<String, ObjectType> properties,
+  HashMap<String, ObjectType> currentProperties,
+  ObjectType interfaceType) {
+  ObjectType implicitProto = interfaceType.getImplicitPrototype();
+- Set<String> currentPropertyNames;
+- // This can be the case if interfaceType is proxy to a non-existent
+- // object (which is a bad type annotation, but shouldn't crash).
++ if (implicitProto == null) {
++ return;
++ }
+- currentPropertyNames = implicitProto.getOwnPropertyNames();
++ Set<String> currentPropertyNames = implicitProto.getOwnPropertyNames();
+? ++++++++++++
+
++ if (currentPropertyNames != null) {
+  for (String name : currentPropertyNames) {
+  ObjectType oType = properties.get(name);
+- if (oType != null) {
++ if (oType != null && interfaceType.hasProperty(name) && oType.hasProperty(name)) {
+- if (!interfaceType.getPropertyType(name).isEquivalentTo(
++ if (!interfaceType.getPropertyType(name).isEquivalentTo(oType.getPropertyType(name))) {
+?                                                         +++++++++++++++++++++++++++++++
+
+- oType.getPropertyType(name))) {
+  compiler.report(
+  t.makeError(n, INCOMPATIBLE_EXTENDED_PROPERTY_TYPE,
+  functionName, name, oType.toString(),
+  interfaceType.toString()));
+  }
+  }
+  currentProperties.put(name, interfaceType);
+  }
+  for (ObjectType iType : interfaceType.getCtorExtendedInterfaces()) {
+  checkInterfaceConflictProperties(t, n, functionName, properties,
+  currentProperties, iType);
+  }
+  }
++ }
+

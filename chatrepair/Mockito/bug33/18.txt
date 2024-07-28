@@ -1,0 +1,200 @@
+The following code contains a bug:
+    public boolean hasSameMethod(Invocation candidate) {        
+        //not using method.equals() for 1 good reason:
+        //sometimes java generates forwarding methods when generics are in play see JavaGenericsForwardingMethodsTest
+        Method m1 = invocation.getMethod();
+        Method m2 = candidate.getMethod();
+        
+        	/* Avoid unnecessary cloning */
+        return m1.equals(m2);
+    }
+The code fails on this test:
+org.mockitousage.bugs.InheritedGenericsPolimorphicCallTest::shouldStubbingWork
+on this test line:
+        Assert.assertNotNull(((Iterable) iterable).iterator());
+with the following test error:
+junit.framework.AssertionFailedError
+It can be fixed by these possible correct version:
+Correct version 1 :
+
+public boolean hasSameMethod(Invocation candidate) {
+    Method m1 = invocation.getMethod();
+    Method m2 = candidate.getMethod();
+    
+    // Compare method signatures (name and parameter types)
+    if (!m1.getName().equals(m2.getName())) {
+        return false;
+    }
+    
+    Class<?>[] params1 = m1.getParameterTypes();
+    Class<?>[] params2 = m2.getParameterTypes();
+    
+    if (params1.length != params2.length) {
+        return false;
+    }
+    
+    for (int i = 0; i < params1.length; i++) {
+        if (!params1[i].equals(params2[i])) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+Correct version 2 :
+
+public boolean hasSameMethod(Invocation candidate) {
+    Method m1 = invocation.getMethod();
+    Method m2 = candidate.getMethod();
+    
+    if (!m1.getName().equals(m2.getName())) {
+        return false;
+    }
+    
+    Class<?>[] params1 = m1.getParameterTypes();
+    Class<?>[] params2 = m2.getParameterTypes();
+    
+    if (params1.length != params2.length) {
+        return false;
+    }
+    
+    for (int i = 0; i < params1.length; i++) {
+        if (!params1[i].getName().equals(params2[i].getName())) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+Correct version 3 :
+
+public boolean hasSameMethod(Invocation candidate) {
+    Method m1 = invocation.getMethod();
+    Method m2 = candidate.getMethod();
+    
+    if (!m1.getName().equals(m2.getName())) {
+        return false;
+    }
+    
+    Class<?>[] params1 = m1.getParameterTypes();
+    Class<?>[] params2 = m2.getParameterTypes();
+    
+    if (params1.length != params2.length) {
+        return false;
+    }
+    
+    for (int i = 0; i < params1.length; i++) {
+        if (!params1[i].getTypeName().equals(params2[i].getTypeName())) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+Correct version 4 :
+
+public boolean hasSameMethod(Invocation candidate) {
+    Method m1 = invocation.getMethod();
+    Method m2 = candidate.getMethod();
+    
+    if (!m1.getName().equals(m2.getName())) {
+        return false;
+    }
+    
+    Class<?>[] params1 = m1.getParameterTypes();
+    Class<?>[] params2 = m2.getParameterTypes();
+    
+    if (params1.length != params2.length) {
+        return false;
+    }
+    
+    for (int i = 0; i < params1.length; i++) {
+        if (!params1[i].toString().equals(params2[i].toString())) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+Correct version 5 :
+
+public boolean hasSameMethod(Invocation candidate) {
+    Method m1 = invocation.getMethod();
+    Method m2 = candidate.getMethod();
+    
+    if (!m1.getName().equals(m2.getName())) {
+        return false;
+    }
+    
+    Class<?>[] params1 = m1.getParameterTypes();
+    Class<?>[] params2 = m2.getParameterTypes();
+    
+    if (params1.length != params2.length) {
+        return false;
+    }
+    
+    for (int i = 0; i < params1.length; i++) {
+        if (!params1[i].toGenericString().equals(params2[i].toGenericString())) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+Correct version 6 :
+
+public boolean hasSameMethod(Invocation candidate) {
+    Method m1 = invocation.getMethod();
+    Method m2 = candidate.getMethod();
+    
+    if (!m1.getName().equals(m2.getName())) {
+        return false;
+    }
+    
+    Class<?>[] params1 = m1.getParameterTypes();
+    Class<?>[] params2 = m2.getParameterTypes();
+    
+    if (params1.length != params2.length) {
+        return false;
+    }
+    
+    for (int i = 0; i < params1.length; i++) {
+        if (!params1[i].getCanonicalName().equals(params2[i].getCanonicalName())) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+Please generate an alternative correct version of the function in the form of Java Markdown code block.
+```java
+public boolean hasSameMethod(Invocation candidate) {
+    Method m1 = invocation.getMethod();
+    Method m2 = candidate.getMethod();
+
+    if (!m1.getName().equals(m2.getName())) {
+        return false;
+    }
+
+    Class<?>[] params1 = m1.getParameterTypes();
+    Class<?>[] params2 = m2.getParameterTypes();
+
+    if (params1.length != params2.length) {
+        return false;
+    }
+
+    for (int i = 0; i < params1.length; i++) {
+        if (!params1[i].toString().equals(params2[i].toString())) {
+            return false;
+        }
+    }
+
+    return true;
+}
+```

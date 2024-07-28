@@ -1,0 +1,409 @@
+You are an Automated Program Repair Tool.
+Here is an example of a repair job:
+<Example start>
+Example buggy function and request:
+The following code contains a buggy :
+    public static boolean isSameLocalTime(Calendar cal1, Calendar cal2) {
+        if (cal1 == null || cal2 == null) {
+            throw new IllegalArgumentException("The date must not be null");
+        }
+        return (cal1.get(Calendar.MILLISECOND) == cal2.get(Calendar.MILLISECOND) &&
+                cal1.get(Calendar.SECOND) == cal2.get(Calendar.SECOND) &&
+                cal1.get(Calendar.MINUTE) == cal2.get(Calendar.MINUTE) &&
+                cal1.get(Calendar.HOUR) == cal2.get(Calendar.HOUR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&
+                cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) &&
+                cal1.getClass() == cal2.getClass());
+    }
+the code fails on this test: org.apache.commons.lang3.time.DateUtilsTest::testIsSameLocalTime_Cal
+on this test line:
+assertFalse("LANG-677", DateUtils.isSameLocalTime(cal3, cal4));
+with the following test error:
+junit.framework.AssertionFailedError: LANG-677
+Please provide an analysis of the problem and the expected behaviour of the correct fix, and the correct version of the function in the form of Java Markdown code block.
+Example response:
+
+1. Analysis of the problem:
+The problem seems to arise from the comparison of hours using `Calendar.HOUR`. However, `Calendar.HOUR` represents the 12-hour clock hour whereas `Calendar.HOUR_OF_DAY` represents the 24-hour clock hour. Since the code is aiming to compare the hour component in a manner consistent with the other fields (such as minute, second, millisecond), it should use `Calendar.HOUR_OF_DAY` instead.
+
+2. Expected Behavior of Correct Fix:
+The correct fix should ensure that the comparison is done using the 24-hour clock hour (Calendar.HOUR_OF_DAY) to maintain consistency with the other fields.
+
+3. Correct function:
+This is the correct version of the function in the form of Java Markdown code block:
+```java
+    public static boolean isSameLocalTime(Calendar cal1, Calendar cal2) {
+        if (cal1 == null || cal2 == null) {
+            throw new IllegalArgumentException("The date must not be null");
+        }
+        return (cal1.get(Calendar.MILLISECOND) == cal2.get(Calendar.MILLISECOND) &&
+                cal1.get(Calendar.SECOND) == cal2.get(Calendar.SECOND) &&
+                cal1.get(Calendar.MINUTE) == cal2.get(Calendar.MINUTE) &&
+                cal1.get(Calendar.HOUR_OF_DAY) == cal2.get(Calendar.HOUR_OF_DAY) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&
+                cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) &&
+                cal1.getClass() == cal2.getClass());
+    }
+```
+Changes made:
+Replaced Calendar.HOUR with Calendar.HOUR_OF_DAY to use 24-hour time format.
+
+<Example end>
+The following code contains a bug:
+    protected AxisState drawLabel(String label, Graphics2D g2, 
+            Rectangle2D plotArea, Rectangle2D dataArea, RectangleEdge edge, 
+            AxisState state, PlotRenderingInfo plotState) {
+
+        // it is unlikely that 'state' will be null, but check anyway...
+        if (state == null) {
+            throw new IllegalArgumentException("Null 'state' argument.");
+        }
+        
+        if ((label == null) || (label.equals(""))) {
+            return state;
+        }
+
+        Font font = getLabelFont();
+        RectangleInsets insets = getLabelInsets();
+        g2.setFont(font);
+        g2.setPaint(getLabelPaint());
+        FontMetrics fm = g2.getFontMetrics();
+        Rectangle2D labelBounds = TextUtilities.getTextBounds(label, g2, fm);
+        Shape hotspot = null;
+        
+        if (edge == RectangleEdge.TOP) {
+            AffineTransform t = AffineTransform.getRotateInstance(
+                    getLabelAngle(), labelBounds.getCenterX(), 
+                    labelBounds.getCenterY());
+            Shape rotatedLabelBounds = t.createTransformedShape(labelBounds);
+            labelBounds = rotatedLabelBounds.getBounds2D();
+            float w = (float) labelBounds.getWidth();
+            float h = (float) labelBounds.getHeight();
+            float labelx = (float) dataArea.getCenterX();
+            float labely = (float) (state.getCursor() - insets.getBottom() 
+                    - h / 2.0);
+            TextUtilities.drawRotatedString(label, g2, labelx, labely, 
+                    TextAnchor.CENTER, getLabelAngle(), TextAnchor.CENTER);
+            hotspot = new Rectangle2D.Float(labelx - w / 2.0f, 
+                    labely - h / 2.0f, w, h);
+            state.cursorUp(insets.getTop() + labelBounds.getHeight() 
+                    + insets.getBottom());
+        }
+        else if (edge == RectangleEdge.BOTTOM) {
+            AffineTransform t = AffineTransform.getRotateInstance(
+                    getLabelAngle(), labelBounds.getCenterX(), 
+                    labelBounds.getCenterY());
+            Shape rotatedLabelBounds = t.createTransformedShape(labelBounds);
+            labelBounds = rotatedLabelBounds.getBounds2D();
+            float w = (float) labelBounds.getWidth();
+            float h = (float) labelBounds.getHeight();
+            float labelx = (float) dataArea.getCenterX();
+            float labely = (float) (state.getCursor() + insets.getTop() 
+                    + h / 2.0);
+            TextUtilities.drawRotatedString(label, g2, labelx, labely, 
+                    TextAnchor.CENTER, getLabelAngle(), TextAnchor.CENTER);
+            hotspot = new Rectangle2D.Float(labelx - w / 2.0f, 
+                    labely - h / 2.0f, w, h);
+            state.cursorDown(insets.getTop() + labelBounds.getHeight() 
+                    + insets.getBottom());
+        }
+        else if (edge == RectangleEdge.LEFT) {
+            AffineTransform t = AffineTransform.getRotateInstance(
+                    getLabelAngle() - Math.PI / 2.0, labelBounds.getCenterX(), 
+                    labelBounds.getCenterY());
+            Shape rotatedLabelBounds = t.createTransformedShape(labelBounds);
+            labelBounds = rotatedLabelBounds.getBounds2D();
+            float w = (float) labelBounds.getWidth();
+            float h = (float) labelBounds.getHeight();
+            float labelx = (float) (state.getCursor() - insets.getRight() 
+                    - w / 2.0);
+            float labely = (float) dataArea.getCenterY();
+            TextUtilities.drawRotatedString(label, g2, labelx, labely, 
+                    TextAnchor.CENTER, getLabelAngle() - Math.PI / 2.0, 
+                    TextAnchor.CENTER);
+            hotspot = new Rectangle2D.Float(labelx - w / 2.0f, 
+                    labely - h / 2.0f, w, h);
+            state.cursorLeft(insets.getLeft() + labelBounds.getWidth() 
+                    + insets.getRight());
+        }
+        else if (edge == RectangleEdge.RIGHT) {
+
+            AffineTransform t = AffineTransform.getRotateInstance(
+                    getLabelAngle() + Math.PI / 2.0, 
+                    labelBounds.getCenterX(), labelBounds.getCenterY());
+            Shape rotatedLabelBounds = t.createTransformedShape(labelBounds);
+            labelBounds = rotatedLabelBounds.getBounds2D();
+            float w = (float) labelBounds.getWidth();
+            float h = (float) labelBounds.getHeight();
+            float labelx = (float) (state.getCursor() 
+                            + insets.getLeft() + w / 2.0);
+            float labely = (float) (dataArea.getY() + dataArea.getHeight() 
+                    / 2.0);
+            TextUtilities.drawRotatedString(label, g2, labelx, labely, 
+                    TextAnchor.CENTER, getLabelAngle() + Math.PI / 2.0, 
+                    TextAnchor.CENTER);
+            hotspot = new Rectangle2D.Float(labelx - w / 2.0f, 
+                    labely - h / 2.0f, w, h);
+            state.cursorRight(insets.getLeft() + labelBounds.getWidth() 
+                    + insets.getRight());
+
+        }
+        if (plotState != null && hotspot != null) {
+            ChartRenderingInfo owner = plotState.getOwner();
+                EntityCollection entities = owner.getEntityCollection();
+                if (entities != null) {
+                    entities.add(new AxisLabelEntity(this, hotspot, 
+                            this.labelToolTip, this.labelURL));
+                }
+        }
+        return state;
+
+    }
+The code fails on this test:
+org.jfree.chart.junit.AreaChartTests::testDrawWithNullInfo
+on this test line:
+        assertTrue(success);
+with the following test error:
+junit.framework.AssertionFailedError
+Please provide an analysis of the problem and the expected behaviour of the correct fix, and the correct version of the function in the form of Java Markdown code block.
+
+
+1. Analysis of the problem:
+The issue in the code seems to be related to the rotation of the labels based on the edge they are on. The calculation of the rotated label bounds and the positioning of the label may not be correct for all edge cases, which results in incorrect label placement.
+
+2. Expected Behavior of Correct Fix:
+The correct fix should ensure that the labels are rotated and positioned correctly based on the edge they are on, using the correct calculations and transformations.
+
+3. Correct function:
+This is the correct version of the function in the form of Java Markdown code block:
+```java
+    protected AxisState drawLabel(String label, Graphics2D g2,
+                                  Rectangle2D plotArea, Rectangle2D dataArea, RectangleEdge edge,
+                                  AxisState state, PlotRenderingInfo plotState) {
+
+        // it is unlikely that 'state' will be null, but check anyway...
+        if (state == null) {
+            throw new IllegalArgumentException("Null 'state' argument.");
+        }
+
+        if ((label == null) || (label.equals(""))) {
+            return state;
+        }
+
+        Font font = getLabelFont();
+        RectangleInsets insets = getLabelInsets();
+        g2.setFont(font);
+        g2.setPaint(getLabelPaint());
+        FontMetrics fm = g2.getFontMetrics();
+        Rectangle2D labelBounds = TextUtilities.getTextBounds(label, g2, fm);
+        Shape hotspot = null;
+
+        AffineTransform t = AffineTransform.getRotateInstance(getLabelAngle(),
+                labelBounds.getCenterX(), labelBounds.getCenterY());
+        Shape rotatedLabelBounds = t.createTransformedShape(labelBounds);
+        labelBounds = rotatedLabelBounds.getBounds2D();
+        float w = (float) labelBounds.getWidth();
+        float h = (float) labelBounds.getHeight();
+
+        if (edge == RectangleEdge.TOP || edge == RectangleEdge.BOTTOM) {
+            float labelx = (float) dataArea.getCenterX() - w / 2.0f;
+            float labely;
+            if (edge == RectangleEdge.TOP) {
+                labely = (float) (state.getCursor() - insets.getBottom() - h / 2.0);
+                state.cursorUp(insets.getTop() + labelBounds.getHeight() + insets.getBottom());
+            } else { // BOTTOM
+                labely = (float) (state.getCursor() + insets.getTop() + h / 2.0);
+                state.cursorDown(insets.getTop() + labelBounds.getHeight() + insets.getBottom());
+            }
+            TextUtilities.drawRotatedString(label, g2, labelx, labely,
+                    TextAnchor.CENTER, getLabelAngle(), TextAnchor.CENTER);
+            hotspot = new Rectangle2D.Float(labelx, labely, w, h);
+
+        } else if (edge == RectangleEdge.LEFT || edge == RectangleEdge.RIGHT) {
+            float labelx;
+            float labely = (float) dataArea.getCenterY() + h / 2.0f;
+            if (edge == RectangleEdge.LEFT) {
+                labelx = (float) (state.getCursor() - insets.getRight() - w / 2.0);
+                state.cursorLeft(insets.getLeft() + labelBounds.getWidth() + insets.getRight());
+            } else { // RIGHT
+                labelx = (float) (state.getCursor() + insets.getLeft() + w / 2.0);
+                state.cursorRight(insets.getLeft() + labelBounds.getWidth() + insets.getRight());
+            }
+            TextUtilities.drawRotatedString(label, g2, labelx, labely,
+                    TextAnchor.CENTER, getLabelAngle() + (edge == RectangleEdge.LEFT ? -Math.PI / 2.0 : Math.PI / 2.0),
+                    TextAnchor.CENTER);
+            hotspot = new Rectangle2D.Float(labelx, labely - h, w, h);
+        }
+
+        if (plotState != null && hotspot != null) {
+            ChartRenderingInfo owner = plotState.getOwner();
+            EntityCollection entities = owner.getEntityCollection();
+            if (entities != null) {
+                entities.add(new AxisLabelEntity(this, hotspot,
+                        this.labelToolTip, this.labelURL));
+            }
+        }
+
+        return state;
+
+    }
+```
+Changes made:
+1. Consolidated the rotation and positioning calculations for labels based on the edge they are on.
+2. Adjusted label positioning and rotation based on the edge (TOP, BOTTOM, LEFT, RIGHT) to ensure correct placement.
+
+The fixed version is still not correct.It still does not fix the original test failure.
+Please provide an analysis of the problem and the expected behaviour of the correct fix, and the correct version of the function in the form of Java Markdown code block.
+
+
+1. Analysis of the problem:
+The issue in the code appears to be related to the calculation of the label position and rotation based on the edge. The current logic for positioning and rotating the labels does not account for all edge cases and may result in incorrect label placement or overlapping labels.
+
+2. Expected Behavior of Correct Fix:
+The correct fix should ensure that the labels are correctly positioned and rotated based on the edge they are on, taking into consideration the label dimensions and the available space in the data area. Labels should be placed in a non-overlapping manner and aligned as expected with the plot area.
+
+3. Correct function:
+This is the correct version of the function in the form of Java Markdown code block:
+```java
+protected AxisState drawLabel(String label, Graphics2D g2,
+                              Rectangle2D plotArea, Rectangle2D dataArea, RectangleEdge edge,
+                              AxisState state, PlotRenderingInfo plotState) {
+
+    // it is unlikely that 'state' will be null, but check anyway...
+    if (state == null) {
+        throw new IllegalArgumentException("Null 'state' argument.");
+    }
+
+    if ((label == null) || (label.equals(""))) {
+        return state;
+    }
+
+    Font font = getLabelFont();
+    RectangleInsets insets = getLabelInsets();
+    g2.setFont(font);
+    g2.setPaint(getLabelPaint());
+    FontMetrics fm = g2.getFontMetrics();
+
+    Rectangle2D labelBounds = TextUtilities.getTextBounds(label, g2, fm);
+    float labelWidth = (float) labelBounds.getWidth();
+    float labelHeight = (float) labelBounds.getHeight();
+
+    float labelX = 0;
+    float labelY = 0;
+
+    if (edge == RectangleEdge.TOP || edge == RectangleEdge.BOTTOM) {
+        labelX = (float) (dataArea.getX() + dataArea.getWidth() / 2 - labelWidth / 2);
+        if (edge == RectangleEdge.TOP) {
+            labelY = (float) (plotArea.getMinY() + insets.getTop());
+        } else { // BOTTOM
+            labelY = (float) (plotArea.getMaxY() - insets.getBottom() - labelHeight);
+        }
+    } else if (edge == RectangleEdge.LEFT || edge == RectangleEdge.RIGHT) {
+        labelY = (float) (dataArea.getY() + dataArea.getHeight() / 2 + labelHeight / 2);
+        if (edge == RectangleEdge.LEFT) {
+            labelX = (float) (plotArea.getMinX() + insets.getLeft());
+        } else { // RIGHT
+            labelX = (float) (plotArea.getMaxX() - insets.getRight() - labelWidth);
+        }
+    }
+
+    g2.drawString(label, labelX, labelY);
+
+    if (plotState != null) {
+        ChartRenderingInfo owner = plotState.getOwner();
+        EntityCollection entities = owner.getEntityCollection();
+        if (entities != null) {
+            Shape hotspot = new Rectangle2D.Float(labelX, labelY - labelHeight, labelWidth, labelHeight);
+            entities.add(new AxisLabelEntity(this, hotspot, this.getLabelToolTip(), this.getLabelURL()));
+        }
+    }
+
+    return state;
+}
+```
+Changes made:
+1. Simplified the calculation of label position based on the edge.
+2. Centered the label horizontally within the data area for TOP and BOTTOM edges, and vertically aligned for LEFT and RIGHT edges.
+3. Adjusted label placement to ensure non-overlapping and proper alignment with the plot area.
+
+The fixed version is still not correct.It still does not fix the original test failure.
+Please provide an analysis of the problem and the expected behaviour of the correct fix, and the correct version of the function in the form of Java Markdown code block.
+
+
+1. Analysis of the problem:
+The issue in the code seems to stem from the incorrect calculation of the label position and alignment based on the edge. The current implementation does not consider the label rotation angle and does not handle the label bounds correctly, leading to incorrect placement of labels on the plot.
+
+2. Expected Behavior of Correct Fix:
+The correct fix should take into account the rotation angle of the label and correctly calculate the position based on the edge while considering the label dimensions. Labels should be correctly rotated and positioned with alignment to the plot area.
+
+3. Correct function:
+This is the correct version of the function in the form of Java Markdown code block:
+```java
+protected AxisState drawLabel(String label, Graphics2D g2,
+                              Rectangle2D plotArea, Rectangle2D dataArea, RectangleEdge edge,
+                              AxisState state, PlotRenderingInfo plotState) {
+
+    // it is unlikely that 'state' will be null, but check anyway...
+    if (state == null) {
+        throw new IllegalArgumentException("Null 'state' argument.");
+    }
+
+    if ((label == null) || (label.equals(""))) {
+        return state;
+    }
+
+    Font font = getLabelFont();
+    RectangleInsets insets = getLabelInsets();
+    g2.setFont(font);
+    g2.setPaint(getLabelPaint());
+    FontMetrics fm = g2.getFontMetrics();
+
+    Rectangle2D labelBounds = TextUtilities.getTextBounds(label, g2, fm);
+    float labelWidth = (float) labelBounds.getWidth();
+    float labelHeight = (float) labelBounds.getHeight();
+    
+    double labelAngle = getLabelAngle();
+    AffineTransform oldTransform = g2.getTransform();
+    AffineTransform rotateTransform = AffineTransform.getRotateInstance(labelAngle);
+    g2.transform(rotateTransform);
+
+    float labelX = 0;
+    float labelY = 0;
+
+    if (edge == RectangleEdge.TOP) {
+        labelX = (float) (dataArea.getX() + dataArea.getWidth() / 2 - labelWidth / 2);
+        labelY = (float) (dataArea.getMinY() - insets.getTop() - labelHeight);
+    } else if (edge == RectangleEdge.BOTTOM) {
+        labelX = (float) (dataArea.getX() + dataArea.getWidth() / 2 - labelWidth / 2);
+        labelY = (float) (dataArea.getMaxY() + insets.getBottom());
+    } else if (edge == RectangleEdge.LEFT) {
+        labelX = (float) (dataArea.getMinX() - insets.getLeft() - labelWidth);
+        labelY = (float) (dataArea.getY() + dataArea.getHeight() / 2 + labelHeight / 2);
+    } else if (edge == RectangleEdge.RIGHT) {
+        labelX = (float) (dataArea.getMaxX() + insets.getRight());
+        labelY = (float) (dataArea.getY() + dataArea.getHeight() / 2 + labelHeight / 2);
+    }
+
+    g2.drawString(label, labelX, labelY);
+
+    g2.setTransform(oldTransform);
+
+    if (plotState != null) {
+        ChartRenderingInfo owner = plotState.getOwner();
+        EntityCollection entities = owner.getEntityCollection();
+        if (entities != null) {
+            Shape hotspot = new Rectangle2D.Float(labelX, labelY - labelHeight, labelWidth, labelHeight);
+            entities.add(new AxisLabelEntity(this, hotspot, this.getLabelToolTip(), this.getLabelURL()));
+        }
+    }
+
+    return state;
+}
+```
+Changes made:
+1. Added transformation to rotate the label based on the labelAngle before positioning.
+2. Adjusted label position calculation based on the edge and incorporated label rotation into the position calculation.
+3. Ensured proper alignment and positioning of labels relative to the data area based on the edge.
+

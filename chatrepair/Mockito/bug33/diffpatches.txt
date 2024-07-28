@@ -1,0 +1,162 @@
+  public boolean hasSameMethod(Invocation candidate) {
+- //not using method.equals() for 1 good reason:
+- //sometimes java generates forwarding methods when generics are in play see JavaGenericsForwardingMethodsTest
+  Method m1 = invocation.getMethod();
+  Method m2 = candidate.getMethod();
+- /* Avoid unnecessary cloning */
+- return m1.equals(m2);
++ // Compare method signatures (name and parameter types)
++ if (!m1.getName().equals(m2.getName())) {
++ return false;
+  }
++ Class<?>[] params1 = m1.getParameterTypes();
++ Class<?>[] params2 = m2.getParameterTypes();
++ if (params1.length != params2.length) {
++ return false;
++ }
++ for (int i = 0; i < params1.length; i++) {
++ if (!params1[i].equals(params2[i])) {
++ return false;
++ }
++ }
++ return true;
++ }
+
+  public boolean hasSameMethod(Invocation candidate) {
+- //not using method.equals() for 1 good reason:
+- //sometimes java generates forwarding methods when generics are in play see JavaGenericsForwardingMethodsTest
+  Method m1 = invocation.getMethod();
+  Method m2 = candidate.getMethod();
+- /* Avoid unnecessary cloning */
+- return m1.equals(m2);
++ if (!m1.getName().equals(m2.getName())) {
++ return false;
+  }
++ Class<?>[] params1 = m1.getParameterTypes();
++ Class<?>[] params2 = m2.getParameterTypes();
++ if (params1.length != params2.length) {
++ return false;
++ }
++ for (int i = 0; i < params1.length; i++) {
++ if (!params1[i].getName().equals(params2[i].getName())) {
++ return false;
++ }
++ }
++ return true;
++ }
+
+  public boolean hasSameMethod(Invocation candidate) {
+- //not using method.equals() for 1 good reason:
+- //sometimes java generates forwarding methods when generics are in play see JavaGenericsForwardingMethodsTest
+  Method m1 = invocation.getMethod();
+  Method m2 = candidate.getMethod();
+- /* Avoid unnecessary cloning */
+- return m1.equals(m2);
++ if (!m1.getName().equals(m2.getName())) {
++ return false;
+  }
++ Class<?>[] params1 = m1.getParameterTypes();
++ Class<?>[] params2 = m2.getParameterTypes();
++ if (params1.length != params2.length) {
++ return false;
++ }
++ for (int i = 0; i < params1.length; i++) {
++ if (!params1[i].getTypeName().equals(params2[i].getTypeName())) {
++ return false;
++ }
++ }
++ return true;
++ }
+
+  public boolean hasSameMethod(Invocation candidate) {
+- //not using method.equals() for 1 good reason:
+- //sometimes java generates forwarding methods when generics are in play see JavaGenericsForwardingMethodsTest
+  Method m1 = invocation.getMethod();
+  Method m2 = candidate.getMethod();
+- /* Avoid unnecessary cloning */
+- return m1.equals(m2);
++ if (!m1.getName().equals(m2.getName())) {
++ return false;
+  }
++ Class<?>[] params1 = m1.getParameterTypes();
++ Class<?>[] params2 = m2.getParameterTypes();
++ if (params1.length != params2.length) {
++ return false;
++ }
++ for (int i = 0; i < params1.length; i++) {
++ if (!params1[i].toString().equals(params2[i].toString())) {
++ return false;
++ }
++ }
++ return true;
++ }
+
+  public boolean hasSameMethod(Invocation candidate) {
+- //not using method.equals() for 1 good reason:
+- //sometimes java generates forwarding methods when generics are in play see JavaGenericsForwardingMethodsTest
+  Method m1 = invocation.getMethod();
+  Method m2 = candidate.getMethod();
+- /* Avoid unnecessary cloning */
+- return m1.equals(m2);
++ if (!m1.getName().equals(m2.getName())) {
++ return false;
+  }
++ Class<?>[] params1 = m1.getParameterTypes();
++ Class<?>[] params2 = m2.getParameterTypes();
++ if (params1.length != params2.length) {
++ return false;
++ }
++ for (int i = 0; i < params1.length; i++) {
++ if (!params1[i].toGenericString().equals(params2[i].toGenericString())) {
++ return false;
++ }
++ }
++ return true;
++ }
+
+  public boolean hasSameMethod(Invocation candidate) {
+- //not using method.equals() for 1 good reason:
+- //sometimes java generates forwarding methods when generics are in play see JavaGenericsForwardingMethodsTest
+  Method m1 = invocation.getMethod();
+  Method m2 = candidate.getMethod();
+- /* Avoid unnecessary cloning */
+- return m1.equals(m2);
++ if (!m1.getName().equals(m2.getName())) {
++ return false;
+  }
++ Class<?>[] params1 = m1.getParameterTypes();
++ Class<?>[] params2 = m2.getParameterTypes();
++ if (params1.length != params2.length) {
++ return false;
++ }
++ for (int i = 0; i < params1.length; i++) {
++ if (!params1[i].getCanonicalName().equals(params2[i].getCanonicalName())) {
++ return false;
++ }
++ }
++ return true;
++ }
+
+  public boolean hasSameMethod(Invocation candidate) {
+- //not using method.equals() for 1 good reason:
+- //sometimes java generates forwarding methods when generics are in play see JavaGenericsForwardingMethodsTest
+  Method m1 = invocation.getMethod();
+  Method m2 = candidate.getMethod();
+- /* Avoid unnecessary cloning */
+- return m1.equals(m2);
++ if (!m1.getName().equals(m2.getName())) {
++ return false;
+  }
++ Class<?>[] params1 = m1.getParameterTypes();
++ Class<?>[] params2 = m2.getParameterTypes();
++ if (params1.length != params2.length) {
++ return false;
++ }
++ for (int i = 0; i < params1.length; i++) {
++ if (!params1[i].getSimpleName().equals(params2[i].getSimpleName())) {
++ return false;
++ }
++ }
++ return true;
++ }
+
