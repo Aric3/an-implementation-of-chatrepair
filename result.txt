@@ -1,5 +1,0 @@
-initial-infill
-Lang51,Lang24,Lang29,Closure65,Mockito38
-initial-sf
-Lang29,Chart24,Chart1,Closure65,Closure57,Closure125,Math41,Mockito38,Mockito34
-Lang14,Lang12,Chart7,Closure56,Mockito12,Time20

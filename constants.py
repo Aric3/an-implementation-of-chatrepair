@@ -1,4 +1,4 @@
-# 项目名
+# Project Name
 CHART = "Chart"
 CLOSURE = "Closure"
 LANG = "Lang"
@@ -8,12 +8,11 @@ TIME = "Time"
 
 PROJECTS = ["Chart", "Closure", "Lang", "Math", "Mockito", "Time"]
 
-# patch类型
+# patch types
 PATCH_TYPE_REPLACE = 'replace'
 PATCH_TYPE_INSERT = 'insert'
 PATCH_TYPE_DELETE = 'delete'
 
-# 文件夹常量
 LOG_FILE = "logs.txt"
 
 PATCH_JSON_FOLDER = "patches"
@@ -28,13 +27,13 @@ TEST_FILEPATH_PREFIX = {"Closure": "test", "Mockito": "test", "Chart": "tests", 
                         "Math": "src/test/java", "Time": "src/test/java"}
 TEST_FILEPATH_PREFIX_1 = "src/test"
 
-# defects4j命令常量
+# defects4j commands
 DEFECTS4J_CHECKOUT = "defects4j checkout -p %s -v %s -w %s"
 DEFECTS4J_COMPILE = "defects4j compile"
 DEFECTS4J_TEST = "defects4j test"
 DEFECTS4J_COMPILE_TEST = "defects4j compile ; defects4j test"
 TEST_TIMEOUT_MAX_S = 60
-# Prompt常量
+
 INFILL = ">>>[INFILL]<<<\n"
 INITIAL_APR_TOOL = "You are an Automated Program Repair Tool.\n"
 INTIIAL_APR_EXAMPLE = "Here is an example of a repair job:\n"
@@ -75,24 +74,19 @@ FEEDBACK_STATISTICS_FILE = 'feedback_statistics.csv'
 ALTERNATIVES_STATISTICS_FILE = 'alternatives_statistics.csv'
 INITIALCHAT_STATISTIFCS_FILE = 'initialchat_statistics.csv'
 
-# initialchat常量配置
+# initialchat settings
 NUMOFREPEAT_PER_BUG = 24
 PATCH_FAILURE_CATEGORY = ['FNT','FOT','CE','CE','TOUT','P']
 
 
-# chatrepair常量配置
-# 最大调用api次数
+# chatrepair settings
+
 Max_Tries = 24
-# 一个对话中的最大问答次数
+
 Max_Conv_len = 3
 
-# OpenAI API接口
+# OpenAI API
 MODEL = "gpt-3.5-turbo"
 
-#第三方网站aikey的接口
-# API_KEY = 'sk-BTijAxza2faVBDpy452344F136154561Ab9f4fF2037d47E0'
-# BASE_URL = 'https://api.aikey.one/v1/'
-
-# 师兄的接口（openai官方接口）
-API_KEY = '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'
-BASE_URL = 'http://84.33.244.4/v1/'
+API_KEY = ''
+BASE_URL = ''
