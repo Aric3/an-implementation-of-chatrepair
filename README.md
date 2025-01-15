@@ -103,7 +103,6 @@ python main.py [first_argument] [second_argument] [third_argument]
    ```java
    cal1.get(Calendar.HOUR_OF_DAY) == cal2.get(Calendar.HOUR_OF_DAY) &&
    ```
-   
 2. **Prompt Design for Deletion and Insertion Patches**:  
    The **CHATREPAIR** paper does not provide explicit instructions on how to design prompts for patches involving line deletions or insertions in single-hunk or single-line scenarios. So we looked for the same way that fill-in-the-blank fixes handle the deletion and addition of lines of code that the author used in his published article *Automated Program Repair in the Era of Large Pre trained Language Models*. Link: https://zenodo.org/records/7592886
    
@@ -118,33 +117,81 @@ python main.py [first_argument] [second_argument] [third_argument]
 
    ```plaintext
    The following code contains a bug:
-   public static String random(int count, int start, int end, boolean letters, boolean numbers,
-                               char[] chars, Random random) {
-       if (count == 0) {
-           return "";
-       } else if (count < 0) {
-           throw new IllegalArgumentException("Requested random string length " + count + " is less than 0.");
-       }
-       if (chars != null && chars.length == 0) {
-           throw new IllegalArgumentException("The chars array must not be empty");
-       }
+    public static String random(int count, int start, int end, boolean letters, boolean numbers,
+                                char[] chars, Random random) {
+        if (count == 0) {
+            return "";
+        } else if (count < 0) {
+            throw new IllegalArgumentException("Requested random string length " + count + " is less than 0.");
+        }
+        if (chars != null && chars.length == 0) {
+            throw new IllegalArgumentException("The chars array must not be empty");
+        }
 
-       if (start == 0 && end == 0) {
-           if (chars != null) {
-               end = chars.length;
-           } else {
-               if (!letters && !numbers) {
-                   end = Integer.MAX_VALUE;
-               } else {
-                   end = 'z' + 1;
-                   start = ' ';                
-               }
-           }
-   >>>[INFILL]<<<
-       }
+        if (start == 0 && end == 0) {
+            if (chars != null) {
+                end = chars.length;
+            } else {
+                if (!letters && !numbers) {
+                    end = Integer.MAX_VALUE;
+                } else {
+                    end = 'z' + 1;
+                    start = ' ';                
+                }
+            }
+    >>>[INFILL]<<<
+        }
 
-       // Additional code...
-   }
+        char[] buffer = new char[count];
+        int gap = end - start;
+
+        while (count-- != 0) {
+            char ch;
+            if (chars == null) {
+                ch = (char) (random.nextInt(gap) + start);
+            } else {
+                ch = chars[random.nextInt(gap) + start];
+            }
+            if (letters && Character.isLetter(ch)
+                    || numbers && Character.isDigit(ch)
+                    || !letters && !numbers) {
+                if(ch >= 56320 && ch <= 57343) {
+                    if(count == 0) {
+                        count++;
+                    } else {
+                        // low surrogate, insert high surrogate after putting it in
+                        buffer[count] = ch;
+                        count--;
+                        buffer[count] = (char) (55296 + random.nextInt(128));
+                    }
+                } else if(ch >= 55296 && ch <= 56191) {
+                    if(count == 0) {
+                        count++;
+                    } else {
+                        // high surrogate, insert low surrogate before putting it in
+                        buffer[count] = (char) (56320 + random.nextInt(128));
+                        count--;
+                        buffer[count] = ch;
+                    }
+                } else if(ch >= 56192 && ch <= 56319) {
+                    // private high surrogate, no effing clue, so skip it
+                    count++;
+                } else {
+                    buffer[count] = ch;
+                }
+            } else {
+                count++;
+            }
+        }
+        return new String(buffer);
+    }
+    The code fails on this test:
+    org.apache.commons.lang3.RandomStringUtilsTest::testLANG807
+    on this test line:
+                assertTrue("Message (" + msg + ") must contain 'start'", msg.contains("start"));
+    with the following test error:
+    junit.framework.AssertionFailedError: Message (bound must be positive) must contain 'start'
+    Please provide an analysis of the problem and the expected behaviour of the correct fix, and the correct hunk at the infill location in the form of Java Markdown code block.
    ```
 
 3. **Maximum Repair Attempts**:  
