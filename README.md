@@ -1,5 +1,9 @@
-# Introduction of the folder structure:
-``` plaintext
+# Project Overview
+This repository provides a set of scripts and tools for automating program repair using various methods, including the `chatrepair` approach. The folder structure outlined below helps to organize the project components for ease of use.
+
+## Folder Structure
+
+```plaintext
 |-- Lang_example.txt 
 |-- Lang_single_function_example.txt
 |-- README.md
@@ -36,129 +40,110 @@
     `-- initial-sf.xlsx
 ```
 
-# How to use this script
-## 1. Clone this project.
+## Setup Instructions
 
-## 2. Install Defects4j dataset.
-Install Defects4j and configure the environment path. Ensure all defects4j command is available. Because this script needs to run `checkout`, `compile` and `test` commands.
-## 3. Download dependences in your python environment.
-This script needs 2 extral dependences: `javalang` and `openai`
-If you use pip as the package manager, you could run `pip install javalang` and `pip install openai`.(To ensure the openai api is workable, a python version 3.10 is recommended.)
-## 4. Set your openapi key and base url.
-Modify the openai api key and base url in constant.py.
-## 5. Run the script with arguments or shell scripts.
-Run the script by command `python main.py` with 3 arguments: 
+### 1. Clone the Repository
 
-- First argument
-    - `initial-save` : Generate and save the initial prompt of all bugs of a project.
-    - `initial-chat` : Chat with chatgpt with the initial prompt.
-    - `chatrepair` Run the chatreapir method we implemented.
+Begin by cloning this project to your local machine.
 
-- Second argument: `Lang`, `Chart`,`Closure`,`Mockito`,`Math`,`Time`.
+### 2. Install the Defects4j Dataset
 
-- Third argument: `y` or `n`
-    - `y`: use single function prompt.
-    - `n`: use signle hunk and single line prompt.
+Install **Defects4j** and configure the environment path. Make sure that all **Defects4j** commands are accessible, as this script requires running `checkout`, `compile`, and `test` commands.
 
-# Notice
-1. The form of "Few Shot Example" was not given in orginal `CHATREPAIR` paper and the paper use one example. So the prompts we use in the example are derived from the prompts used in the flowchart explaining the chatrepair method in the paper, and in the response format, we have provided a template for a reply as below:
-``` plaintext
-Example response:
+### 3. Install Python Dependencies
 
-1. Analysis of the problem:
-The problem seems to arise from the comparison of hours using `Calendar.HOUR`. However, `Calendar.HOUR` represents the 12-hour clock hour whereas `Calendar.HOUR_OF_DAY` represents the 24-hour clock hour. Since the code is aiming to compare the hour component in a manner consistent with the other fields (such as minute, second, millisecond), it should use `Calendar.HOUR_OF_DAY` instead.
+This project requires two external Python dependencies: `javalang` and `openai`. Install them using `pip`:
 
-2. Expected Behavior of Correct Fix:
-The correct fix should ensure that the comparison is done using the 24-hour clock hour (Calendar.HOUR_OF_DAY) to maintain consistency with the other fields.
-
-3. Correct code at the Infill Location:
-
-```java
-cal1.get(Calendar.HOUR_OF_DAY) == cal2.get(Calendar.HOUR_OF_DAY) &&
+```bash
+pip install javalang
+pip install openai
 ```
+
+Note: A Python version of **3.10** or higher is recommended for compatibility with the OpenAI API.
+
+### 4. Set OpenAI API Key and Base URL
+
+Edit the `constants.py` file to configure your OpenAI API key and base URL.
+
+### 5. Run the Script
+
+You can execute the script using the following command:
+
+```bash
+python main.py [first_argument] [second_argument] [third_argument]
 ```
-```
-2. The author doesn't give a clue about how to knock out and design prompts for patches of the deletion and insertion types in single hunk or single line scenario, so we looked for the same way that fill-in-the-blank fixes handle the deletion and addition of lines of code that the author used in his published article _ Automated Program Repair in the Era of Large Pre trained Language Models_: In the case of deletion-type fixes, the author replaces the code that needs to be removed correctly with a padding marker; For insertion type fixes, the author adds markup where a line of code needs to be inserted. The code used in the article link: https://zenodo.org/records/7592886.
-We do not think this is a wise way for a repair task especially for delete type patch, because it may provide extral information and cause misdirection. 
-Our random selection did not select a single hunk bug whose developer patch is deletion type. For an insertion type patch, INFILL marker will be embedded at the expecting repair places. Prompt will look like this:
-``` plaintext
 
-The following code contains a bug:
-    public static String random(int count, int start, int end, boolean letters, boolean numbers,
-                                char[] chars, Random random) {
-        if (count == 0) {
-            return "";
-        } else if (count < 0) {
-            throw new IllegalArgumentException("Requested random string length " + count + " is less than 0.");
-        }
-        if (chars != null && chars.length == 0) {
-            throw new IllegalArgumentException("The chars array must not be empty");
-        }
+- **First Argument**:
+    - `initial-save`: Generate and save the initial prompt for all bugs in a project.
+    - `initial-chat`: Interact with ChatGPT using the initial prompt.
+    - `chatrepair`: Execute the chatrepair method implemented in this project.
 
-        if (start == 0 && end == 0) {
-            if (chars != null) {
-                end = chars.length;
-            } else {
-                if (!letters && !numbers) {
-                    end = Integer.MAX_VALUE;
-                } else {
-                    end = 'z' + 1;
-                    start = ' ';                
-                }
-            }
->>>[INFILL]<<<
-        }
+- **Second Argument**: Choose from one of the following categories:
+    - `Lang`, `Chart`, `Closure`, `Mockito`, `Math`, `Time`
 
-        char[] buffer = new char[count];
-        int gap = end - start;
+- **Third Argument**: Select `y` or `n` to specify whether to use single function prompts or not:
+    - `y`: Use single-function prompt.
+    - `n`: Use single hunk and single line prompt.
 
-        while (count-- != 0) {
-            char ch;
-            if (chars == null) {
-                ch = (char) (random.nextInt(gap) + start);
-            } else {
-                ch = chars[random.nextInt(gap) + start];
-            }
-            if (letters && Character.isLetter(ch)
-                    || numbers && Character.isDigit(ch)
-                    || !letters && !numbers) {
-                if(ch >= 56320 && ch <= 57343) {
-                    if(count == 0) {
-                        count++;
-                    } else {
-                        // low surrogate, insert high surrogate after putting it in
-                        buffer[count] = ch;
-                        count--;
-                        buffer[count] = (char) (55296 + random.nextInt(128));
-                    }
-                } else if(ch >= 55296 && ch <= 56191) {
-                    if(count == 0) {
-                        count++;
-                    } else {
-                        // high surrogate, insert low surrogate before putting it in
-                        buffer[count] = (char) (56320 + random.nextInt(128));
-                        count--;
-                        buffer[count] = ch;
-                    }
-                } else if(ch >= 56192 && ch <= 56319) {
-                    // private high surrogate, no effing clue, so skip it
-                    count++;
-                } else {
-                    buffer[count] = ch;
-                }
-            } else {
-                count++;
-            }
-        }
-        return new String(buffer);
-    }
-The code fails on this test:
-org.apache.commons.lang3.RandomStringUtilsTest::testLANG807
-on this test line:
-            assertTrue("Message (" + msg + ") must contain 'start'", msg.contains("start"));
-with the following test error:
-junit.framework.AssertionFailedError: Message (bound must be positive) must contain 'start'
-Please provide an analysis of the problem and the expected behaviour of the correct fix, and the correct hunk at the infill location in the form of Java Markdown code block.
+## Important Notes
 
-```
-3. The maximum number of repair attempts allowed (including both initial repair and plausible patch generation steps) is 200 for single-line and single-hunk APR, and 100 for the single-function scenario of the experiment setting of the paper. This is too many under our study purpose, because we will analyse each response generated by CHATGPT manualy. So we set the maximum number of attempts for each bug to be 3 (when analysing responses manualy) and 24 (when comparing One-Iteration with CHATREPAIR). 
+1. **Few Shot Example Clarification**:  
+   The original **CHATREPAIR** paper did not provide a specific "Few Shot Example" format, and instead only presented one example. The prompts used in this repository are derived from the flowchart illustrating the **chatrepair** method in the paper. The response format follows a predefined template, as shown below:
+
+   **Example Response**:
+
+   ```plaintext
+   1. Analysis of the problem:
+   The issue arises due to the comparison of hours using `Calendar.HOUR`, which represents the 12-hour clock. The code should instead use `Calendar.HOUR_OF_DAY` to reflect the 24-hour clock.
+
+   2. Expected Behavior of the Correct Fix:
+   The fix should ensure that comparisons are made using `Calendar.HOUR_OF_DAY` to maintain consistency with other fields.
+
+   3. Correct Code at the Infill Location:
+   ```java
+   cal1.get(Calendar.HOUR_OF_DAY) == cal2.get(Calendar.HOUR_OF_DAY) &&
+   ```
+   ```
+
+2. **Prompt Design for Deletion and Insertion Patches**:  
+   The **CHATREPAIR** paper does not provide explicit instructions on how to design prompts for patches involving line deletions or insertions in single-hunk or single-line scenarios. For deletion-type fixes, the paper uses padding markers to replace code that should be removed. For insertion-type fixes, the paper uses markup to indicate where code should be inserted. This method, however, may provide extraneous information and lead to potential misdirections.
+
+   We do not recommend this approach for repair tasks, particularly for deletion-type patches. Insertion-type patches use the `INFILL` marker, which will be placed at the appropriate repair location in the code, as shown below:
+
+   **Example of Insertion-Type Patch**:
+
+   ```plaintext
+   The following code contains a bug:
+   public static String random(int count, int start, int end, boolean letters, boolean numbers,
+                               char[] chars, Random random) {
+       if (count == 0) {
+           return "";
+       } else if (count < 0) {
+           throw new IllegalArgumentException("Requested random string length " + count + " is less than 0.");
+       }
+       if (chars != null && chars.length == 0) {
+           throw new IllegalArgumentException("The chars array must not be empty");
+       }
+
+       if (start == 0 && end == 0) {
+           if (chars != null) {
+               end = chars.length;
+           } else {
+               if (!letters && !numbers) {
+                   end = Integer.MAX_VALUE;
+               } else {
+                   end = 'z' + 1;
+                   start = ' ';                
+               }
+           }
+   >>>[INFILL]<<<
+       }
+
+       // Additional code...
+   }
+   ```
+
+3. **Maximum Repair Attempts**:  
+   The **CHATREPAIR** paper allows up to 200 repair attempts for single-line and single-hunk APR, and 100 for single-function repairs. For our analysis, however, we limit the maximum number of attempts to **3** for manual analysis and **24** when comparing **One-Iteration** with **CHATREPAIR**.
+
+---
