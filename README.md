@@ -103,8 +103,7 @@ python main.py [first_argument] [second_argument] [third_argument]
    ```java
    cal1.get(Calendar.HOUR_OF_DAY) == cal2.get(Calendar.HOUR_OF_DAY) &&
    ```
-   ```
-
+   
 2. **Prompt Design for Deletion and Insertion Patches**:  
    The **CHATREPAIR** paper does not provide explicit instructions on how to design prompts for patches involving line deletions or insertions in single-hunk or single-line scenarios. So we looked for the same way that fill-in-the-blank fixes handle the deletion and addition of lines of code that the author used in his published article *Automated Program Repair in the Era of Large Pre trained Language Models*. Link: https://zenodo.org/records/7592886
    
